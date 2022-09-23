@@ -1,0 +1,6 @@
+.pio
+firmware/LedCube-RGB/.vscode/.browse.c_cpp.db*
+firmware/LedCube-RGB/.vscode/c_cpp_properties.json
+firmware/LedCube-RGB/.vscode/launch.json
+firmware/LedCube-RGB/.vscode/ipch
+TODO.md
