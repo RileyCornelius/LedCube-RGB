@@ -1,9 +1,21 @@
 #include "Cube.h"
 
-// globl cube object for Animation sub classes
+// Globl cube object for Animation sub classes
 RGBLedCube Cube = RGBLedCube();
 
-/*--------------------------- PUBLIC FUNCTIONS ---------------------------*/
+// Enables safe voxel guard
+#define SAFE_VOXEL_ON 1
+
+// Checks if invalid index is trying to be accessed and stops the program if so
+#if SAFE_VOXEL_ON
+#define SAFE_VOXEL_GUARD(index) \
+    if (index >= LED_COUNT)     \
+        while (1)               \
+            ;
+#else
+#define SAFE_VOXEL_GUARD(index)
+#endif
+
 RGBLedCube::RGBLedCube()
 {
 }
@@ -58,19 +70,18 @@ void RGBLedCube::fadeVoxel(uint16_t index, uint8_t scale)
 
 void RGBLedCube::fadeAll(uint8_t scale) // scale / 256 * color
 {
-    for (uint16_t i = 0; i < PIXEL_COUNT; i++)
+    for (uint16_t i = 0; i < LED_COUNT; i++)
         fadeVoxel(i, scale);
 }
 
 void RGBLedCube::fill(CRGB col)
 {
-    for (uint16_t i = 0; i < PIXEL_COUNT; i++)
+    for (uint16_t i = 0; i < LED_COUNT; i++)
         setVoxel(i, col);
 }
 
 void RGBLedCube::clear()
 {
-    // memset(leds, 0, sizeof(leds)); // array is faster than memset
     fill(CRGB::Black);
 }
 
