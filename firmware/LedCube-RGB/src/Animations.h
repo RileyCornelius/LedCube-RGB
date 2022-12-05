@@ -1,11 +1,15 @@
+#pragma once
+
+#include <FastLED.h>
 #include "Animation/Animation.h"
+#include "Cube/Cube.h"
 
 class Linear : public Animation
 {
 public:
     Linear() : Animation()
     {
-        _name = __FUNCTION__;
+        name = __FUNCTION__;
         setDelay(75);
     };
 
@@ -24,7 +28,7 @@ public:
         CRGB color = CHSV(hue++, 255, 255);
         Cube.setVoxel(index++, color);
 
-        return (index >= PIXEL_COUNT);
+        return (index >= LED_COUNT);
     }
 };
 
@@ -33,7 +37,7 @@ class Sparkles : public Animation
 public:
     Sparkles()
     {
-        _name = __FUNCTION__;
+        name = __FUNCTION__;
         setDelay(150);
     };
     int index = 0;
@@ -51,7 +55,7 @@ public:
 
         for (int i = 0; i < numberOfSparkles; i++)
         {
-            index = random16(PIXEL_COUNT);
+            index = random16(LED_COUNT);
             Cube.setVoxel(index, color);
         }
         Cube.fadeAll(fade_time);
@@ -65,7 +69,7 @@ class Solid : public Animation
 public:
     Solid() : Animation()
     {
-        _name = __FUNCTION__;
+        name = __FUNCTION__;
         setDelay(70);
     };
 
@@ -89,7 +93,7 @@ class Wave : public Animation
 public:
     Wave()
     {
-        _name = __FUNCTION__;
+        name = __FUNCTION__;
         setDelay(100);
     };
     int32_t yHueDelta32;
