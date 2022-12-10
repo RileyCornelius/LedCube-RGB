@@ -6,4 +6,6 @@
 
 // Pins
 #define LED_PIN 5
-#define NEXT_BTN_PIN A5
+#define NEXT_BTN_PIN 18
+#define PREV_BTN_PIN 19
+#define PAUSE_BTN_PIN 20

@@ -8,13 +8,14 @@
 class Animation
 {
 protected:
-    Timer _timer;
+    Timer timer;
     void setFps(uint16_t fps);
     void setDelay(uint32_t millis);
 
 public:
     String name;
-    Animation *pNext;
+    Animation *next;
+    Animation *prev;
     Animation();
     bool animate();
     virtual void reset() = 0;     // pure virtual, needs to be overridden

@@ -12,19 +12,19 @@ void Animation::setFps(uint16_t fps)
 
 void Animation::setDelay(uint32_t delay)
 {
-    _timer.setPeriod(delay);
+    timer.setPeriod(delay);
 }
 
+// Returns true if animation updates
 bool Animation::animate()
 {
-    bool updated = false;
-    if (_timer.ready())
+    if (timer.ready())
     {
         if (drawFrame())
             reset();
 
-        updated = true;
+        return true;
     }
 
-    return updated;
+    return false;
 }

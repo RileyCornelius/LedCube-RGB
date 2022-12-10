@@ -5,26 +5,26 @@
 class Timer
 {
 private:
-    uint32_t _prevTrigger;
-    uint32_t _period;
+    uint32_t prevTrigger;
+    uint32_t period;
 
 public:
     Timer(){};
-    Timer(uint32_t period)
+    Timer(uint32_t periodMilliseconds)
     {
         reset();
-        setPeriod(period);
+        setPeriod(periodMilliseconds);
     }
 
     uint32_t getTime() { return millis(); }
-    uint32_t getPeriod() { return _period; }
-    uint32_t getElapsed() { return getTime() - _prevTrigger; }
-    uint32_t getRemaining() { return _period - getElapsed(); }
-    void setPeriod(uint32_t period) { _period = period; }
-    void reset() { _prevTrigger = getTime(); }
+    uint32_t getPeriod() { return period; }
+    uint32_t getElapsed() { return getTime() - prevTrigger; }
+    uint32_t getRemaining() { return period - getElapsed(); }
+    void setPeriod(uint32_t periodMilliseconds) { period = periodMilliseconds; }
+    void reset() { prevTrigger = getTime(); }
     bool ready()
     {
-        bool isReady = (getElapsed() >= _period);
+        bool isReady = (getElapsed() >= period);
         if (isReady)
         {
             reset();

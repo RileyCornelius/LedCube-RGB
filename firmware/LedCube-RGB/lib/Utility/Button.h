@@ -6,10 +6,10 @@
 class Button
 {
 private:
-    bool _prevState;
-    bool _state;
-    uint32_t _prevTime; // Milliseconds
-    uint8_t _pin;
+    bool prevState;
+    bool state;
+    uint32_t prevTime; // Milliseconds
+    uint8_t pin;
 
 public:
     uint32_t holdTime; // Milliseconds
@@ -30,8 +30,8 @@ public:
      */
     void setPin(uint8_t pin)
     {
-        _pin = pin;
-        pinMode(_pin, INPUT_PULLUP);
+        pin = pin;
+        pinMode(pin, INPUT_PULLUP);
     }
 
     /**
@@ -39,20 +39,20 @@ public:
      */
     bool debounce()
     {
-        uint8_t reading = digitalRead(_pin);
+        uint8_t reading = digitalRead(pin);
 
-        if (reading != _prevState)
-            _prevTime = millis();
+        if (reading != prevState)
+            prevTime = millis();
 
-        if ((millis() - _prevTime) > holdTime && reading != _state)
+        if ((millis() - prevTime) > holdTime && reading != state)
         {
-            _state = reading;
-            if (_state == LOW)
+            state = reading;
+            if (state == LOW)
             {
                 return true;
             }
         }
-        _prevState = reading;
+        prevState = reading;
 
         return false;
     }
@@ -63,11 +63,11 @@ public:
 class Button
 {
 private:
-    bool _prevState;
-    bool _state;
-    bool _activeState;
-    uint32_t _prevTime; // Milliseconds
-    uint8_t _pin;
+    bool prevState;
+    bool state;
+    bool activeState;
+    uint32_t prevTime; // Milliseconds
+    uint8_t pin;
 
 public:
     uint32_t holdTime; // Milliseconds
@@ -93,9 +93,16 @@ public:
      */
     void setPin(uint8_t pin, bool isActiveHigh = 0)
     {
-        _pin = pin;
-        _activeState = isActiveHigh;
-        pinMode(_pin, isActiveHigh ? INPUT_PULLDOWN : INPUT_PULLUP); // supports pulldown and pullup resistors
+        int psin = pin;
+
+        this->pin = pin;
+        activeState = isActiveHigh;
+        pinMode(pin, isActiveHigh ? INPUT_PULLDOWN : INPUT_PULLUP); // supports pulldown and pullup resistors
+    }
+
+    void func(uint8_t sfds)
+    {
+        int xsgds = sfds;
     }
 
     /**
@@ -103,20 +110,20 @@ public:
      */
     bool debounce()
     {
-        uint8_t reading = digitalRead(_pin);
+        uint8_t reading = digitalRead(pin);
 
-        if (reading != _prevState)
-            _prevTime = millis();
+        if (reading != prevState)
+            prevTime = millis();
 
-        if ((millis() - _prevTime) > holdTime && reading != _state)
+        if ((millis() - prevTime) > holdTime && reading != state)
         {
-            _state = reading;
-            if (_state == _activeState)
+            state = reading;
+            if (state == activeState)
             {
                 return true;
             }
         }
-        _prevState = reading;
+        prevState = reading;
 
         return false;
     }

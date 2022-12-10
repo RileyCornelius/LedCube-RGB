@@ -38,12 +38,11 @@ public:
     Sparkles()
     {
         name = __FUNCTION__;
-        setDelay(150);
+        setDelay(30);
     };
     int index = 0;
-
     const int fade_time = 230;
-    const int numberOfSparkles = beatsin16(15, 1, 3); // bpm, min, max
+    const int numberOfSparkles = beatsin16(15, 1, 1); // bpm, min, max
     CRGB color = CRGB::White;
 
     void reset()
