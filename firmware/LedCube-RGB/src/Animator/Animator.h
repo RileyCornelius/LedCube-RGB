@@ -16,7 +16,7 @@ private:
     uint16_t count;
     bool isRotating;
     void animate();
-    void transitionState(Animation *nextAnimation);
+    void stateTransition(Animation *nextAnimation);
     bool transitioning();
     bool fadeIn();
     bool fadeOut();

@@ -5,15 +5,15 @@ class Button
 {
 private:
     bool _prevState;
-    bool _state;
+    bool state;
     uint32_t _prevTime;
     uint32_t _holdTime;
-    uint8_t _pin;
+    uint8_t pin;
 
 public:
     Button()
     {
-        _state = 0;
+        state = 0;
         _holdTime = 50;
     }
 
@@ -24,24 +24,24 @@ public:
 
     void begin(uint8_t pin)
     {
-        _pin = pin;
-        pinMode(_pin, INPUT_PULLUP);
+        pin = pin;
+        pinMode(pin, INPUT_PULLUP);
     }
 
     bool debounce()
     {
-        auto reading = digitalRead(_pin);
+        auto reading = digitalRead(pin);
         if (reading != _prevState)
             _prevTime = millis();
 
         if ((millis() - _prevTime) > _holdTime)
         {
-            if (reading != _state)
+            if (reading != state)
             {
-                _state = reading;
-                if (_state == LOW)
+                state = reading;
+                if (state == LOW)
                 {
-                    _state = reading;
+                    state = reading;
                     return true;
                 }
             }

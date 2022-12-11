@@ -32,24 +32,24 @@ void Animator::setupFastLED(uint8_t scale)
 void Animator::pause()
 {
     if (state != Idle)
-        transitionState(NULL);
+        stateTransition(NULL);
     else
-        transitionState(current);
+        stateTransition(current);
 }
 
 void Animator::first()
 {
-    transitionState(head);
+    stateTransition(head);
 }
 
 void Animator::next()
 {
-    transitionState(current->next);
+    stateTransition(current->next);
 }
 
 void Animator::previous()
 {
-    transitionState(current->prev);
+    stateTransition(current->prev);
 }
 
 void Animator::rotateBegin(uint32_t time)
@@ -108,21 +108,24 @@ void Animator::addAnimationArray(Animation *animations[], uint16_t length)
 void Animator::addAnimation(Animation *animation)
 {
     // Circular doubly linked list
-    count++;              // increase total animations count
-    if (head == NULL)     // will only run once on an empty list
-        head = animation; // set first animation as head
+    count++;          // increase total animations count
+    if (head == NULL) // will only run once on an empty list
+    {
+        head = animation;    // make sure head is defined
+        current = animation; // make sure current is defined
+    }
     else
     {
-        current->next = animation; // change the current next animation to the new animation instead of the head
-        head->prev = animation;    // change head to point backwards to the new animation
+        current->next = animation; // link the current animation to the new animation
+        head->prev = animation;    // make the list circular backwards
     }
 
-    animation->next = head;    // is makes the list circular
-    animation->prev = current; // is makes the list doubly linked
-    current = animation;       // finally make the new animation the new current animation
+    animation->next = head;    // make the list circular forwards
+    animation->prev = current; // link to the new animation to previous animation
+    current = animation;       // finally after everything is linked properly set the new animation as current
 }
 
-void Animator::transitionState(Animation *nextAnimation)
+void Animator::stateTransition(Animation *nextAnimation)
 {
     state = Ending;
     transition = nextAnimation;
