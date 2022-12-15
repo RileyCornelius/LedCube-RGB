@@ -1,5 +1,7 @@
 #pragma once
 
+// This must be defined before including FastLED.h
+#define FASTLED_ESP32_I2S true
 #include <FastLED.h>
 #include "config.h"
 

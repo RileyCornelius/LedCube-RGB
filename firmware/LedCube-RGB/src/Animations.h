@@ -24,11 +24,14 @@ public:
 
     bool drawFrame()
     {
+        if (index >= LED_COUNT)
+            return true;
+
         // set led hue and increment
         CRGB color = CHSV(hue++, 255, 255);
         Cube.setVoxel(index++, color);
 
-        return (index >= LED_COUNT);
+        return false;
     }
 };
 
@@ -80,8 +83,22 @@ public:
 
     bool drawFrame()
     {
+        static Timer benchmark;
         CRGB color = CHSV(hue++, 255, 255); // hue will overflow
+
+        benchmark.reset();
         Cube.fill(color);
+        // Cube.setVoxel(0, CRGB(255, 255, 255));
+        // Cube.setVoxel(1, CRGB(255, 0, 255));
+        // Cube.setVoxel(2, CRGB(0, 0, 255));
+        // Cube.setVoxel(3, CRGB(0, 255, 0));
+        // Cube.setVoxel(4, CRGB(0, 0, 255));
+        // Cube.setVoxel(5, CRGB(0, 255, 255));
+        // Cube.setVoxel(6, CRGB(255, 0, 255));
+        // Cube.setVoxel(7, CRGB(255, 0, 0));
+
+        uint32_t eplased = benchmark.getElapsed();
+        PRINTLN("Fill: " + eplased);
 
         return false; // never repeat
     }

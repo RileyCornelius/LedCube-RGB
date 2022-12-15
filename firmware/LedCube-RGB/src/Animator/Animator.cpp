@@ -1,5 +1,4 @@
 #include "Animator.h"
-#include <FastLED.h>
 #include "Cube/Cube.h"
 #include "config.h"
 
@@ -25,7 +24,12 @@ Animator::Animator(Animation *animations[], uint16_t length)
 
 void Animator::setupFastLED(uint8_t scale)
 {
-    FastLED.addLeds<LED_TYPE, LED_PIN, LED_COLOR_ORDER>(Cube.leds, LED_COUNT);
+#ifdef BRANCHES
+    FastLED.addLeds<LED_TYPE, LED_PIN, LED_COLOR_ORDER>(Cube.leds, LED_BRANCH_COUNT * 0, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, LED_1_PIN, LED_COLOR_ORDER>(Cube.leds, LED_BRANCH_COUNT * 1, LED_BRANCH_COUNT);
+#else
+    FastLED.addLeds<LED_TYPE, LED_1_PIN, LED_COLOR_ORDER>(Cube.leds, LED_COUNT);
+#endif
     FastLED.setBrightness(scale);
 }
 
@@ -166,6 +170,12 @@ bool Animator::fadeOut()
 
 void Animator::animate()
 {
+    static Timer benchmark;
     if (current->animate())
+    {
+        benchmark.reset();
         FastLED.show();
+        uint32_t eplased = benchmark.getElapsed();
+        PRINTLN("Show: " + eplased);
+    }
 }

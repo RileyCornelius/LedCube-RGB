@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <FastLED.h>
 #include <Button.h>
 #include "Cube/Cube.h"
 #include "Animator/Animator.h"
