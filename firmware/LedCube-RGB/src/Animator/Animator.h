@@ -13,6 +13,7 @@ private:
     uint16_t animationCount;
     uint16_t currentIndex;
     bool isRotating;
+    bool isPaused;
 
 public:
     Animator(Animation *animations[], uint16_t length);

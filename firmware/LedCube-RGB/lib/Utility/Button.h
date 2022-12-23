@@ -59,7 +59,7 @@ public:
 
     operator bool() { return debounce(); }
 };
-#elif defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_ESP32)
+#else
 class Button
 {
 private:

@@ -8,10 +8,12 @@ Animator::Animator(Animation *animations[], uint16_t length)
     this->animations = animations;
     animationCount = length;
     isRotating = false;
+    isPaused = false;
 }
 
 void Animator::pause()
 {
+    isPaused = !isPaused;
 }
 
 void Animator::first()
@@ -48,6 +50,9 @@ void Animator::rotateEnd()
 
 void Animator::animate()
 {
+    if (isPaused)
+        return;
+
     if (isRotating && rotationTimer.ready())
         next();
 

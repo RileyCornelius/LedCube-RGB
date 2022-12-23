@@ -13,7 +13,11 @@ protected:
     uint32_t period;
 
 public:
-    Timer() { reset(); };
+    Timer()
+    {
+        reset();
+        period = 1;
+    };
     Timer(uint32_t period)
     {
         reset();
@@ -24,7 +28,7 @@ public:
     uint32_t getPeriod() { return period; }
     uint32_t getElapsed() { return getTime() - prevTrigger; }
     uint32_t getRemaining() { return period - getElapsed(); }
-    void setPeriod(uint32_t period) { period = period; }
+    void setPeriod(uint32_t period) { this->period = period; }
     void reset() { prevTrigger = getTime(); }
     bool ready()
     {
@@ -84,7 +88,7 @@ public:
 
 // Toggle debug benchmarking
 #ifndef DEBUG_BENCHMARK
-#define DEBUG_BENCHMARK 1
+#define DEBUG_BENCHMARK 0
 #endif
 
 // Benchmarking macros

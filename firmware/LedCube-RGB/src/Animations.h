@@ -71,7 +71,7 @@ public:
     Solid()
     {
         name = __FUNCTION__;
-        setDelay(70);
+        setDelay(30);
     };
 
     uint8_t hue = 0;

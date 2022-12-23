@@ -5,8 +5,8 @@
 #define LED_COLOR_ORDER RGB
 
 // Branches
-#define BRANCHES 2
-#define LED_BRANCH_COUNT (LED_COUNT / BRANCHES)
+#define LED_BRANCHES 2
+#define LED_BRANCH_COUNT (LED_COUNT / LED_BRANCHES)
 
 // Led Pins
 #define LED_PIN 5
@@ -14,5 +14,5 @@
 
 // Button Pins
 #define NEXT_BTN_PIN 19
-#define PREV_BTN_PIN 22
-#define PAUSE_BTN_PIN 21
+#define PREV_BTN_PIN 21
+#define PAUSE_BTN_PIN 22
