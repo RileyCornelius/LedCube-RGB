@@ -2,9 +2,10 @@
 
 #include <SimpleTimer.h>
 
-/*---------------------------------------------------------------------------------------
- * ANIMATION BASE CLASS (Abstract) - Base class for all animations
+/**--------------------------------------------------------------------------------------
+ * Animation class (Abstract) - Base class for all animations
  *-------------------------------------------------------------------------------------*/
+
 class Animation
 {
 protected:
@@ -14,10 +15,10 @@ protected:
 
 public:
     String name;
-    Animation *next;
-    Animation *prev;
     Animation();
     bool animate();
     virtual void reset() = 0;     // pure virtual, needs to be overridden
     virtual bool drawFrame() = 0; // pure virtual, needs to be overridden
+    virtual bool beginning();     // virtual, optional override
+    virtual bool ending();        // virtual, optional override
 };

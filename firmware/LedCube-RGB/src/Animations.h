@@ -1,13 +1,12 @@
 #pragma once
 
-#include <FastLED.h>
 #include "Animation/Animation.h"
 #include "Cube/Cube.h"
 
 class Linear : public Animation
 {
 public:
-    Linear() : Animation()
+    Linear()
     {
         name = __FUNCTION__;
         setDelay(75);
@@ -69,7 +68,7 @@ public:
 class Solid : public Animation
 {
 public:
-    Solid() : Animation()
+    Solid()
     {
         name = __FUNCTION__;
         setDelay(70);
@@ -83,22 +82,8 @@ public:
 
     bool drawFrame()
     {
-        static Timer benchmark;
         CRGB color = CHSV(hue++, 255, 255); // hue will overflow
-
-        benchmark.reset();
         Cube.fill(color);
-        // Cube.setVoxel(0, CRGB(255, 255, 255));
-        // Cube.setVoxel(1, CRGB(255, 0, 255));
-        // Cube.setVoxel(2, CRGB(0, 0, 255));
-        // Cube.setVoxel(3, CRGB(0, 255, 0));
-        // Cube.setVoxel(4, CRGB(0, 0, 255));
-        // Cube.setVoxel(5, CRGB(0, 255, 255));
-        // Cube.setVoxel(6, CRGB(255, 0, 255));
-        // Cube.setVoxel(7, CRGB(255, 0, 0));
-
-        uint32_t eplased = benchmark.getElapsed();
-        PRINTLN("Fill: " + eplased);
 
         return false; // never repeat
     }
@@ -112,6 +97,7 @@ public:
         name = __FUNCTION__;
         setDelay(100);
     };
+
     int32_t yHueDelta32;
     int32_t xHueDelta32;
     int8_t yHueDelta8;
@@ -142,6 +128,73 @@ public:
                     Cube.setVoxel(x, y, z, CHSV(pixelHue, 255, 255));
                 }
             }
+        }
+
+        return false; // never repeat
+    }
+};
+
+class Fire : public Animation
+{
+public:
+    Fire()
+    {
+        name = __FUNCTION__;
+        setDelay(100);
+    };
+
+    CRGBPalette16 palette;
+    bool gReverseDirection = false;
+    uint8_t heat[LED_COUNT]; // Array of temperature readings at each simulation cell
+
+    // Less cooling = taller flames.  More cooling = shorter flames.
+    // Default 55, suggested range 20-100
+    const uint8_t cooling = 55;
+    // Higher chance = more roaring fire.  Lower chance = more flickery fire.
+    // Default 120, suggested range 50-200.
+    const uint8_t sparking = 120;
+
+    void reset()
+    {
+    }
+
+    bool drawFrame()
+    {
+        // Step 1.  Cool down every cell a little
+        for (int i = 0; i < LED_COUNT; i++)
+        {
+            heat[i] = qsub8(heat[i], random8(0, ((cooling * 10) / LED_COUNT) + 2));
+        }
+        // Step 2.  Heat from each cell drifts 'up' and diffuses a little
+        for (int k = LED_COUNT - 1; k >= 2; k--)
+        {
+            heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2]) / 3;
+        }
+
+        // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
+        if (random8() < sparking)
+        {
+            int y = random8(7);
+            heat[y] = qadd8(heat[y], random8(160, 255));
+        }
+
+        // Step 4.  Map from heat cells to LED colors
+        for (int j = 0; j < LED_COUNT; j++)
+        {
+            // Scale the heat value from 0-255 down to 0-240
+            // for best results with color palettes.
+            uint8_t colorindex = scale8(heat[j], 240);
+            CRGB color = ColorFromPalette(palette, colorindex);
+            int pixelnumber;
+            if (gReverseDirection)
+            {
+                pixelnumber = (LED_COUNT - 1) - j;
+            }
+            else
+            {
+                pixelnumber = j;
+            }
+            Cube.setVoxel(pixelnumber, color);
         }
 
         return false; // never repeat
