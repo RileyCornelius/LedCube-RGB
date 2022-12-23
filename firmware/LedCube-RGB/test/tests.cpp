@@ -1,11 +1,6 @@
 #include <unity.h>
 #include <Arduino.h>
 
-#include <Animator/Animator.h>
-#include <Cube/Cube.h>
-#include <Animation/Animation.h>
-#include <Timer.h>
-
 /*------------------------------------------------------------------------------
  * TESTS
  *----------------------------------------------------------------------------*/

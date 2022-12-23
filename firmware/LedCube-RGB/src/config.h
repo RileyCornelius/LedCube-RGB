@@ -10,19 +10,9 @@
 
 // Led Pins
 #define LED_PIN 5
-#define LED_1_PIN 17
+#define LED_1_PIN 18
 
 // Button Pins
-#define NEXT_BTN_PIN 18
-#define PREV_BTN_PIN 19
+#define NEXT_BTN_PIN 19
+#define PREV_BTN_PIN 22
 #define PAUSE_BTN_PIN 21
-
-// Debug
-#define DEBUG
-#ifdef DEBUG
-#define PRINTLN(x) Serial.println(x)
-#define PRINT(x) Serial.print(x)
-#else
-#define PRINTLN(x)
-#define PRINT(x)
-#endif

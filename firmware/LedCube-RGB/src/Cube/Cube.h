@@ -1,13 +1,19 @@
 #pragma once
 
-// This must be defined before including FastLED.h
-#define FASTLED_ESP32_I2S true
+#if defined(ESP32)
+// Changes data transfer from RMT to I2S which can handle up to 24 parallel branches
+#define FASTLED_ESP32_I2S true // This must be defined before including FastLED.h
+#endif
 #include <FastLED.h>
-#include "config.h"
+#include "Config.h"
 
 /*---------------------------------------------------------------------------------------
  * POINT STRUCT - 3D Point in Cube
  *-------------------------------------------------------------------------------------*/
+
+/**
+ * x, y, z location
+ */
 struct Point
 {
     uint8_t x;
@@ -20,6 +26,10 @@ struct Point
 /*---------------------------------------------------------------------------------------
  * CUBE CLASS - 3D RGB LED Cube
  *-------------------------------------------------------------------------------------*/
+
+/**
+ * Helper class to create 3d rgb animations for the FastLED library
+ */
 class RGBLedCube
 {
 private:

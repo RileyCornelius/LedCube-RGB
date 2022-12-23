@@ -15,6 +15,14 @@ void Animation::setDelay(uint32_t delay)
     timer.setPeriod(delay);
 }
 
+bool Animation::begin()
+{
+}
+
+bool Animation::ending()
+{
+}
+
 // Returns true if animation updates
 bool Animation::animate()
 {
