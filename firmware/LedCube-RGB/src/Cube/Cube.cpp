@@ -1,13 +1,13 @@
 #include "Cube.h"
 
-// Globl cube object for Animation sub classes
+// Global cube helper object for Animation sub classes
 RGBLedCube Cube = RGBLedCube();
 
 // Enables safe voxel guard
 #define SAFE_VOXEL_ON 1
 
-// Checks if invalid index is trying to be accessed and stops the program if so
 #if SAFE_VOXEL_ON
+// Checks if invalid index is trying to be accessed and stops the program if so
 #define SAFE_VOXEL_GUARD(index) \
     if (index >= LED_COUNT)     \
         while (1)               \
@@ -85,10 +85,50 @@ void RGBLedCube::clear()
     fill(CRGB::Black);
 }
 
+#define SERPENT_LAYOUT false
+
+// Set 'SERPENT_LAYOUT' to true if leds are like this:
+//
+//     0 >  1 >  2 >  3 >  4
+//                         |
+//                         |
+//     9 <  8 <  7 <  6 <  5
+//     |
+//     |
+//    10 > 11 > 12 > 13 > 14
+//
+// Set 'SERPENT_LAYOUT' to false if leds are like this:
+//
+//     0 >  1 >  2 >  3 >  4
+//                         |
+//     .----<----<----<----'
+//     |
+//     5 >  6 >  7 >  8 >  9
+//                         |
+//     .----<----<----<----'
+//     |
+//    10 > 11 > 12 > 13 > 14
+//
+
 /*--------------------------- PRIVATE FUNCTIONS --------------------------*/
 uint16_t RGBLedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)
 {
+#if SERPENT_LAYOUT
+
+    uint16_t xy = 0;
+    if (y & 0x01) // Odd rows run backwards
+    {
+        uint8_t reverseX = (CUBE_SIZE - 1) - x;
+        xy = (y * CUBE_SIZE) + reverseX;
+    }
+    else // Even rows run forwards
+    {
+        xy = (y * CUBE_SIZE) + x;
+    }
+    return (z * CUBE_SIZE * CUBE_SIZE) + xy;
+#else
     return (z * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + y;
+#endif
 }
 
 Point RGBLedCube::getPoint(uint16_t index)
