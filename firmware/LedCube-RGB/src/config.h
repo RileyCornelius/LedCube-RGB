@@ -3,6 +3,7 @@
 #define LED_COUNT (CUBE_SIZE * CUBE_SIZE * CUBE_SIZE)
 #define LED_TYPE PL9823
 #define LED_COLOR_ORDER RGB
+#define LED_BRIGHTNESS 255
 
 // Branches
 #define LED_BRANCHES 2

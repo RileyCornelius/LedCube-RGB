@@ -16,6 +16,34 @@ RGBLedCube Cube = RGBLedCube();
 #define SAFE_VOXEL_GUARD(index)
 #endif
 
+#define SERPENT_LAYOUT false
+// Set 'SERPENT_LAYOUT' to true if leds are like this:
+//
+//     0 >  1 >  2 >  3 >  4
+//                         |
+//                         |
+//     9 <  8 <  7 <  6 <  5
+//     |
+//     |
+//    10 > 11 > 12 > 13 > 14
+//
+// Set 'SERPENT_LAYOUT' to false if leds are like this:
+//
+//     0 >  1 >  2 >  3 >  4
+//                         |
+//     .----<----<----<----'
+//     |
+//     5 >  6 >  7 >  8 >  9
+//                         |
+//     .----<----<----<----'
+//     |
+//    10 > 11 > 12 > 13 > 14
+//
+
+/*---------------------------------------------------------------------------------------
+ * CUBE CLASS - 3D RGB LED Cube
+ *-------------------------------------------------------------------------------------*/
+
 RGBLedCube::RGBLedCube()
 {
 }
@@ -84,31 +112,6 @@ void RGBLedCube::clear()
 {
     fill(CRGB::Black);
 }
-
-#define SERPENT_LAYOUT false
-
-// Set 'SERPENT_LAYOUT' to true if leds are like this:
-//
-//     0 >  1 >  2 >  3 >  4
-//                         |
-//                         |
-//     9 <  8 <  7 <  6 <  5
-//     |
-//     |
-//    10 > 11 > 12 > 13 > 14
-//
-// Set 'SERPENT_LAYOUT' to false if leds are like this:
-//
-//     0 >  1 >  2 >  3 >  4
-//                         |
-//     .----<----<----<----'
-//     |
-//     5 >  6 >  7 >  8 >  9
-//                         |
-//     .----<----<----<----'
-//     |
-//    10 > 11 > 12 > 13 > 14
-//
 
 /*--------------------------- PRIVATE FUNCTIONS --------------------------*/
 uint16_t RGBLedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)

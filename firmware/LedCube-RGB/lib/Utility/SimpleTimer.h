@@ -54,56 +54,28 @@ public:
     uint32_t getTime() override { return micros(); };
 };
 
-/*------------------------------------------------------------------------------
- * Timer Macros
- *----------------------------------------------------------------------------*/
-
-#ifndef EVERY_N_MILLIS
-// EVERY_N_MILLIS(1000)
-// {
-// do something every 1000 miliseconds
-// }
-#define EVERY_N_MILLIS(n) I_EVERY_N_MILLIS(CONCAT(_timer_, __COUNTER__), n)
-#define I_EVERY_N_MILLIS(name, n) \
-    static Timer name = Timer(n); \
-    if (name.ready())
-
-// EVERY_N_MICROS(1000)
-// {
-// do something every 1000 microseconds
-// }
-#define EVERY_N_MICROS(n) I_EVERY_N_MICROS(CONCAT(_timer_, __COUNTER__), n)
-#define I_EVERY_N_MICROS(name, n)             \
-    static TimerMicros name = TimerMicros(n); \
-    if (name.ready())
-
-// Join two symbols together
-#define CONCAT(x, y) I_CONCAT(x, y)
-#define I_CONCAT(x, y) x##y
-#endif
-
 /**--------------------------------------------------------------------------------------
  * Benchmark Macros
  *-------------------------------------------------------------------------------------*/
 
 // Toggle debug benchmarking
 #ifndef DEBUG_BENCHMARK
-#define DEBUG_BENCHMARK 0
+#define DEBUG_BENCHMARK 1
 #endif
 
 // Benchmarking macros
 #if DEBUG_BENCHMARK
 // Creates a static benchmark timer
 // Use BENCHMARK_END or BENCHMARK_PRINT_END to get elapsed time
-#define BENCHMARK_BEGIN() static Timer _benchmark_ = Timer();
+#define BENCHMARK_BEGIN()                           \
+    static TimerMicros _benchmark_ = TimerMicros(); \
+    _benchmark_.reset();
 // Creates elapsed time variable
 #define BENCHMARK_END() uint32_t _elapsed_ = _benchmark_.getElapsed();
 // Prints elapsed time
-#define BENCHMARK_PRINT_END(message)               \
-    uint32_t _elapsed_ = _benchmark_.getElapsed(); \
-    Serial.println(String(message) + _elapsed_);
+#define BENCHMARK_PRINT_END() Serial.println(_benchmark_.getElapsed());
 #else
 #define BENCHMARK_BEGIN()
 #define BENCHMARK_END()
-#define BENCHMARK_PRINT_END(message)
+#define BENCHMARK_PRINT_END()
 #endif

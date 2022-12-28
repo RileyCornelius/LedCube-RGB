@@ -2,6 +2,7 @@
 
 #include "Animation/Animation.h"
 #include "Cube/Cube.h"
+#include <Logger.h>
 
 class Linear : public Animation
 {
@@ -21,16 +22,17 @@ public:
         Cube.clear();
     }
 
-    bool drawFrame()
+    void drawFrame()
     {
         if (index >= LED_COUNT)
-            return true;
+        {
+            index = 0;
+            Cube.clear();
+        }
 
         // set led hue and increment
         CRGB color = CHSV(hue++, 255, 255);
         Cube.setVoxel(index++, color);
-
-        return false;
     }
 };
 
@@ -47,21 +49,14 @@ public:
     const int numberOfSparkles = beatsin16(15, 1, 1); // bpm, min, max
     CRGB color = CRGB::White;
 
-    void reset()
+    void drawFrame()
     {
-    }
-
-    bool drawFrame()
-    {
-
         for (int i = 0; i < numberOfSparkles; i++)
         {
             index = random16(LED_COUNT);
             Cube.setVoxel(index, color);
         }
         Cube.fadeAll(fade_time);
-
-        return false; // never repeat
     }
 };
 
@@ -76,16 +71,27 @@ public:
 
     uint8_t hue = 0;
 
-    void reset()
-    {
-    }
-
-    bool drawFrame()
+    void drawFrame()
     {
         CRGB color = CHSV(hue++, 255, 255); // hue will overflow
         Cube.fill(color);
+    }
+};
 
-        return false; // never repeat
+class SolidColor : public Animation
+{
+public:
+    SolidColor(CRGB color)
+    {
+        name = __FUNCTION__;
+        this->color = color;
+        setDelay(30);
+    };
+    CRGB color;
+
+    void drawFrame()
+    {
+        Cube.fill(color);
     }
 };
 
@@ -103,11 +109,7 @@ public:
     int8_t yHueDelta8;
     int8_t xHueDelta8;
 
-    void reset()
-    {
-    }
-
-    bool drawFrame()
+    void drawFrame()
     {
         uint32_t ms = millis();
         yHueDelta32 = ((int32_t)cos16(ms * 27) * (350 / CUBE_SIZE));
@@ -129,8 +131,6 @@ public:
                 }
             }
         }
-
-        return false; // never repeat
     }
 };
 
@@ -154,11 +154,7 @@ public:
     // Default 120, suggested range 50-200.
     const uint8_t sparking = 120;
 
-    void reset()
-    {
-    }
-
-    bool drawFrame()
+    void drawFrame()
     {
         // Step 1.  Cool down every cell a little
         for (int i = 0; i < LED_COUNT; i++)
@@ -196,7 +192,5 @@ public:
             }
             Cube.setVoxel(pixelnumber, color);
         }
-
-        return false; // never repeat
     }
 };

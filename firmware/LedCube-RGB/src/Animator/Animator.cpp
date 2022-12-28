@@ -2,64 +2,104 @@
 #include "Cube/Cube.h"
 #include "Config.h"
 
-/*--------------------------- PUBLIC FUNCTIONS ---------------------------*/
+enum State : uint8_t
+{
+    Paused,
+    Stopped,
+    Beginning,
+    Running,
+    Ending,
+};
+
 Animator::Animator(Animation *animations[], uint16_t length)
 {
+    state = Running;
     this->animations = animations;
     animationCount = length;
     isRotating = false;
-    isPaused = false;
+    rotationTimer.setPeriod(15000);
 }
 
 void Animator::pause()
 {
-    isPaused = !isPaused;
+    if (state == Paused)
+        state = Running;
+    else
+        state = Paused;
+}
+
+void Animator::stop()
+{
+    if (state == Paused)
+        state = Running;
+    else
+        state = Stopped;
 }
 
 void Animator::first()
 {
-    currentIndex = 0;
+    state = Ending;
+    nextIndex = 0;
 }
 
 void Animator::next()
 {
-    if (currentIndex < animationCount - 1)
-        currentIndex++;
+    state = Ending;
+    if (nextIndex < animationCount - 1)
+        nextIndex++;
     else
-        currentIndex = 0;
+        nextIndex = 0;
 }
 
 void Animator::previous()
 {
-    if (currentIndex > 0)
-        currentIndex--;
+    state = Ending;
+    if (nextIndex > 0)
+        nextIndex--;
     else
-        currentIndex = animationCount;
+        nextIndex = animationCount;
 }
 
-void Animator::rotateBegin(uint32_t time)
+void Animator::setRotation(uint32_t time)
 {
-    isRotating = true;
     rotationTimer.setPeriod(time);
 }
 
-void Animator::rotateEnd()
+void Animator::rotating()
 {
-    isRotating = false;
+    isRotating = !isRotating;
 }
 
-void Animator::animate()
+void Animator::loop()
 {
-    if (isPaused)
-        return;
-
     if (isRotating && rotationTimer.ready())
         next();
 
-    if (animations[currentIndex]->animate())
+    switch (state)
     {
-        BENCHMARK_BEGIN();
-        FastLED.show();
-        BENCHMARK_PRINT_END("Animate: ");
+    case Stopped:
+        animations[currentIndex]->stop();
+        state = Paused;
+        break;
+
+    case Paused:
+        break;
+
+    case Ending:
+        if (animations[currentIndex]->ending())
+        {
+            state = Beginning;
+            currentIndex = nextIndex;
+        }
+        break;
+
+    case Beginning:
+        if (animations[currentIndex]->beginning())
+            state = Running;
+        break;
+
+    case Running:
+        animations[currentIndex]->animate();
+        break;
     }
 }

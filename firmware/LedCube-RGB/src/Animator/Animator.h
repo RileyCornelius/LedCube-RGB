@@ -8,20 +8,20 @@
 class Animator
 {
 private:
-    Timer rotationTimer;
     Animation **animations;
-    uint16_t animationCount;
-    uint16_t currentIndex;
+    Timer rotationTimer;
+    uint8_t state;
+    uint16_t animationCount, currentIndex, nextIndex;
     bool isRotating;
-    bool isPaused;
 
 public:
     Animator(Animation *animations[], uint16_t length);
-    void animate();
-    void rotateBegin(uint32_t time);
-    void rotateEnd();
+    void loop();
+    void setRotation(uint32_t time);
+    void rotating();
     void first();
     void next();
     void previous();
     void pause();
+    void stop();
 };
