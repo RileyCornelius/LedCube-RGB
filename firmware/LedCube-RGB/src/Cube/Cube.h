@@ -51,6 +51,14 @@ public:
     void fadeAll(uint8_t scale);
     void fill(CRGB col);
     void clear();
+    void line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col);
+    void line(Point p1, Point p2, CRGB col);
+    void sphere(int x, int y, int z, int radius, CRGB col);
+    void sphere(Point p, int radius, CRGB col);
+    void shell(float x, float y, float z, float r, CRGB col);
+    void shell(float x, float y, float z, float r, float thickness, CRGB col);
+    void shell(Point p, float r, CRGB col);
+    void shell(Point p, float r, float thickness, CRGB col);
 };
 
 extern RGBLedCube Cube;

@@ -4,8 +4,8 @@
 
 enum State : uint8_t
 {
-    Paused,
-    Stopped,
+    Idle,
+    Stop,
     Beginning,
     Running,
     Ending,
@@ -22,18 +22,18 @@ Animator::Animator(Animation *animations[], uint16_t length)
 
 void Animator::pause()
 {
-    if (state == Paused)
+    if (state == Idle)
         state = Running;
     else
-        state = Paused;
+        state = Idle;
 }
 
 void Animator::stop()
 {
-    if (state == Paused)
+    if (state == Idle)
         state = Running;
     else
-        state = Stopped;
+        state = Stop;
 }
 
 void Animator::first()
@@ -77,12 +77,12 @@ void Animator::loop()
 
     switch (state)
     {
-    case Stopped:
+    case Stop:
         animations[currentIndex]->stop();
-        state = Paused;
+        state = Idle;
         break;
 
-    case Paused:
+    case Idle:
         break;
 
     case Ending:
