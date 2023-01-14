@@ -16,7 +16,7 @@ RGBLedCube Cube = RGBLedCube();
 #define SAFE_VOXEL_GUARD(index)
 #endif
 
-// Set 'SERPENT_LAYOUT' to true if leds are like this:
+// Set 'SERPENTINE_LAYOUT' to true if leds are like this:
 //
 //     0 >  1 >  2 >  3 >  4
 //                         |
@@ -26,7 +26,7 @@ RGBLedCube Cube = RGBLedCube();
 //     |
 //    10 > 11 > 12 > 13 > 14
 //
-// Set 'SERPENT_LAYOUT' to false if leds are like this:
+// Set 'SERPENTINE_LAYOUT' to false if leds are like this:
 //
 //     0 >  1 >  2 >  3 >  4
 //                         |
@@ -38,7 +38,19 @@ RGBLedCube Cube = RGBLedCube();
 //     |
 //    10 > 11 > 12 > 13 > 14
 //
-#define SERPENT_LAYOUT false
+/**
+ Wired like this:
+   +----<---+
+  /        /|
+ /        / |
++--->----+  ^
+|        |  |
+|        |  +
+^        v /
+|        |/
++--------+
+ */
+#define SERPENTINE_LAYOUT true
 
 /*---------------------------------------------------------------------------------------
  * CUBE CLASS - 3D RGB LED Cube
@@ -61,6 +73,7 @@ void RGBLedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col)
 void RGBLedCube::setVoxel(uint16_t index, CRGB col)
 {
     SAFE_VOXEL_GUARD(index)
+    // index = getIndex(getPoint(index));
     leds[index] = col;
 }
 
@@ -269,32 +282,61 @@ void RGBLedCube::shell(Point p, float r, float thickness, CRGB col)
 }
 
 /*--------------------------- PRIVATE FUNCTIONS --------------------------*/
+uint16_t RGBLedCube::getIndex(Point p)
+{
+    return getIndex(p.x, p.y, p.z);
+}
+
+// uint16_t getIndex(uint8_t x, uint8_t y, uint8_t z)
+// {
+// Only works for 9x9x9 cubes
+//     uint16_t index = 0;
+//     uint8_t zone = (((x / 3) * 3) + (y / 3));
+//     uint8_t branchX = x % 3;
+//     uint8_t branchY = y % 3;
+
+//     if ((branchX + branchY) % 2) // x + y is an odd number - flip z
+//     {
+//         if (branchX % 2) // x is an odd number - flip front y column to back and vice versa and also flip z
+//         {
+//             index = (branchX * 27) + ((3 - branchY - 1) * 9) + (9 - z - 1);
+//         }
+//         else // x is an even number - just flip z
+//         {
+//             index = (branchX * 27) + (branchY * 9) + (9 - z - 1);
+//         }
+//     }
+//     else // x + y is an even number - don't flip z
+//     {
+//         index = (branchX * 27) + (branchY * 9) + z;
+//     }
+
+//     return (index += (zone * 81));
+// }
+
 uint16_t RGBLedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)
 {
-#if SERPENT_LAYOUT
+#if SERPENTINE_LAYOUT
+    if (x & 0x01 && y & 0x01) // if x and y are both odd or even then run z backwards
+    {
+        z = (CUBE_SIZE - 1) - z; // reverse z
+    }
 
-    uint16_t xy = 0;
-    if (y & 0x01) // Odd rows run backwards
+    if (y & 0x01) // if y is odd then run x backwards
     {
-        uint8_t reverseX = (CUBE_SIZE - 1) - x;
-        xy = (y * CUBE_SIZE) + reverseX;
+        x = (CUBE_SIZE - 1) - x; // reverse x
     }
-    else // Even rows run forwards
-    {
-        xy = (y * CUBE_SIZE) + x;
-    }
-    return (z * CUBE_SIZE * CUBE_SIZE) + xy;
-#else
-    return (z * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + y;
 #endif
+
+    return (y * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + z;
 }
 
 Point RGBLedCube::getPoint(uint16_t index)
 {
     uint8_t z = index / (CUBE_SIZE * CUBE_SIZE);              // get layer
     uint8_t layerIndex = index - (z * CUBE_SIZE * CUBE_SIZE); // get 2D index of layer
-    uint8_t y = layerIndex / CUBE_SIZE;                       // get y on layer
-    uint8_t x = layerIndex % CUBE_SIZE;                       // get x on layer
+    uint8_t x = layerIndex / CUBE_SIZE;                       // get y on layer
+    uint8_t y = layerIndex % CUBE_SIZE;                       // get x on layer
 
     return Point(x, y, z);
 }

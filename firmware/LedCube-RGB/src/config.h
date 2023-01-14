@@ -9,7 +9,7 @@
 #define LED_BRANCHES 2
 #define LED_BRANCH_COUNT (LED_COUNT / LED_BRANCHES)
 
-// Led Pins
+// Led Pins (150 ohm resistor on each pin)
 #define LED_PIN 5
 #define LED_1_PIN 18
 

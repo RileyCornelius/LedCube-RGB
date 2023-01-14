@@ -15,6 +15,26 @@ void test_function_false(void)
     TEST_ASSERT_EQUAL(20, 0);
 }
 
+void serpentine_layout(void)
+{
+#define CUBE_SIZE 3
+    uint8_t x = 2, y = 1, z = 1;
+
+    if (x & 0x01 ^ y & 0x01) // x and y are both odd or even
+    {
+        z = (CUBE_SIZE - 1) - z; // reverse z
+    }
+
+    if (y & 0x01) // y is odd
+    {
+        x = (CUBE_SIZE - 1) - x; // reverse x
+    }
+
+    uint16_t result = (y * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + z;
+
+    TEST_ASSERT_EQUAL(10, result);
+}
+
 /*------------------------------------------------------------------------------
  * SETUP
  *----------------------------------------------------------------------------*/
@@ -32,8 +52,7 @@ void tearDown(void)
 // tests here
 void tests()
 {
-    RUN_TEST(test_function_true);
-    RUN_TEST(test_function_false);
+    RUN_TEST(serpentine_layout);
 }
 
 void setup()
