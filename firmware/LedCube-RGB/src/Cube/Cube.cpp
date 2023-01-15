@@ -67,6 +67,9 @@ void RGBLedCube::setVoxel(Point p, CRGB col)
 
 void RGBLedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col)
 {
+    // SAFE_VOXEL_GUARD(x, y, z);
+    // index = getIndex(x, y, z);
+    // leds[index] = col;
     setVoxel(getIndex(x, y, z), col);
 }
 
@@ -106,7 +109,7 @@ void RGBLedCube::fadeVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t scale)
 void RGBLedCube::fadeVoxel(uint16_t index, uint8_t scale)
 {
     SAFE_VOXEL_GUARD(index)
-    leds[index].nscale8(scale);
+    leds[index].nscale8(255 - scale);
 }
 
 void RGBLedCube::fadeAll(uint8_t scale) // scale / 256 * color

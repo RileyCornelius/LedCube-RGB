@@ -6,11 +6,13 @@
 #include "Animations.h"
 
 Animation *animations[] = {
-    new Solid(),
-    new SolidColor(CRGB::Red),
-    new SolidColor(CRGB::Green),
-    new Sparkles(),
     new Linear(),
+    new Gradient(),
+    new Confetti(),
+    new Sinelon(),
+    new Rainbow(),
+    new BPM(),
+    new Solid(),
 };
 
 Animator animator = Animator(animations, ARRAY_SIZE(animations));
