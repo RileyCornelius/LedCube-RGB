@@ -1,15 +1,14 @@
 #include <Arduino.h>
-// #include "Cube/Cube.h"
-
 #include <FastLED.h>
 
-#define CUBE_SIZE 9
 #define ROW_SIZE 9
-#define COLUMN_SIZE 3
+#define COLUMN_SIZE 9
 #define LED_COUNT (ROW_SIZE * COLUMN_SIZE)
 #define LED_TYPE PL9823
 #define LED_COLOR_ORDER RGB
-#define LED_PIN 2
+#define LED_PIN_1 2
+#define LED_PIN_2 3
+#define LED_PIN_3 4
 
 CRGB leds[LED_COUNT];
 
@@ -23,8 +22,9 @@ void fadeAll(uint8_t scale)
 
 void setup()
 {
-    FastLED.addLeds<LED_TYPE, LED_PIN, LED_COLOR_ORDER>(leds, LED_COUNT);
-    FastLED.addLeds<LED_TYPE, 18, LED_COLOR_ORDER>(leds, LED_COUNT);
+    FastLED.addLeds<LED_TYPE, LED_PIN_1, LED_COLOR_ORDER>(leds, LED_COUNT);
+    FastLED.addLeds<LED_TYPE, LED_PIN_2, LED_COLOR_ORDER>(leds, LED_COUNT);
+    FastLED.addLeds<LED_TYPE, LED_PIN_3, LED_COLOR_ORDER>(leds, LED_COUNT);
 }
 
 void loop()
@@ -38,7 +38,7 @@ void loop()
 
     for (int i = 0; i < LED_COUNT; i++)
     {
-        fadeAll(40);
+        fadeAll(20);
         leds[i] = colors[index];
         FastLED.show();
         delay(40);
