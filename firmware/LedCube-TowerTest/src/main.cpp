@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <FastLED.h>
 
-#define ROW_SIZE 9
+#define ROW_SIZE 3
 #define COLUMN_SIZE 9
 #define LED_COUNT (ROW_SIZE * COLUMN_SIZE)
 #define LED_TYPE PL9823
