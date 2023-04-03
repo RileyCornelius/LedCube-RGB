@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <FastLED.h>
 
-#define ROW_SIZE 3
+#define ROW_SIZE 9
 #define COLUMN_SIZE 9
 #define LED_COUNT (ROW_SIZE * COLUMN_SIZE)
 #define LED_TYPE PL9823
@@ -38,9 +38,9 @@ void loop()
 
     for (int i = 0; i < LED_COUNT; i++)
     {
-        fadeAll(20);
+        fadeAll(40);
         leds[i] = colors[index];
         FastLED.show();
-        delay(40);
+        delay(30);
     }
 }
