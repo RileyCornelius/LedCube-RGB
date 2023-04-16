@@ -70,8 +70,26 @@ void Animator::rotating()
     isRotating = !isRotating;
 }
 
+void Animator::getUartData()
+{
+    while (DisplaySerial.available())
+    {
+        String data = DisplaySerial.readStringUntil('\n');
+        data.trim();
+
+        if (data == "next")
+            next();
+        else if (data == "prev")
+            previous();
+        else if (data == "play" || data == "pause")
+            pause();
+    }
+}
+
 void Animator::loop()
 {
+    getUartData();
+
     if (isRotating && rotationTimer.ready())
         next();
 
@@ -83,6 +101,7 @@ void Animator::loop()
         break;
 
     case Idle:
+        DisplaySerial.println("paused");
         break;
 
     case Ending:
@@ -95,7 +114,10 @@ void Animator::loop()
 
     case Beginning:
         if (animations[currentIndex]->beginning())
+        {
             state = Running;
+            DisplaySerial.println(animations[currentIndex]->name);
+        }
         break;
 
     case Running:

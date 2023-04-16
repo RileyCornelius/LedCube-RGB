@@ -24,4 +24,5 @@ public:
     void previous();
     void pause();
     void stop();
+    void getUartData();
 };

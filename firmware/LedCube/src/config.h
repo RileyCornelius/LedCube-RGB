@@ -17,3 +17,6 @@
 #define NEXT_BTN_PIN 19
 #define PREV_BTN_PIN 21
 #define PAUSE_BTN_PIN 22
+
+// Display UART
+#define DisplaySerial Serial1

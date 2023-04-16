@@ -37,6 +37,7 @@ inline void checkInputs()
 void setup()
 {
     Serial.begin(115200);
+    DisplaySerial.begin(115200);
     setupFastLED();
 }
 
