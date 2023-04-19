@@ -1,3 +1,4 @@
 (sym_lib_table
-  (lib (name "esp32")(type "KiCad")(uri "${KIPRJMOD}/libs/ESP32-DEVKITM-1.kicad_sym")(options "")(descr ""))
+  (version 7)
+  (lib (name "esp32")(type "KiCad")(uri "${KIPRJMOD}/libs/Espressif.kicad_sym")(options "")(descr ""))
 )
