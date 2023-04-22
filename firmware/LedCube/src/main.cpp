@@ -4,15 +4,16 @@
 #include "Cube/Cube.h"
 #include "Animator/Animator.h"
 #include "Animations.h"
+#include "ota.h"
 
 Animation *animations[] = {
+    new Solid(),
     new Linear(),
     new Gradient(),
     new Confetti(),
     new Sinelon(),
     new Rainbow(),
     new BPM(),
-    new Solid(),
 };
 
 Animator animator = Animator(animations, ARRAY_SIZE(animations));
@@ -39,10 +40,12 @@ void setup()
     Serial.begin(115200);
     DisplaySerial.begin(115200);
     setupFastLED();
+    otaBegin();
 }
 
 void loop()
 {
+    otaHandle();
     checkInputs();
     animator.loop();
 }
