@@ -3,6 +3,7 @@
 #include "ui/lv_setup.h"
 #include "ui/ui.h"
 #include "ui/ui_helpers.h"
+#include "ota.h"
 #include "pin_config.h"
 
 void getUartData()
@@ -26,10 +27,12 @@ void setup()
   Serial.begin(115200);
   lv_begin(); // Setup display and inputs with LVGL
   ui_init();
+  otaBegin();
 }
 
 void loop()
 {
+  otaHandle();
   getUartData();
-  lv_handler(); // Handles LVGL events
+  lv_handler(); // Update the display
 }

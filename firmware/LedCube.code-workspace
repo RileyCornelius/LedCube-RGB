@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "ESP32",
+			"path": "../../../../Users/rcornelius34/Documents/PlatformIO/Projects/ESP32"
+		},
+		{
+			"path": "LedCube"
+		},
+		{
+			"path": "T-Embed-LedCube"
+		}
+	],
+	"settings": {}
+}
