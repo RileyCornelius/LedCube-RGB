@@ -47,4 +47,4 @@
 #define PIN_SD_MISO 38
 
 // Cube UART Serial
-#define CubeSerial Serial0
+#define SerialCube Serial0

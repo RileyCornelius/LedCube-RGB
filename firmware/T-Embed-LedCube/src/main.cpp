@@ -8,9 +8,9 @@
 
 void getUartData()
 {
-  while (CubeSerial.available())
+  while (SerialCube.available())
   {
-    String data = CubeSerial.readStringUntil('\n');
+    String data = SerialCube.readStringUntil('\n');
     data.trim();
     if (data == "playing")
       lv_obj_add_state(ui_playImage, LV_STATE_CHECKED);
@@ -23,7 +23,7 @@ void getUartData()
 
 void setup()
 {
-  CubeSerial.begin(115200);
+  SerialCube.begin(115200);
   Serial.begin(115200);
   lv_begin(); // Setup display and inputs with LVGL
   ui_init();
