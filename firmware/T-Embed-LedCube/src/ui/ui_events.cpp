@@ -7,23 +7,23 @@
 void forwardButtonPressed(lv_event_t *e)
 {
     Serial.println("Forward button pressed");
-    CubeSerial.println("next");
+    SerialCube.println("next");
 }
 
 void backButtonPressed(lv_event_t *e)
 {
     Serial.println("Back button pressed");
-    CubeSerial.println("prev");
+    SerialCube.println("prev");
 }
 
 void pauseButtonPressed(lv_event_t *e)
 {
     Serial.println("Pause button pressed");
-    CubeSerial.println("pause");
+    SerialCube.println("pause");
 }
 
 void playButtonPressed(lv_event_t *e)
 {
     Serial.println("Play button pressed");
-    CubeSerial.println("play");
+    SerialCube.println("play");
 }

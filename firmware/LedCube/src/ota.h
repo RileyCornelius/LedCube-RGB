@@ -59,7 +59,7 @@ void otaBegin()
 
     Serial.println("\nConnected to: " + WiFi.SSID());
     Serial.println("IP address: " + WiFi.localIP().toString());
-    Serial.printf("Hostname: %s\n", ArduinoOTA.getHostname());
+    Serial.println("Hostname: " + ArduinoOTA.getHostname());
 }
 
 void otaHandle()
