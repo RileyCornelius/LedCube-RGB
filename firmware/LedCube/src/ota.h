@@ -1,20 +1,16 @@
 #include <WiFi.h>
 #include <ArduinoOTA.h>
+#include "config.h"
 #include "secret.h" // This file is not included in the repository it contains the WiFi credentials
 
 // Enter your WiFi credentials here
-const char *ssid;
-const char *pass;
+// #define WIFI_SSID ""
+// #define WIFI_PASS ""
 
 void otaBegin()
 {
-#ifdef SECRET_H
-    ssid = WIFI_SSID;
-    pass = WIFI_PASS;
-#endif
-
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, pass);
+    WiFi.begin(WIFI_SSID, WIFI_PASS);
 
     Serial.print("WiFi connecting");
     uint16_t timeout = 0;
@@ -36,11 +32,15 @@ void otaBegin()
 
     ArduinoOTA
         .onStart([]()
-                 { Serial.println("Start updating"); })
+                 { Serial.println("Start updating");
+                 SerialDisplay.println("ota start"); })
         .onEnd([]()
-               { Serial.println("\nEnd"); })
+               { Serial.println("\nEnd");
+               SerialDisplay.println("ota end"); })
         .onProgress([](unsigned int progress, unsigned int total)
-                    { Serial.printf("Progress: %u%%\r", (progress / (total / 100))); })
+                    { 
+                        Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+                        SerialDisplay.println(String(progress / (total / 100)) + "%"); })
         .onError([](ota_error_t error)
                  {
             Serial.printf("Error[%u]: ", error);

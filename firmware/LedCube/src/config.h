@@ -1,4 +1,4 @@
-// #define TEST_BOARD
+#define TEST_BOARD
 
 // Cube Defines
 // #define CUBE_SIZE

@@ -23,17 +23,22 @@ extern "C" {
 #endif
 
 #include "ui_events.h"
-extern lv_obj_t * ui_Screen1;
-void ui_event_backButton(lv_event_t * e);
-extern lv_obj_t * ui_backButton;
-extern lv_obj_t * ui_backImage;
-void ui_event_playButton(lv_event_t * e);
-extern lv_obj_t * ui_playButton;
-extern lv_obj_t * ui_playImage;
-extern lv_obj_t * ui_aninmationText;
-void ui_event_forwardButton(lv_event_t * e);
-extern lv_obj_t * ui_forwardButton;
-extern lv_obj_t * ui_forwardImage;
+extern lv_obj_t * ui_main_screen;
+void ui_event_back_button(lv_event_t * e);
+extern lv_obj_t * ui_back_button;
+extern lv_obj_t * ui_back_image;
+void ui_event_play_button(lv_event_t * e);
+extern lv_obj_t * ui_play_button;
+extern lv_obj_t * ui_play_image;
+extern lv_obj_t * ui_animation_text;
+void ui_event_forward_button(lv_event_t * e);
+extern lv_obj_t * ui_forward_button;
+extern lv_obj_t * ui_forward_image;
+extern lv_obj_t * ui_ota_screen;
+extern lv_obj_t * ui_ota_device_name_text;
+extern lv_obj_t * ui_ota_text;
+extern lv_obj_t * ui_progress_bar;
+extern lv_obj_t * ui_progress_text;
 extern lv_obj_t * ui____initial_actions0;
 
 

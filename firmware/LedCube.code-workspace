@@ -11,5 +11,10 @@
 			"path": "T-Embed-LedCube"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"*.ino": "cpp",
+			"string_view": "cpp"
+		}
+	}
 }

@@ -1,20 +1,17 @@
 #include <WiFi.h>
 #include <ArduinoOTA.h>
+#include "ui/ui.h"
+#include "ui/lv_setup.h"
 #include "secret.h" // This file is not included in the repository it contains the WiFi credentials
 
 // Enter your WiFi credentials here
-const char *ssid;
-const char *pass;
+// #define WIFI_SSID ""
+// #define WIFI_PASS ""
 
 void otaBegin()
 {
-#ifdef SECRET_H
-    ssid = WIFI_SSID;
-    pass = WIFI_PASS;
-#endif
-
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, pass);
+    WiFi.begin(WIFI_SSID, WIFI_PASS);
 
     Serial.print("WiFi connecting");
     uint16_t timeout = 0;
@@ -36,11 +33,21 @@ void otaBegin()
 
     ArduinoOTA
         .onStart([]()
-                 { Serial.println("Start updating"); })
+                 { 
+                    Serial.println("Start updating");
+                    lv_scr_load(ui_ota_screen);
+                    lv_label_set_text(ui_ota_device_name_text, "Display");
+                    lv_handler(); })
         .onEnd([]()
                { Serial.println("\nEnd"); })
         .onProgress([](unsigned int progress, unsigned int total)
-                    { Serial.printf("Progress: %u%%\r", (progress / (total / 100))); })
+                    { 
+                        String data = String(progress / (total / 100)) + "%";
+                        Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+                        lv_label_set_text(ui_progress_text, data.c_str());
+                        data.remove(data.length() - 1); // remove the % sign
+                        lv_bar_set_value(ui_progress_bar, data.toInt(), LV_ANIM_ON);
+                        lv_handler(); })
         .onError([](ota_error_t error)
                  {
             Serial.printf("Error[%u]: ", error);
