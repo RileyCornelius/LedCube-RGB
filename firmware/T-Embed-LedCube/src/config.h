@@ -48,3 +48,6 @@
 
 // Cube UART Serial
 #define SerialCube Serial0
+
+// OTA
+#define OTA_ENABLE 1
