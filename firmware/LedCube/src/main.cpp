@@ -18,7 +18,7 @@ Animation *animations[] = {
 
 Animator animator = Animator(animations, ARRAY_SIZE(animations));
 Button nextButton = Button(PIN_NEXT_BTN);
-Button pauseButton = Button(PIN_PAUSE_BTN);
+Button playPauseButton = Button(PIN_PAUSE_BTN);
 
 inline void setupFastLED()
 {
@@ -40,8 +40,8 @@ inline void checkInputs()
     if (nextButton.debounce())
         animator.next();
 
-    if (pauseButton.debounce())
-        animator.pause();
+    if (playPauseButton.debounce())
+        animator.togglePlay();
 }
 
 void setup()

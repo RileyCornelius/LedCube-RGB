@@ -7,19 +7,31 @@ static const char *TAG = "[Animator]";
 
 Animator::Animator(Animation *animations[], uint16_t length)
 {
-    AnimatorState::set(Beginning);
+    AnimatorState::set(Ending);
     this->animations = animations;
     animationCount = length;
     isRotating = false;
     rotationTimer.setPeriod(15000);
 }
 
-void Animator::pause()
+void Animator::togglePlay()
 {
     if (AnimatorState::is(Idle))
-        AnimatorState::set(Running);
+        play();
     else
-        AnimatorState::set(Idle);
+        pause();
+}
+
+void Animator::pause()
+{
+    AnimatorState::set(Idle);
+    DISPLAY_PRINTLN("pause");
+}
+
+void Animator::play()
+{
+    AnimatorState::set(Running);
+    DISPLAY_PRINTLN("play");
 }
 
 void Animator::stop()
@@ -76,7 +88,9 @@ void Animator::readDisplay()
             previous();
         else if (data == "stop")
             stop();
-        else if (data == "play" || data == "pause")
+        else if (data == "play")
+            play();
+        else if (data == "pause")
             pause();
     }
 #endif
@@ -99,11 +113,11 @@ void Animator::run()
         {
             AnimatorState::set(Beginning);
             currentIndex = nextIndex;
+            DISPLAY_PRINTLN(animations[currentIndex]->name);
         }
         break;
 
     case Beginning:
-        DISPLAY_PRINTLN(animations[currentIndex]->name);
         if (animations[currentIndex]->beginning())
         {
             AnimatorState::set(Running);

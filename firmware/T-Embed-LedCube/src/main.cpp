@@ -12,10 +12,18 @@ void getUartData()
   {
     String data = SerialCube.readStringUntil('\n');
     data.trim();
-    if (data == "playing")
-      lv_obj_add_state(ui_play_image, LV_STATE_CHECKED);
-    else if (data == "paused")
-      lv_obj_clear_state(ui_play_image, LV_STATE_CHECKED);
+
+    Serial.println(data);
+    if (data == "play")
+    {
+      lv_img_set_src(ui_play_image, &ui_img_pause_png);
+      lv_obj_set_x(ui_play_image, 0);
+    }
+    else if (data == "pause")
+    {
+      lv_img_set_src(ui_play_image, &ui_img_play_png);
+      lv_obj_set_x(ui_play_image, 0);
+    }
     else if (data == "ota start")
       lv_scr_load(ui_ota_screen);
     else if (data == "ota end")

@@ -21,7 +21,9 @@ public:
     void first();
     void next();
     void previous();
+    void play();
     void pause();
     void stop();
+    void togglePlay();
     void readDisplay();
 };
