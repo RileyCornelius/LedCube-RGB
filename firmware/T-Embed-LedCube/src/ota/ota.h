@@ -4,7 +4,7 @@
 #include "ui/ui.h"
 #include "ui/lv_setup.h"
 #include "config.h"
-#include "secret.h" // This file is not included in the repository it contains the WiFi credentials
+#include "secret.h" // This file is not included in the repository it contains WiFi credentials
 
 // Enter your WiFi credentials here
 // #define WIFI_SSID ""

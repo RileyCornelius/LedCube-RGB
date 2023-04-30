@@ -2,7 +2,7 @@
 #include <Logger.h>
 #include "ui/ui.h"
 #include "config.h"
-#include "display_com.h"
+#include "cube_com.h"
 
 static const char *TAG = "[Display]";
 

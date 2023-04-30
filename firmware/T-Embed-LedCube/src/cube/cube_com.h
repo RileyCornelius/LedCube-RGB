@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Arduino.h>
+
 enum DisplayType : uint8_t
 {
     CommandPlay,

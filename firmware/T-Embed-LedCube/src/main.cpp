@@ -2,8 +2,8 @@
 #include <Logger.h>
 
 #include "ui/lv_setup.h"
-#include "ota.h"
-#include "display_com.h"
+#include "ota/ota.h"
+#include "cube/cube_com.h"
 #include "config.h"
 
 void setup()
