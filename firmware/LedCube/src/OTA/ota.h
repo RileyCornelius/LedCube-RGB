@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <ArduinoOTA.h>
+#include <Logger.h>
 #include "config.h"
 #include "secret.h" // This file is not included in the repository it contains the WiFi credentials
 
@@ -7,28 +8,29 @@
 // #define WIFI_SSID ""
 // #define WIFI_PASS ""
 
+static const char *TAG = "[OTA]";
+
 void otaBegin()
 {
+#if OTA_ENABLE
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
 
-    Serial.print("WiFi connecting");
+    LOG_INFO(TAG, "WiFi connecting..");
     uint16_t timeout = 0;
     while (WiFi.status() != WL_CONNECTED)
     {
-        delay(200);
-        Serial.print(".");
-
+        delay(100);
         timeout++;
         if (timeout > 30)
         {
-            Serial.println("\nWiFi connection failed!");
+            LOG_WARN(TAG, "WiFi connection failed!");
             return;
         }
     }
 
     // Host name to be used for OTA updates
-    ArduinoOTA.setHostname("ledcube");
+    ArduinoOTA.setHostname(OTA_HOSTNAME);
 
     ArduinoOTA
         .onStart([]()
@@ -57,13 +59,16 @@ void otaBegin()
 
     ArduinoOTA.begin();
 
-    Serial.println("\nConnected to: " + WiFi.SSID());
-    Serial.println("IP address: " + WiFi.localIP().toString());
-    Serial.println("Hostname: " + ArduinoOTA.getHostname());
+    LOG_INFO(TAG, "Connected to: " + WiFi.SSID());
+    LOG_INFO(TAG, "IP address: " + WiFi.localIP().toString());
+    LOG_INFO(TAG, "Hostname: " + ArduinoOTA.getHostname());
+#endif
 }
 
 void otaHandle()
 {
+#if OTA_ENABLE
     if (WiFi.status() == WL_CONNECTED)
         ArduinoOTA.handle();
+#endif
 }

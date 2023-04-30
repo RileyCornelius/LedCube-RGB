@@ -32,4 +32,15 @@
 #define PIN_PAUSE_BTN 21
 
 // Display UART
+#define DISPLAY_ENABLE 1
 #define SerialDisplay Serial1
+
+#if DISPLAY_ENABLE
+#define DISPLAY_PRINTLN(x) SerialDisplay.println(x)
+#else
+#define DISPLAY_PRINTLN(x)
+#endif
+
+// OTA
+#define OTA_ENABLE 1
+#define OTA_HOSTNAME "ledcube"
