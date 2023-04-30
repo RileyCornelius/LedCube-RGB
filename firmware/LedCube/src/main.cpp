@@ -6,6 +6,8 @@
 #include "OTA/ota.h"
 #include "Animations.h"
 
+#include "Display/Display.h"
+
 Animation *animations[] = {
     new Gradient(),
     new Solid(),
@@ -20,7 +22,7 @@ Animator animator = Animator(animations, ARRAY_SIZE(animations));
 Button nextButton = Button(PIN_NEXT_BTN);
 Button playPauseButton = Button(PIN_PAUSE_BTN);
 
-inline void setupFastLED()
+void setupFastLED()
 {
     FastLED.addLeds<LED_TYPE, PIN_LED_0, LED_COLOR_ORDER>(Cube.leds, LED_PER_BRANCH_COUNT * 0, LED_PER_BRANCH_COUNT);
     FastLED.addLeds<LED_TYPE, PIN_LED_1, LED_COLOR_ORDER>(Cube.leds, LED_PER_BRANCH_COUNT * 1, LED_PER_BRANCH_COUNT);
@@ -35,7 +37,7 @@ inline void setupFastLED()
 #endif
 }
 
-inline void checkInputs()
+void checkInputs()
 {
     if (nextButton.debounce())
         animator.next();
@@ -55,6 +57,7 @@ void setup()
 void loop()
 {
     otaHandle();
+    readDisplay();
     checkInputs();
     animator.run();
 }
