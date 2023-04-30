@@ -1,29 +1,33 @@
 #include <WiFi.h>
 #include <ArduinoOTA.h>
+#include <Logger.h>
 #include "ui/ui.h"
 #include "ui/lv_setup.h"
+#include "config.h"
 #include "secret.h" // This file is not included in the repository it contains the WiFi credentials
 
 // Enter your WiFi credentials here
 // #define WIFI_SSID ""
 // #define WIFI_PASS ""
 
+static const char *TAG = "[OTA]";
+
 void otaBegin()
 {
+#if OTA_ENABLE
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
 
-    Serial.print("WiFi connecting");
+    LOG_INFO(TAG, "WiFi connecting..");
     uint16_t timeout = 0;
     while (WiFi.status() != WL_CONNECTED)
     {
-        delay(200);
-        Serial.print(".");
+        delay(100);
 
         timeout++;
         if (timeout > 30)
         {
-            Serial.println("\nWiFi connection failed!");
+            LOG_WARN(TAG, "WiFi connection failed!");
             return;
         }
     }
@@ -34,43 +38,46 @@ void otaBegin()
     ArduinoOTA
         .onStart([]()
                  { 
-                    Serial.println("Start updating");
+                    LOG_INFO(TAG, "Start updating");
                     lv_scr_load(ui_ota_screen);
                     lv_label_set_text(ui_ota_device_name_text, "Display");
                     lv_handler(); })
         .onEnd([]()
-               { Serial.println("\nEnd"); })
+               { LOG_INFO(TAG, "End updating"); })
         .onProgress([](unsigned int progress, unsigned int total)
                     { 
-                        String data = String(progress / (total / 100)) + "%";
-                        Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-                        lv_label_set_text(ui_progress_text, data.c_str());
-                        data.remove(data.length() - 1); // remove the % sign
-                        lv_bar_set_value(ui_progress_bar, data.toInt(), LV_ANIM_ON);
+                        LOG_INFO(TAG, "Progress: %u%%\r", (progress / (total / 100)));
+                        String progressStr = String(progress / (total / 100));
+                        lv_bar_set_value(ui_progress_bar, progressStr.toInt(), LV_ANIM_ON);
+                        progressStr += "%";
+                        lv_label_set_text(ui_progress_text, progressStr.c_str());
                         lv_handler(); })
         .onError([](ota_error_t error)
                  {
-            Serial.printf("Error[%u]: ", error);
+                LOG_ERROR(TAG, "Error[%u]: ", error);
             if (error == OTA_AUTH_ERROR)
-                Serial.println("Auth Failed");
+                LOG_ERROR(TAG, "Auth Failed");
             else if (error == OTA_BEGIN_ERROR)
-                Serial.println("Begin Failed");
+                LOG_ERROR(TAG, "Begin Failed");
             else if (error == OTA_CONNECT_ERROR)
-                Serial.println("Connect Failed");
+                LOG_ERROR(TAG, "Connect Failed");
             else if (error == OTA_RECEIVE_ERROR)
-                Serial.println("Receive Failed");
+                LOG_ERROR(TAG, "Receive Failed");
             else if (error == OTA_END_ERROR)
-                Serial.println("End Failed"); });
+                LOG_ERROR(TAG, "End Failed"); });
 
     ArduinoOTA.begin();
 
-    Serial.println("\nConnected to: " + WiFi.SSID());
-    Serial.println("IP address: " + WiFi.localIP().toString());
-    Serial.println("Hostname: " + ArduinoOTA.getHostname());
+    LOG_INFO(TAG, "Connected to: " + WiFi.SSID());
+    LOG_INFO(TAG, "IP address: " + WiFi.localIP().toString());
+    LOG_INFO(TAG, "Hostname: " + ArduinoOTA.getHostname());
+#endif
 }
 
 void otaHandle()
 {
+#if OTA_ENABLE
     if (WiFi.status() == WL_CONNECTED)
         ArduinoOTA.handle();
+#endif
 }

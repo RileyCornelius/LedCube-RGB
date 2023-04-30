@@ -3,7 +3,7 @@
 #include <RotaryEncoder.h> // https://github.com/mathertel/RotaryEncoder
 #include <OneButton.h>     // https://github.com/mathertel/OneButton
 #include <APA102.h>        // https://github.com/pololu/apa102-arduino
-#include "../pin_config.h"
+#include "config.h"
 
 /* Screen dimensions */
 #define LV_SCREEN_WIDTH 320
