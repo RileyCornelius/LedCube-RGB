@@ -3,20 +3,19 @@
 #include <SimpleTimer.h>
 #include "Animation/Animation.h"
 
-#define ARRAY_SIZE(ARRAY) (sizeof(ARRAY) / sizeof(ARRAY[0])) // return length of an array
+#define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0])) // return length of an array
 
 class Animator
 {
 private:
     Animation **animations;
     Timer rotationTimer;
-    uint8_t state;
     uint16_t animationCount, currentIndex, nextIndex;
     bool isRotating;
 
 public:
     Animator(Animation *animations[], uint16_t length);
-    void loop();
+    void run();
     void setRotation(uint32_t time);
     void rotating();
     void first();
@@ -24,5 +23,5 @@ public:
     void previous();
     void pause();
     void stop();
-    void getUartData();
+    void readDisplay();
 };

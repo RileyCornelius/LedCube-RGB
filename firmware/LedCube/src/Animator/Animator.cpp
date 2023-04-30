@@ -1,19 +1,13 @@
 #include "Animator.h"
+#include "AnimatorState.h"
 #include "Cube/Cube.h"
 #include "Config.h"
 
-enum State : uint8_t
-{
-    Idle,
-    Stop,
-    Beginning,
-    Running,
-    Ending,
-};
+static const char *TAG = "[Animator]";
 
 Animator::Animator(Animation *animations[], uint16_t length)
 {
-    state = Running;
+    AnimatorState::set(Beginning);
     this->animations = animations;
     animationCount = length;
     isRotating = false;
@@ -22,29 +16,27 @@ Animator::Animator(Animation *animations[], uint16_t length)
 
 void Animator::pause()
 {
-    if (state == Idle)
-        state = Running;
+    if (AnimatorState::is(Idle))
+        AnimatorState::set(Running);
     else
-        state = Idle;
+        AnimatorState::set(Idle);
 }
 
 void Animator::stop()
 {
-    if (state == Idle)
-        state = Running;
-    else
-        state = Stop;
+    AnimatorState::set(Idle);
+    animations[currentIndex]->stop();
 }
 
 void Animator::first()
 {
-    state = Ending;
+    AnimatorState::set(Ending);
     nextIndex = 0;
 }
 
 void Animator::next()
 {
-    state = Ending;
+    AnimatorState::set(Ending);
     if (nextIndex < animationCount - 1)
         nextIndex++;
     else
@@ -53,7 +45,7 @@ void Animator::next()
 
 void Animator::previous()
 {
-    state = Ending;
+    AnimatorState::set(Ending);
     if (nextIndex > 0)
         nextIndex--;
     else
@@ -70,8 +62,9 @@ void Animator::rotating()
     isRotating = !isRotating;
 }
 
-void Animator::getUartData()
+void Animator::readDisplay()
 {
+#if DISPLAY_ENABLE
     while (SerialDisplay.available())
     {
         String data = SerialDisplay.readStringUntil('\n');
@@ -81,42 +74,40 @@ void Animator::getUartData()
             next();
         else if (data == "prev")
             previous();
+        else if (data == "stop")
+            stop();
         else if (data == "play" || data == "pause")
             pause();
     }
+#endif
 }
 
-void Animator::loop()
+void Animator::run()
 {
-    getUartData();
+    readDisplay();
 
     if (isRotating && rotationTimer.ready())
         next();
 
-    switch (state)
+    switch (AnimatorState::get())
     {
-    case Stop:
-        animations[currentIndex]->stop();
-        state = Idle;
-        break;
-
     case Idle:
-        SerialDisplay.println("paused");
         break;
 
     case Ending:
         if (animations[currentIndex]->ending())
         {
-            state = Beginning;
+            AnimatorState::set(Beginning);
             currentIndex = nextIndex;
         }
         break;
 
     case Beginning:
+        DISPLAY_PRINTLN(animations[currentIndex]->name);
         if (animations[currentIndex]->beginning())
         {
-            state = Running;
-            SerialDisplay.println(animations[currentIndex]->name);
+            AnimatorState::set(Running);
+            LOG_INFO(TAG, "Animation: %s", animations[currentIndex]->name);
         }
         break;
 

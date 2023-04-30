@@ -3,8 +3,8 @@
 #include <Logger.h>
 #include "Cube/Cube.h"
 #include "Animator/Animator.h"
+#include "OTA/ota.h"
 #include "Animations.h"
-#include "ota.h"
 
 Animation *animations[] = {
     new Gradient(),
@@ -56,5 +56,5 @@ void loop()
 {
     otaHandle();
     checkInputs();
-    animator.loop();
+    animator.run();
 }

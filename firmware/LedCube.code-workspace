@@ -1,10 +1,6 @@
 {
 	"folders": [
 		{
-			"name": "ESP32",
-			"path": "../../../../Users/rcornelius34/Documents/PlatformIO/Projects/ESP32"
-		},
-		{
 			"path": "LedCube"
 		},
 		{
@@ -14,7 +10,9 @@
 	"settings": {
 		"files.associations": {
 			"*.ino": "cpp",
-			"string_view": "cpp"
+			"string_view": "cpp",
+			"array": "cpp",
+			"istream": "cpp"
 		}
 	}
 }
