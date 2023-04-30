@@ -1,3 +1,5 @@
+#pragma once
+
 #define TEST_BOARD
 
 // Cube Defines
@@ -43,4 +45,3 @@
 
 // OTA
 #define OTA_ENABLE 1
-#define OTA_HOSTNAME "ledcube"
