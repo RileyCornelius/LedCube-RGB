@@ -12,7 +12,12 @@
 			"*.ino": "cpp",
 			"string_view": "cpp",
 			"array": "cpp",
-			"istream": "cpp"
+			"istream": "cpp",
+			"functional": "cpp",
+			"ostream": "cpp",
+			"tuple": "cpp",
+			"type_traits": "cpp",
+			"utility": "cpp"
 		}
 	}
 }

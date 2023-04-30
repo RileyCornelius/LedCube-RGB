@@ -1,6 +1,7 @@
 #include "Animator.h"
 #include "AnimatorState.h"
 #include "Cube/Cube.h"
+#include "Display/Display.h"
 #include "Config.h"
 
 static const char *TAG = "[Animator]";
@@ -25,13 +26,15 @@ void Animator::togglePlay()
 void Animator::pause()
 {
     AnimatorState::set(Idle);
-    DISPLAY_PRINTLN("pause");
+    WRITE_DISPLAY_COMMAND(CommandPause);
+    // DISPLAY_PRINTLN("pause");
 }
 
 void Animator::play()
 {
     AnimatorState::set(Running);
-    DISPLAY_PRINTLN("play");
+    WRITE_DISPLAY_COMMAND(CommandPlay);
+    // DISPLAY_PRINTLN("play");
 }
 
 void Animator::stop()
@@ -69,37 +72,13 @@ void Animator::setRotation(uint32_t time)
     rotationTimer.setPeriod(time);
 }
 
-void Animator::rotating()
+void Animator::rotate()
 {
     isRotating = !isRotating;
 }
 
-void Animator::readDisplay()
-{
-#if DISPLAY_ENABLE
-    while (SerialDisplay.available())
-    {
-        String data = SerialDisplay.readStringUntil('\n');
-        data.trim();
-
-        if (data == "next")
-            next();
-        else if (data == "prev")
-            previous();
-        else if (data == "stop")
-            stop();
-        else if (data == "play")
-            play();
-        else if (data == "pause")
-            pause();
-    }
-#endif
-}
-
 void Animator::run()
 {
-    readDisplay();
-
     if (isRotating && rotationTimer.ready())
         next();
 
@@ -113,7 +92,8 @@ void Animator::run()
         {
             AnimatorState::set(Beginning);
             currentIndex = nextIndex;
-            DISPLAY_PRINTLN(animations[currentIndex]->name);
+            WRITE_DISPLAY_MESSAGE(MessageAnimationName, animations[currentIndex]->name);
+            // DISPLAY_PRINTLN(animations[currentIndex]->name);
         }
         break;
 

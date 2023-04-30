@@ -17,7 +17,7 @@ public:
     Animator(Animation *animations[], uint16_t length);
     void run();
     void setRotation(uint32_t time);
-    void rotating();
+    void rotate();
     void first();
     void next();
     void previous();
@@ -25,5 +25,4 @@ public:
     void pause();
     void stop();
     void togglePlay();
-    void readDisplay();
 };
