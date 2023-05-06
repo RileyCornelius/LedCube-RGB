@@ -92,7 +92,7 @@ void Animator::run()
         {
             AnimatorState::set(Beginning);
             currentIndex = nextIndex;
-            WRITE_DISPLAY_MESSAGE(MessageAnimationName, animations[currentIndex]->name);
+            WRITE_DISPLAY_MESSAGE(MessageAnimation, animations[currentIndex]->name);
             // DISPLAY_PRINTLN(animations[currentIndex]->name);
         }
         break;

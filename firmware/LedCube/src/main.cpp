@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <Button.h>
+#include <SimpleButton.h>
 #include <Logger.h>
 #include "Cube/Cube.h"
 #include "Animator/Animator.h"
@@ -39,10 +39,10 @@ void setupFastLED()
 
 void checkInputs()
 {
-    if (nextButton.debounce())
+    if (nextButton.pressed())
         animator.next();
 
-    if (playPauseButton.debounce())
+    if (playPauseButton.pressed())
         animator.togglePlay();
 }
 

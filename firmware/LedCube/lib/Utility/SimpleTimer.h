@@ -8,8 +8,8 @@
 
 class Timer
 {
-protected:
-    uint32_t prevTrigger;
+private:
+    uint32_t lastTriggerTime;
     uint32_t period;
 
 public:
@@ -26,10 +26,10 @@ public:
 
     virtual uint32_t getTime() { return millis(); }
     uint32_t getPeriod() { return period; }
-    uint32_t getElapsed() { return getTime() - prevTrigger; }
+    uint32_t getElapsed() { return getTime() - lastTriggerTime; }
     uint32_t getRemaining() { return period - getElapsed(); }
     void setPeriod(uint32_t period) { this->period = period; }
-    void reset() { prevTrigger = getTime(); }
+    void reset() { lastTriggerTime = getTime(); }
     bool ready()
     {
         bool isReady = (getElapsed() >= period);
