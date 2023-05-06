@@ -1,14 +1,15 @@
 #include <Arduino.h>
 #include <SimpleButton.h>
 #include <Logger.h>
-#include "Cube/Cube.h"
-#include "Animator/Animator.h"
-#include "OTA/ota.h"
+#include "Cube.h"
+#include "Animator.h"
+#include "ota.h"
 #include "Animations.h"
 
-#include "Display/Display.h"
+#include "Display.h"
 
 Animation *animations[] = {
+    new SolidColor(CRGB(100, 100, 100)),
     new Gradient(),
     new Solid(),
     new Linear(),
@@ -51,12 +52,12 @@ void setup()
     Serial.begin(115200);
     SerialDisplay.begin(115200);
     setupFastLED();
-    otaBegin();
+    // otaBegin();
 }
 
 void loop()
 {
-    otaHandle();
+    // otaHandle();
     readDisplay();
     checkInputs();
     animator.run();

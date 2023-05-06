@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Logger.h>
-#include "Animator/Animator.h"
+#include "Animator.h"
 #include "Display.h"
 #include "config.h"
 

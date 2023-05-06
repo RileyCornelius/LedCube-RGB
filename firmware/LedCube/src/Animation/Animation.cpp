@@ -1,5 +1,5 @@
 #include "Animation.h"
-#include "Cube/Cube.h"
+#include "Cube.h"
 
 Animation::Animation()
 {

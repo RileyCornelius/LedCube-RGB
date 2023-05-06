@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Animation/Animation.h"
-#include "Cube/Cube.h"
 #include <Logger.h>
+#include "Animation.h"
+#include "Cube.h"
 
 class Linear : public Animation
 {
