@@ -1,6 +1,10 @@
 #pragma once
 
-#define TEST_BOARD
+/**--------------------------------------------------------------------------------------
+ * Config
+ *-------------------------------------------------------------------------------------*/
+
+// #define TEST_BOARD
 
 // Cube Defines
 // #define CUBE_SIZE
@@ -9,6 +13,17 @@
 #define LED_COLOR_ORDER RGB
 #define LED_BRIGHTNESS 255
 #define LED_PER_BRANCH_COUNT (LED_COUNT / CUBE_SIZE)
+
+// Display UART
+#define DISPLAY_ENABLE 1
+#define SerialDisplay Serial1
+
+// OTA
+#define OTA_ENABLE 1
+
+/**--------------------------------------------------------------------------------------
+ * Pins
+ *-------------------------------------------------------------------------------------*/
 
 // Led Pins (150 ohm resistor on each pin)
 #ifdef TEST_BOARD
@@ -32,16 +47,3 @@
 #define PIN_NEXT_BTN 4
 #define PIN_PREV_BTN 35
 #define PIN_PAUSE_BTN 21
-
-// Display UART
-#define DISPLAY_ENABLE 1
-#define SerialDisplay Serial1
-
-#if DISPLAY_ENABLE
-#define DISPLAY_PRINTLN(x) SerialDisplay.println(x)
-#else
-#define DISPLAY_PRINTLN(x)
-#endif
-
-// OTA
-#define OTA_ENABLE 1

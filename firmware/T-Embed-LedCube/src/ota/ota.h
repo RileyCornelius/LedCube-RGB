@@ -12,7 +12,7 @@
 
 static const char *TAG = "[OTA]";
 
-void otaBegin()
+void initOta()
 {
 #if OTA_ENABLE
     WiFi.mode(WIFI_STA);
@@ -74,7 +74,7 @@ void otaBegin()
 #endif
 }
 
-void otaHandle()
+void handleOta()
 {
 #if OTA_ENABLE
     if (WiFi.status() == WL_CONNECTED)

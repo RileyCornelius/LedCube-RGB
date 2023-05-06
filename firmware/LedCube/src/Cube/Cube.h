@@ -5,7 +5,7 @@
 #define FASTLED_ESP32_I2S true // This must be defined before including FastLED.h
 #endif
 #include <FastLED.h>
-#include "Config.h"
+#include "config.h"
 
 /*---------------------------------------------------------------------------------------
  * POINT STRUCT - 3D Point in Cube

@@ -12,12 +12,12 @@ void setup()
     Serial.begin(115200);
     lv_begin(); // Setup display and inputs with LVGL
     ui_init();
-    otaBegin();
+    initOta();
 }
 
 void loop()
 {
-    otaHandle();
+    handleOta();
     readCube();
     lv_handler(); // Update the display
 }

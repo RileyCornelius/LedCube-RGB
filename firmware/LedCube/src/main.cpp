@@ -3,14 +3,13 @@
 #include <Logger.h>
 #include "Cube.h"
 #include "Animator.h"
-#include "ota.h"
 #include "Animations.h"
-
-#include "Display.h"
+#include "display.h"
+#include "ota.h"
 
 Animation *animations[] = {
-    new SolidColor(CRGB(100, 100, 100)),
     new Gradient(),
+    new SolidColor(CRGB::Blue),
     new Solid(),
     new Linear(),
     new BPM(),
@@ -19,11 +18,11 @@ Animation *animations[] = {
     new Rainbow(),
 };
 
-Animator animator = Animator(animations, ARRAY_SIZE(animations));
-Button nextButton = Button(PIN_NEXT_BTN);
-Button playPauseButton = Button(PIN_PAUSE_BTN);
+Animator animator(animations, ARRAY_SIZE(animations));
+Button nextButton(PIN_NEXT_BTN);
+Button playPauseButton(PIN_PAUSE_BTN);
 
-void setupFastLED()
+void initFastLED()
 {
     FastLED.addLeds<LED_TYPE, PIN_LED_0, LED_COLOR_ORDER>(Cube.leds, LED_PER_BRANCH_COUNT * 0, LED_PER_BRANCH_COUNT);
     FastLED.addLeds<LED_TYPE, PIN_LED_1, LED_COLOR_ORDER>(Cube.leds, LED_PER_BRANCH_COUNT * 1, LED_PER_BRANCH_COUNT);
@@ -38,7 +37,7 @@ void setupFastLED()
 #endif
 }
 
-void checkInputs()
+void handleInputs()
 {
     if (nextButton.pressed())
         animator.next();
@@ -51,14 +50,14 @@ void setup()
 {
     Serial.begin(115200);
     SerialDisplay.begin(115200);
-    setupFastLED();
-    // otaBegin();
+    initFastLED();
+    initOta();
 }
 
 void loop()
 {
-    // otaHandle();
-    readDisplay();
-    checkInputs();
+    handleOta();
+    handleDisplay();
+    handleInputs();
     animator.run();
 }

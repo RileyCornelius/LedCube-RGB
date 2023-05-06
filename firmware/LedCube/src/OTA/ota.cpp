@@ -2,6 +2,7 @@
 #include <ArduinoOTA.h>
 #include <Logger.h>
 #include "config.h"
+#include "display.h"
 #include "ota.h"
 #include "secret.h" // This file is not included in the repository it contains the WiFi credentials
 
@@ -11,7 +12,7 @@
 
 static const char *TAG = "[OTA]";
 
-void otaBegin()
+void initOta()
 {
 #if OTA_ENABLE
     WiFi.mode(WIFI_STA);
@@ -68,7 +69,7 @@ void otaBegin()
 #endif
 }
 
-void otaHandle()
+void handleOta()
 {
 #if OTA_ENABLE
     if (WiFi.status() == WL_CONNECTED)

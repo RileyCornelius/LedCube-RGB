@@ -30,7 +30,7 @@ void writeDisplayMessage(DisplayType type, char *message)
     writeDisplayMessage(type, String(message));
 }
 
-void readDisplay()
+void handleDisplay()
 {
 #if DISPLAY_ENABLE
 

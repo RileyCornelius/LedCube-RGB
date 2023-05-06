@@ -1,4 +1,4 @@
 #pragma once
 
-void otaBegin();
-void otaHandle();
+void initOta();
+void handleOta();

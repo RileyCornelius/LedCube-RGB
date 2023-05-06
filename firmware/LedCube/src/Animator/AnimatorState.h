@@ -22,10 +22,8 @@ const char *stateNames[MAX_VALUE] = {
 
 namespace AnimatorState
 {
-    volatile State state;
-    volatile State prevState;
+    State state;
 
-    bool changed() { return (prevState != state); }
     State get() { return state; }
     bool is(State isState) { return (state == isState); }
     void set(State newState)
@@ -33,7 +31,6 @@ namespace AnimatorState
         if (state != newState)
         {
             LOG_DEBUG("[State]", "%s => %s", stateNames[state], stateNames[newState]);
-            prevState = state;
             state = newState;
         }
     }

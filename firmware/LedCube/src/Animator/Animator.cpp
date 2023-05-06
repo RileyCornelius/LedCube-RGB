@@ -1,8 +1,7 @@
 #include "Animator.h"
 #include "AnimatorState.h"
-#include "Cube/Cube.h"
-#include "Display/Display.h"
-#include "Config.h"
+#include "Cube.h"
+#include "Display.h"
 
 static const char *TAG = "[Animator]";
 
@@ -10,7 +9,7 @@ Animator::Animator(Animation *animations[], uint16_t length)
 {
     AnimatorState::set(Ending);
     this->animations = animations;
-    animationCount = length;
+    animationCount = length - 1;
     isRotating = false;
     rotationTimer.setPeriod(15000);
 }
@@ -27,14 +26,12 @@ void Animator::pause()
 {
     AnimatorState::set(Idle);
     WRITE_DISPLAY_COMMAND(CommandPause);
-    // DISPLAY_PRINTLN("pause");
 }
 
 void Animator::play()
 {
     AnimatorState::set(Running);
     WRITE_DISPLAY_COMMAND(CommandPlay);
-    // DISPLAY_PRINTLN("play");
 }
 
 void Animator::stop()
@@ -52,7 +49,7 @@ void Animator::first()
 void Animator::next()
 {
     AnimatorState::set(Ending);
-    if (nextIndex < animationCount - 1)
+    if (nextIndex < animationCount)
         nextIndex++;
     else
         nextIndex = 0;
@@ -93,7 +90,6 @@ void Animator::run()
             AnimatorState::set(Beginning);
             currentIndex = nextIndex;
             WRITE_DISPLAY_MESSAGE(MessageAnimation, animations[currentIndex]->name);
-            // DISPLAY_PRINTLN(animations[currentIndex]->name);
         }
         break;
 
