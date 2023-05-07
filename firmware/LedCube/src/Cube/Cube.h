@@ -50,6 +50,9 @@ public:
     void fadeVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t scale);
     void fadeVoxel(Point p, uint8_t scale);
     void fadeVoxel(uint16_t index, uint8_t scale);
+    void fadeXLayer(uint8_t x, uint8_t scale);
+    void fadeYLayer(uint8_t y, uint8_t scale);
+    void fadeZLayer(uint8_t z, uint8_t scale);
     void fadeAll(uint8_t scale);
     void fill(CRGB col);
     void clear();

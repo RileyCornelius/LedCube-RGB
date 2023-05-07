@@ -34,7 +34,7 @@ void Animator::play()
     WRITE_DISPLAY_COMMAND(CommandPlay);
 }
 
-void Animator::clear()
+void Animator::stop()
 {
     AnimatorState::set(Idle);
     animations[currentIndex]->clear();

@@ -23,6 +23,6 @@ public:
     void previous();
     void play();
     void pause();
-    void clear();
+    void stop();
     void togglePlay();
 };

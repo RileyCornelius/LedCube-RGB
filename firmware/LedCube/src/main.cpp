@@ -9,6 +9,7 @@
 
 Animation *animations[] = {
     new Gradient(),
+    new Ripple(),
     new Lines(),
     new Sparkles(),
     new Linear(),

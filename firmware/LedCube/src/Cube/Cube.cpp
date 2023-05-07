@@ -109,6 +109,39 @@ void RGBLedCube::fadeVoxel(uint16_t index, uint8_t scale)
     leds[index].nscale8(255 - scale);
 }
 
+void RGBLedCube::fadeXLayer(uint8_t x, uint8_t scale)
+{
+    for (uint8_t y = 0; y < CUBE_SIZE; y++)
+    {
+        for (uint8_t z = 0; z < CUBE_SIZE; z++)
+        {
+            fadeVoxel(x, y, z, scale);
+        }
+    }
+}
+
+void RGBLedCube::fadeYLayer(uint8_t y, uint8_t scale)
+{
+    for (uint8_t x = 0; x < CUBE_SIZE; x++)
+    {
+        for (uint8_t z = 0; z < CUBE_SIZE; z++)
+        {
+            fadeVoxel(x, y, z, scale);
+        }
+    }
+}
+
+void RGBLedCube::fadeZLayer(uint8_t z, uint8_t scale)
+{
+    for (uint8_t x = 0; x < CUBE_SIZE; x++)
+    {
+        for (uint8_t y = 0; y < CUBE_SIZE; y++)
+        {
+            fadeVoxel(x, y, z, scale);
+        }
+    }
+}
+
 void RGBLedCube::fadeAll(uint8_t scale) // scale / 256 * color
 {
     for (uint16_t i = 0; i < LED_COUNT; i++)

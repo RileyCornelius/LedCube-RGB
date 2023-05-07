@@ -380,3 +380,106 @@ public:
         }
     }
 };
+
+class Ripple : public Animation
+{
+public:
+    Ripple()
+    {
+        name = __FUNCTION__;
+        setDelay(60);
+    };
+
+    const float amplitude = (float)(CUBE_SIZE - 1) / 2.0f;
+    const float zOffset = (float)(CUBE_SIZE - 1) / 2.0f;
+    const float waveScale = 0.75f;
+    const uint8_t maxCounter = 100;
+
+    uint8_t hue = 0;
+    uint16_t index = 0;
+    CRGB color = CRGB::Blue;
+
+    uint8_t counter = 0;
+    uint8_t x = 0, y = 0, z = 0;
+
+    void drawFrame() override
+    {
+        Cube.fadeAll(170);
+        // Cube.clear();
+        color = CHSV(hue++, 255, 255);
+        for (uint8_t x = 0; x < CUBE_SIZE / 2 + 1; x++)
+        {
+            for (uint8_t y = 0; y < CUBE_SIZE / 2 + 1; y++)
+            {
+                float phaseShift = (float)counter * 2.0 * PI / maxCounter;
+                float insideSine = (waveScale * sqrt((x * x) + (y * y))) + phaseShift;
+                float sineFunction = (amplitude * sin(insideSine)) + zOffset;
+                float z = round(sineFunction);
+
+                Cube.setVoxel(x, y, z, color);
+                Cube.setVoxel(x, CUBE_SIZE - y - 1, z, color);
+                Cube.setVoxel(CUBE_SIZE - x - 1, y, z, color);
+                Cube.setVoxel(CUBE_SIZE - x - 1, CUBE_SIZE - y - 1, z, color);
+            }
+            counter++;
+            if (counter > maxCounter)
+            {
+                counter = 0;
+            }
+        }
+    }
+};
+
+class Rain : public Animation
+{
+public:
+    Rain()
+    {
+        name = __FUNCTION__;
+        setDelay(60);
+    };
+
+    const uint8_t scaleAmount = 1;
+    uint8_t tempZ[CUBE_SIZE * CUBE_SIZE] = {0};
+    uint16_t previousLed = 0;
+
+    Timer timer = Timer(40);
+    Timer fadeTimer = Timer(150);
+
+    uint8_t hue = 0;
+    uint16_t index = 0;
+    CRGB color = CRGB::Blue;
+
+    uint8_t counter = 0;
+    uint8_t x = 0, y = 0, z = 0;
+
+    void drawFrame() override
+    {
+        uint16_t newLed = 0;
+        do
+        {
+            newLed = (rand() % CUBE_SIZE * CUBE_SIZE) + ((CUBE_SIZE - 1) * CUBE_SIZE * CUBE_SIZE);
+        } while (newLed == previousLed);
+
+        previousLed = newLed; // Ensure the same LED cannot be set twice in a row
+
+        Cube.setVoxel(newLed, color);
+
+        // if (timer.ready())
+        // {
+
+        //     ledCube.copyZLayer(0, tempZ);
+        //     ledCube.setZLayer(0, 0);
+        //     ledCube.shiftZ(-1);
+        //     for (uint8_t i = 0; i < CUBE_SIZE * CUBE_SIZE; i++)
+        //         if (ledCube.getLedBrightness(i) != 0)
+        //             tempZ[i] = ledCube.getLedBrightness(i);
+        //     ledCube.setZLayerWithArray(0, tempZ);
+        // }
+
+        // if (fadeTimer.ready())
+        // {
+        //     ledCube.scaleZLayer(0, -scaleAmount);
+        // }
+    }
+};
