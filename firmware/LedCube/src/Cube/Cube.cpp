@@ -67,9 +67,6 @@ void RGBLedCube::setVoxel(Point p, CRGB col)
 
 void RGBLedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col)
 {
-    // SAFE_VOXEL_GUARD(x, y, z);
-    // index = getIndex(x, y, z);
-    // leds[index] = col;
     setVoxel(getIndex(x, y, z), col);
 }
 
@@ -290,48 +287,26 @@ uint16_t RGBLedCube::getIndex(Point p)
     return getIndex(p.x, p.y, p.z);
 }
 
-// uint16_t getIndex(uint8_t x, uint8_t y, uint8_t z)
-// {
-// Only works for 9x9x9 cubes
-//     uint16_t index = 0;
-//     uint8_t zone = (((x / 3) * 3) + (y / 3));
-//     uint8_t branchX = x % 3;
-//     uint8_t branchY = y % 3;
-
-//     if ((branchX + branchY) % 2) // x + y is an odd number - flip z
-//     {
-//         if (branchX % 2) // x is an odd number - flip front y column to back and vice versa and also flip z
-//         {
-//             index = (branchX * 27) + ((3 - branchY - 1) * 9) + (9 - z - 1);
-//         }
-//         else // x is an even number - just flip z
-//         {
-//             index = (branchX * 27) + (branchY * 9) + (9 - z - 1);
-//         }
-//     }
-//     else // x + y is an even number - don't flip z
-//     {
-//         index = (branchX * 27) + (branchY * 9) + z;
-//     }
-
-//     return (index += (zone * 81));
-// }
-
 uint16_t RGBLedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)
 {
 #if SERPENTINE_LAYOUT
-    if (x & 0x01 && y & 0x01) // if x and y are both odd or even then run z backwards
+    if (x & 0x01) // if x is odd then run z backwards
     {
         z = (CUBE_SIZE - 1) - z; // reverse z
-    }
-
-    if (y & 0x01) // if y is odd then run x backwards
-    {
-        x = (CUBE_SIZE - 1) - x; // reverse x
     }
 #endif
 
     return (y * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + z;
+}
+
+uint16_t RGBLedCube::getIndex(uint16_t index)
+{
+#if SERPENTINE_LAYOUT
+    // if(index % CUBE_SIZE)
+
+#endif
+
+    return index;
 }
 
 Point RGBLedCube::getPoint(uint16_t index)

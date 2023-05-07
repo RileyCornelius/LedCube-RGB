@@ -9,13 +9,14 @@
 
 Animation *animations[] = {
     new Gradient(),
-    new SolidColor(CRGB::Blue),
-    new Solid(),
+    new Lines(),
+    new Sparkles(),
     new Linear(),
-    new BPM(),
+    new Solid(),
     new Confetti(),
     new Sinelon(),
-    new Rainbow(),
+    // new BPM(),
+    // new Rainbow(),
 };
 
 Animator animator(animations, ARRAY_SIZE(animations));

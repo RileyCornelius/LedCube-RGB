@@ -33,6 +33,7 @@ struct Point
 class RGBLedCube
 {
 private:
+    uint16_t getIndex(uint16_t index);
     uint16_t getIndex(uint8_t x, uint8_t y, uint8_t z);
     uint16_t getIndex(Point p);
     Point getPoint(uint16_t index);
