@@ -34,10 +34,10 @@ void Animator::play()
     WRITE_DISPLAY_COMMAND(CommandPlay);
 }
 
-void Animator::stop()
+void Animator::clear()
 {
     AnimatorState::set(Idle);
-    animations[currentIndex]->stop();
+    animations[currentIndex]->clear();
 }
 
 void Animator::first()
@@ -89,6 +89,7 @@ void Animator::run()
         {
             AnimatorState::set(Beginning);
             currentIndex = nextIndex;
+            animations[currentIndex]->clear();
             WRITE_DISPLAY_MESSAGE(MessageAnimation, animations[currentIndex]->name);
         }
         break;

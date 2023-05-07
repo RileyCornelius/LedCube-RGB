@@ -32,7 +32,7 @@ void Animation::setDelay(uint32_t delay)
 /**
  * Clears the cube
  */
-void Animation::stop()
+void Animation::clear()
 {
     FastLED.clear(true);
 }

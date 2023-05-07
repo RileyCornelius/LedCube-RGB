@@ -19,7 +19,7 @@ public:
     String name;
     Animation();
     void animate();
-    void stop();
+    void clear();
     virtual void drawFrame() = 0; // pure virtual, needs to be overridden
     virtual bool beginning();     // virtual, optional override
     virtual bool ending();        // virtual, optional override

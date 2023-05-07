@@ -10,11 +10,12 @@ public:
     Linear()
     {
         name = __FUNCTION__;
-        setDelay(75);
+        setDelay(15);
     };
 
     uint8_t hue = 0;
     uint16_t index = 0;
+    CRGB color = CRGB::White;
 
     void drawFrame() override
     {
@@ -25,7 +26,9 @@ public:
         }
 
         // set led hue and increment
-        CRGB color = CHSV(hue++, 255, 255);
+        if (index % CUBE_SIZE < CUBE_SIZE)
+            color = CHSV(hue++, 255, 255);
+
         Cube.setVoxel(index++, color);
     }
 };
@@ -39,8 +42,8 @@ public:
         setDelay(30);
     };
     int index = 0;
-    const int fade_time = 230;
-    const int numberOfSparkles = beatsin16(15, 1, 1); // bpm, min, max
+    const int fade_time = 500;
+    const int numberOfSparkles = beatsin16(30, 5, 5); // bpm, min, max
     CRGB color = CRGB::White;
 
     void drawFrame() override
@@ -198,8 +201,8 @@ public:
 
     void drawFrame() override
     {
-        Cube.fadeAll(20);
-        EVERY_N_MILLIS(200)
+        Cube.fadeAll(1);
+        EVERY_N_MILLIS(100)
         {
             int pos = random16(LED_COUNT);
             Cube.leds[pos] += CHSV(hue + random8(64), 200, 255);
@@ -345,6 +348,35 @@ public:
                 pixelnumber = j;
             }
             Cube.setVoxel(pixelnumber, color);
+        }
+    }
+};
+
+class Lines : public Animation
+{
+public:
+    Lines()
+    {
+        name = __FUNCTION__;
+        setDelay(100);
+    };
+
+    uint8_t hue = 0;
+    uint16_t index = 0;
+    CRGB color = CRGB::White;
+
+    uint8_t x = 0, y = 0, z = 0;
+
+    void drawFrame() override
+    {
+        if (x >= CUBE_SIZE)
+        {
+            x = 0;
+            Cube.clear();
+        }
+        for (int i = 0; i < CUBE_SIZE; i++)
+        {
+            Cube.line(i, 0, 0, i, CUBE_SIZE - 1, CUBE_SIZE - 1, color);
         }
     }
 };
