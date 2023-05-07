@@ -15,9 +15,10 @@ enum DisplayType : uint8_t
     CommandOtaEnd,
     // has params
     MessageAnimation,
+    MessageOtaProgress,
+    // not used
     MessageRotationTime,
     MessageFps,
-    MessageOtaProgress,
 };
 
 void handleDisplay();

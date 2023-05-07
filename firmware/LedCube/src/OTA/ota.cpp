@@ -36,30 +36,30 @@ void initOta()
 
     ArduinoOTA
         .onStart([]()
-                 { 
+                 {
                 LOG_INFO(TAG, "Start updating");
-                DISPLAY_PRINTLN("ota start"); })
+                WRITE_DISPLAY_COMMAND(CommandOtaStart); })
         .onEnd([]()
                {
-                LOG_INFO(TAG,"\nEnd");
-                DISPLAY_PRINTLN("ota end"); })
+                LOG_INFO(TAG, "\nEnd");
+                WRITE_DISPLAY_COMMAND(CommandOtaEnd); })
         .onProgress([](unsigned int progress, unsigned int total)
-                    { 
-                    LOG_INFO(TAG, "Progress: %u%%\r", (progress / (total / 100)));
-                    DISPLAY_PRINTLN(String(progress / (total / 100)) + "%"); })
+                    {
+                LOG_INFO(TAG, "Progress: %u%%\r", (progress / (total / 100)));
+                WRITE_DISPLAY_MESSAGE(MessageOtaProgress, String(progress / (total / 100))); })
         .onError([](ota_error_t error)
                  {
-            LOG_ERROR(TAG, "Error[%u]: ", error);
-            if (error == OTA_AUTH_ERROR)
-                LOG_ERROR(TAG,"Auth Failed");
-            else if (error == OTA_BEGIN_ERROR)
-                LOG_ERROR(TAG,"Begin Failed");
-            else if (error == OTA_CONNECT_ERROR)
-                LOG_ERROR(TAG,"Connect Failed");
-            else if (error == OTA_RECEIVE_ERROR)
-                LOG_ERROR(TAG,"Receive Failed");
-            else if (error == OTA_END_ERROR)
-                LOG_ERROR(TAG,"End Failed"); });
+                LOG_ERROR(TAG, "Error[%u]: ", error);
+                if (error == OTA_AUTH_ERROR)
+                    LOG_ERROR(TAG, "Auth Failed");
+                else if (error == OTA_BEGIN_ERROR)
+                    LOG_ERROR(TAG, "Begin Failed");
+                else if (error == OTA_CONNECT_ERROR)
+                    LOG_ERROR(TAG, "Connect Failed");
+                else if (error == OTA_RECEIVE_ERROR)
+                    LOG_ERROR(TAG, "Receive Failed");
+                else if (error == OTA_END_ERROR)
+                    LOG_ERROR(TAG, "End Failed"); });
 
     ArduinoOTA.begin();
 
