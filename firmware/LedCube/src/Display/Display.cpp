@@ -10,7 +10,7 @@ static const char *TAG = "[Display]";
 
 void writeDisplayCommand(DisplayType command)
 {
-    String messageToSend(static_cast<uint8_t>(command));
+    String messageToSend(static_cast<char>(command));
 
     LOG_DEBUG(TAG, "Command: %s", messageToSend);
     SerialDisplay.println(messageToSend);
@@ -18,7 +18,7 @@ void writeDisplayCommand(DisplayType command)
 
 void writeDisplayMessage(DisplayType type, String message)
 {
-    String messageToSend(static_cast<uint8_t>(type));
+    String messageToSend(static_cast<char>(type));
 
     messageToSend += message;
     LOG_DEBUG(TAG, "MessageToSend: %s", messageToSend);
@@ -37,10 +37,10 @@ void handleDisplay()
     while (SerialDisplay.available())
     {
         String data = SerialDisplay.readStringUntil('\n');
-        uint8_t displayType = data.charAt(0) - '0'; // get the first char and convert it to int (DisplayType enum)
+        data.trim(); // remove \n
 
-        data.trim();       // remove \n
-        data.remove(0, 1); // remove display type
+        uint8_t displayType = data.charAt(0) - '0'; // get the first char and convert it to int (DisplayType enum)
+        data.remove(0, 1);                          // remove display type
 
         LOG_DEBUG(TAG, "type: %d", displayType);
         LOG_DEBUG(TAG, "data: %s", data);
