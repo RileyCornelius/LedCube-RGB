@@ -1,7 +1,7 @@
 #include "Cube.h"
 
 // Global cube helper object for Animation sub classes
-RGBLedCube Cube = RGBLedCube();
+LedCube Cube = LedCube();
 
 // Enables safe voxel guard
 #define SAFE_VOXEL_ON 1
@@ -10,8 +10,12 @@ RGBLedCube Cube = RGBLedCube();
 // Checks if invalid index is trying to be accessed and stops the program if so
 #define SAFE_VOXEL_GUARD(index) \
     if (index >= LED_COUNT)     \
+    {                           \
+        Cube.fill(CRGB::Red);   \
         while (1)               \
-            ;
+            ;                   \
+    }
+
 #else
 #define SAFE_VOXEL_GUARD(index)
 #endif
@@ -38,78 +42,66 @@ RGBLedCube Cube = RGBLedCube();
 //     |
 //    10 > 11 > 12 > 13 > 14
 //
-/**
- Wired like this:
-   +----<---+
-  /        /|
- /        / |
-+--->----+  ^
-|        |  |
-|        |  +
-^        v /
-|        |/
-+--------+
- */
 #define SERPENTINE_LAYOUT true
 
 /*---------------------------------------------------------------------------------------
  * CUBE CLASS - 3D RGB LED Cube
  *-------------------------------------------------------------------------------------*/
 
-RGBLedCube::RGBLedCube()
+LedCube::LedCube()
 {
 }
 
-void RGBLedCube::setVoxel(Point p, CRGB col)
+void LedCube::setVoxel(Point p, CRGB col)
 {
     setVoxel(p.x, p.y, p.z, col);
 }
 
-void RGBLedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col)
+void LedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col)
 {
     setVoxel(getIndex(x, y, z), col);
 }
 
-void RGBLedCube::setVoxel(uint16_t index, CRGB col)
+void LedCube::setVoxel(uint16_t index, CRGB col)
 {
     SAFE_VOXEL_GUARD(index)
     // index = getIndex(getPoint(index));
     leds[index] = col;
 }
 
-CRGB RGBLedCube::getVoxel(Point p)
+CRGB LedCube::getVoxel(Point p)
 {
     return getVoxel(p.x, p.y, p.z);
 }
 
-CRGB RGBLedCube::getVoxel(uint8_t x, uint8_t y, uint8_t z)
+CRGB LedCube::getVoxel(uint8_t x, uint8_t y, uint8_t z)
 {
     return getVoxel(getIndex(x, y, z));
 }
 
-CRGB RGBLedCube::getVoxel(uint16_t index)
+CRGB LedCube::getVoxel(uint16_t index)
 {
     SAFE_VOXEL_GUARD(index)
     return CRGB(leds[index].r, leds[index].g, leds[index].b);
 }
 
-void RGBLedCube::fadeVoxel(Point p, uint8_t scale)
+void LedCube::fadeVoxel(Point p, uint8_t scale)
 {
     fadeVoxel(p.x, p.y, p.z, scale);
 }
 
-void RGBLedCube::fadeVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t scale)
+void LedCube::fadeVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t scale)
 {
     fadeVoxel(getIndex(x, y, z), scale);
 }
 
-void RGBLedCube::fadeVoxel(uint16_t index, uint8_t scale)
+void LedCube::fadeVoxel(uint16_t index, uint8_t scale)
 {
     SAFE_VOXEL_GUARD(index)
     leds[index].nscale8(255 - scale);
 }
 
-void RGBLedCube::fadeXLayer(uint8_t x, uint8_t scale)
+void LedCube::fadeXLayer(uint8_t x, uint8_t scale)
 {
     for (uint8_t y = 0; y < CUBE_SIZE; y++)
     {
@@ -120,7 +112,7 @@ void RGBLedCube::fadeXLayer(uint8_t x, uint8_t scale)
     }
 }
 
-void RGBLedCube::fadeYLayer(uint8_t y, uint8_t scale)
+void LedCube::fadeYLayer(uint8_t y, uint8_t scale)
 {
     for (uint8_t x = 0; x < CUBE_SIZE; x++)
     {
@@ -131,7 +123,7 @@ void RGBLedCube::fadeYLayer(uint8_t y, uint8_t scale)
     }
 }
 
-void RGBLedCube::fadeZLayer(uint8_t z, uint8_t scale)
+void LedCube::fadeZLayer(uint8_t z, uint8_t scale)
 {
     for (uint8_t x = 0; x < CUBE_SIZE; x++)
     {
@@ -142,24 +134,24 @@ void RGBLedCube::fadeZLayer(uint8_t z, uint8_t scale)
     }
 }
 
-void RGBLedCube::fadeAll(uint8_t scale) // scale / 256 * color
+void LedCube::fadeAll(uint8_t scale) // scale / 256 * color
 {
     for (uint16_t i = 0; i < LED_COUNT; i++)
         fadeVoxel(i, scale);
 }
 
-void RGBLedCube::fill(CRGB col)
+void LedCube::fill(CRGB col)
 {
     for (uint16_t i = 0; i < LED_COUNT; i++)
         setVoxel(i, col);
 }
 
-void RGBLedCube::clear()
+void LedCube::clear()
 {
     fill(CRGB::Black);
 }
 
-void RGBLedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col)
+void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col)
 {
     Point currentPoint = Point(x1, y1, z1);
 
@@ -258,12 +250,12 @@ void RGBLedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col)
     setVoxel(currentPoint, col);
 }
 
-void RGBLedCube::line(Point p1, Point p2, CRGB col)
+void LedCube::line(Point p1, Point p2, CRGB col)
 {
     line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, col);
 }
 
-void RGBLedCube::sphere(int x, int y, int z, int r, CRGB col)
+void LedCube::sphere(int x, int y, int z, int r, CRGB col)
 {
     for (int dx = -r; dx <= r; dx++)
     {
@@ -280,12 +272,12 @@ void RGBLedCube::sphere(int x, int y, int z, int r, CRGB col)
     }
 }
 
-void RGBLedCube::sphere(Point p, int r, CRGB col)
+void LedCube::sphere(Point p, int r, CRGB col)
 {
     sphere(p.x, p.y, p.z, r, col);
 }
 
-void RGBLedCube::shell(float x, float y, float z, float r, CRGB col)
+void LedCube::shell(float x, float y, float z, float r, CRGB col)
 {
     float thickness = 0.1;
     for (int i = 0; i < CUBE_SIZE; i++)
@@ -295,12 +287,12 @@ void RGBLedCube::shell(float x, float y, float z, float r, CRGB col)
                     setVoxel(i, j, k, col);
 }
 
-void RGBLedCube::shell(Point p, float r, CRGB col)
+void LedCube::shell(Point p, float r, CRGB col)
 {
     shell(p.x, p.y, p.z, r, col);
 }
 
-void RGBLedCube::shell(float x, float y, float z, float r, float thickness, CRGB col)
+void LedCube::shell(float x, float y, float z, float r, float thickness, CRGB col)
 {
     for (int i = 0; i < CUBE_SIZE; i++)
         for (int j = 0; j < CUBE_SIZE; j++)
@@ -309,18 +301,19 @@ void RGBLedCube::shell(float x, float y, float z, float r, float thickness, CRGB
                     setVoxel(i, j, k, col);
 }
 
-void RGBLedCube::shell(Point p, float r, float thickness, CRGB col)
+void LedCube::shell(Point p, float r, float thickness, CRGB col)
 {
     shell(p.x, p.y, p.z, r, thickness, col);
 }
 
 /*--------------------------- PRIVATE FUNCTIONS --------------------------*/
-uint16_t RGBLedCube::getIndex(Point p)
+
+uint16_t LedCube::getIndex(Point p)
 {
     return getIndex(p.x, p.y, p.z);
 }
 
-uint16_t RGBLedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)
+uint16_t LedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)
 {
 #if SERPENTINE_LAYOUT
     if (x & 0x01) // if x is odd then run z backwards
@@ -332,17 +325,19 @@ uint16_t RGBLedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)
     return (y * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + z;
 }
 
-uint16_t RGBLedCube::getIndex(uint16_t index)
+uint16_t LedCube::getIndex(uint16_t index)
 {
 #if SERPENTINE_LAYOUT
-    // if(index % CUBE_SIZE)
-
+    if ((index / CUBE_SIZE) & 0x01) // if index is odd then run backwards
+    {
+        index += (CUBE_SIZE - 1) - (index % CUBE_SIZE) * 2;
+    }
 #endif
 
     return index;
 }
 
-Point RGBLedCube::getPoint(uint16_t index)
+Point LedCube::getPoint(uint16_t index)
 {
     uint8_t z = index / (CUBE_SIZE * CUBE_SIZE);              // get layer
     uint8_t layerIndex = index - (z * CUBE_SIZE * CUBE_SIZE); // get 2D index of layer

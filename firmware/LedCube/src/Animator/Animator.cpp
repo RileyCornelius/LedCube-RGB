@@ -76,9 +76,6 @@ void Animator::rotate()
 
 void Animator::run()
 {
-    if (isRotating && rotationTimer.ready())
-        next();
-
     switch (AnimatorState::get())
     {
     case Idle:
@@ -103,6 +100,9 @@ void Animator::run()
         break;
 
     case Running:
+        if (isRotating && rotationTimer.ready())
+            next();
+
         animations[currentIndex]->animate();
         break;
     }

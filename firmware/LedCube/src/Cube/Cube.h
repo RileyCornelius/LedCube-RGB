@@ -30,7 +30,7 @@ struct Point
 /**
  * Helper class to create 3d rgb animations for the FastLED library
  */
-class RGBLedCube
+class LedCube
 {
 private:
     uint16_t getIndex(uint16_t index);
@@ -39,7 +39,7 @@ private:
     Point getPoint(uint16_t index);
 
 public:
-    RGBLedCube();
+    LedCube();
     CRGB leds[LED_COUNT];
     void setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col);
     void setVoxel(uint16_t index, CRGB col);
@@ -66,4 +66,4 @@ public:
     void shell(Point p, float r, float thickness, CRGB col);
 };
 
-extern RGBLedCube Cube;
+extern LedCube Cube;
