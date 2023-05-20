@@ -3,6 +3,10 @@
 /**--------------------------------------------------------------------------------------
  * Settings
  *-------------------------------------------------------------------------------------*/
+// Logging enable
+#ifndef LOG_ENABLE
+#define LOG_ENABLE 1
+#endif
 
 // Min log level variable
 #ifndef LOG_LEVEL_MIN
@@ -41,13 +45,16 @@
 #define LOG_LEVEL_ERROR 4
 
 // Log format defines
-#if LOG_LEVEL_MIN > 0
+#if LOG_ENABLE
 
+#define SERIAL_BEGIN(x) Serial.begin(x)
 #define LOG_DEBUG(tag, format, ...) iformat(LOG_LEVEL_DEBUG, tag, format, ##__VA_ARGS__)
 #define LOG_INFO(tag, format, ...) iformat(LOG_LEVEL_INFO, tag, format, ##__VA_ARGS__)
 #define LOG_WARN(tag, format, ...) iformat(LOG_LEVEL_WARN, tag, format, ##__VA_ARGS__)
 #define LOG_ERROR(tag, format, ...) iformat(LOG_LEVEL_ERROR, tag, format, ##__VA_ARGS__)
 #else
+
+#define SERIAL_BEGIN(x)
 #define LOG_DEBUG(format, ...)
 #define LOG_INFO(format, ...)
 #define LOG_WARN(format, ...)
