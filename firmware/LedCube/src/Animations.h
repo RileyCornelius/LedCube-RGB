@@ -180,10 +180,26 @@ public:
     };
 
     uint8_t hue = 0;
+    uint8_t deltaHue = 1;
 
     void drawFrame() override
     {
-        fill_rainbow(Cube.leds, LED_COUNT, hue, 7);
+        fill_rainbow(Cube.leds, LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 2], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 3], LED_PER_BRANCH_COUNT, hue, deltaHue);
+
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 4], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 5], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 6], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 7], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 8], LED_PER_BRANCH_COUNT, hue, deltaHue);
+
+        // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
+        // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
+        // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
+
+        // fill_noise8(Cube.leds, LED_COUNT, 20, 10, 10, 255, 20, hue, 50);
         hue++;
     }
 };
@@ -352,32 +368,128 @@ public:
     }
 };
 
-class Lines : public Animation
+class Spiral : public Animation
 {
 public:
-    Lines()
+    Spiral()
     {
         name = __FUNCTION__;
-        setDelay(100);
+        setDelay(75);
     };
 
-    uint8_t hue = 0;
-    uint16_t index = 0;
-    CRGB color = CRGB::White;
+    enum Side
+    {
+        FRONT,
+        LEFT,
+        BACK,
+        RIGHT,
+        RESET,
+    };
+    Side side = FRONT;
 
+    uint8_t hue = 0;
+    CRGB color = CHSV(hue, 255, 255);
     uint8_t x = 0, y = 0, z = 0;
 
     void drawFrame() override
     {
-        if (x >= CUBE_SIZE)
+        switch (side)
         {
-            x = 0;
-            Cube.clear();
+        case FRONT:
+            Cube.line(Point(x, 0, 0), Point(8 - x, 8, 8), color);
+            Cube.line(Point(8 - x, 8, 0), Point(x, 0, 8), CRGB::Black);
+            x++;
+
+            if (x == CUBE_MAX_INDEX)
+                side = LEFT;
+
+            break;
+        case LEFT:
+            Cube.line(Point(8, y, 0), Point(0, 8 - y, 8), color);
+            Cube.line(Point(0, 8 - y, 0), Point(8, y, 8), CRGB::Black);
+            y++;
+
+            if (y == CUBE_MAX_INDEX)
+                side = BACK;
+
+            break;
+        case BACK:
+            Cube.line(Point(x, 8, 0), Point(8 - x, 0, 8), color);
+            Cube.line(Point(8 - x, 0, 0), Point(x, 8, 8), CRGB::Black);
+            x--;
+
+            if (x == 0)
+                side = RIGHT;
+            break;
+
+        case RIGHT:
+            Cube.line(Point(0, y, 0), Point(8, 8 - y, 8), color);
+            Cube.line(Point(8, 8 - y, 0), Point(0, y, 8), CRGB::Black);
+            y--;
+
+            if (y == 0)
+                side = FRONT;
+            break;
         }
-        for (int i = 0; i < CUBE_SIZE; i++)
-        {
-            Cube.line(i, 0, 0, i, CUBE_SIZE - 1, CUBE_SIZE - 1, color);
-        }
+        color = CHSV(hue++, 255, 255);
+        // Cube.fadeAll(35);
+        Cube.setVoxel(4, 4, 4, color); // center as it keeps getting overwritten
+    }
+};
+
+class Sphere : public Animation
+{
+public:
+    Sphere()
+    {
+        name = __FUNCTION__;
+        setDelay(60);
+    };
+    bool expanding = true;
+
+    uint8_t index = 0;
+    uint8_t hue = 0;
+    CRGB color = CHSV(hue, 255, 255);
+    uint8_t x = 0, y = 0, z = 0;
+
+    void drawFrame() override
+    {
+        Cube.clear();
+        Cube.sphere(Point(4, 4, 4), index, color);
+        index = expanding ? index + 1 : index - 1;
+
+        if (index == 6 || index == 0)
+            expanding = !expanding;
+
+        color = CHSV(hue += 2, 255, 255);
+    }
+};
+
+class Shell : public Animation
+{
+public:
+    Shell()
+    {
+        name = __FUNCTION__;
+        setDelay(75);
+    };
+    bool expanding = true;
+
+    uint8_t index = 0;
+    uint8_t hue = 0;
+    CRGB color = CHSV(hue, 255, 255);
+    uint8_t x = 0, y = 0, z = 0;
+
+    void drawFrame() override
+    {
+        Cube.clear();
+        Cube.shell(Point(4, 4, 4), index, 0.2, color);
+        index = expanding ? index + 1 : index - 1;
+
+        if (index == 6 || index == 0)
+            expanding = !expanding;
+
+        color = CHSV(hue += 2, 255, 255);
     }
 };
 

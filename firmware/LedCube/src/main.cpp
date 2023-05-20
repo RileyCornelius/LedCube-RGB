@@ -8,14 +8,18 @@
 #include "ota.h"
 
 Animation *animations[] = {
+    new Shell(),
+    new Sphere(),
+    new Spiral(),
     new Gradient(),
+    new Rainbow(),
     new Ripple(),
-    new Lines(),
-    new Sparkles(),
-    new Linear(),
-    new Solid(),
-    new Confetti(),
-    new Sinelon(),
+    // new Sinelon(),
+
+    // new Sparkles(),
+    // new Linear(),
+    // new Solid(),
+    // new Confetti(),
     // new BPM(),
     // new Rainbow(),
 };
@@ -50,8 +54,8 @@ void handleInputs()
 
 void setup()
 {
-    Serial.begin(115200);
-    SerialDisplay.begin(115200);
+    SERIAL_BEGIN(115200);
+    DISPLAY_BEGIN(115200);
     initFastLED();
     initOta();
 }

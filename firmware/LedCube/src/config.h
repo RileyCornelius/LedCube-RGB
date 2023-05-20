@@ -8,6 +8,7 @@
 
 // Cube Defines
 // #define CUBE_SIZE
+#define CUBE_MAX_INDEX (CUBE_SIZE - 1)
 #define LED_COUNT (CUBE_SIZE * CUBE_SIZE * CUBE_SIZE)
 #define LED_TYPE PL9823
 #define LED_COLOR_ORDER RGB

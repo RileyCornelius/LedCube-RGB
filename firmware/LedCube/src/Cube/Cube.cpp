@@ -1,4 +1,5 @@
 #include "Cube.h"
+#include "ota.h"
 
 // Global cube helper object for Animation sub classes
 LedCube Cube = LedCube();
@@ -12,8 +13,11 @@ LedCube Cube = LedCube();
     if (index >= LED_COUNT)     \
     {                           \
         Cube.fill(CRGB::Red);   \
+        FastLED.show();         \
         while (1)               \
-            ;                   \
+        {                       \
+            handleOta();        \
+        }                       \
     }
 
 #else
@@ -265,6 +269,9 @@ void LedCube::sphere(int x, int y, int z, int r, CRGB col)
             {
                 if (sqrt(dx * dx + dy * dy + dz * dz) <= r)
                 {
+                    // if x, y, or z is out of bounds then skip
+                    if (x + dx < 0 || x + dx >= CUBE_SIZE || y + dy < 0 || y + dy >= CUBE_SIZE || z + dz < 0 || z + dz >= CUBE_SIZE)
+                        continue;
                     setVoxel(x + dx, y + dy, z + dz, col);
                 }
             }
