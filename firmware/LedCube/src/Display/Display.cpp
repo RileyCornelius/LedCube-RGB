@@ -39,8 +39,8 @@ void handleDisplay()
         String data = SerialDisplay.readStringUntil('\n');
         data.trim(); // remove \n
 
-        uint8_t displayType = data.charAt(0) - '0'; // get the first char and convert it to int (DisplayType enum)
-        data.remove(0, 1);                          // remove display type
+        uint8_t displayType = data.charAt(0); // get the first char (DisplayType enum)
+        data.remove(0, 1);                    // remove display type
 
         LOG_DEBUG(TAG, "type: %d", displayType);
         LOG_DEBUG(TAG, "data: %s", data);
