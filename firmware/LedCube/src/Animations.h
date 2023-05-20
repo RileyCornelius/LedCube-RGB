@@ -184,16 +184,16 @@ public:
 
     void drawFrame() override
     {
-        fill_rainbow(Cube.leds, LED_PER_BRANCH_COUNT, hue, deltaHue);
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT], LED_PER_BRANCH_COUNT, hue, deltaHue);
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 2], LED_PER_BRANCH_COUNT, hue, deltaHue);
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 3], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(Cube.leds, LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 2], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 3], LED_BRANCH_COUNT, hue, deltaHue);
 
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 4], LED_PER_BRANCH_COUNT, hue, deltaHue);
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 5], LED_PER_BRANCH_COUNT, hue, deltaHue);
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 6], LED_PER_BRANCH_COUNT, hue, deltaHue);
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 7], LED_PER_BRANCH_COUNT, hue, deltaHue);
-        fill_rainbow(&Cube.leds[LED_PER_BRANCH_COUNT * 8], LED_PER_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 4], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 5], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 6], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 7], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 8], LED_BRANCH_COUNT, hue, deltaHue);
 
         // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
         // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
@@ -396,26 +396,26 @@ public:
         switch (side)
         {
         case FRONT:
-            Cube.line(Point(x, 0, 0), Point(8 - x, 8, 8), color);
-            Cube.line(Point(8 - x, 8, 0), Point(x, 0, 8), CRGB::Black);
+            Cube.line(Point(x, 0, 0), Point(CUBE_LENGTH - x, CUBE_LENGTH, CUBE_LENGTH), color);
+            Cube.line(Point(CUBE_LENGTH - x, CUBE_LENGTH, 0), Point(x, 0, CUBE_LENGTH), CRGB::Black);
             x++;
 
-            if (x == CUBE_MAX_INDEX)
+            if (x == CUBE_LENGTH)
                 side = LEFT;
 
             break;
         case LEFT:
-            Cube.line(Point(8, y, 0), Point(0, 8 - y, 8), color);
-            Cube.line(Point(0, 8 - y, 0), Point(8, y, 8), CRGB::Black);
+            Cube.line(Point(CUBE_LENGTH, y, 0), Point(0, CUBE_LENGTH - y, CUBE_LENGTH), color);
+            Cube.line(Point(0, CUBE_LENGTH - y, 0), Point(CUBE_LENGTH, y, CUBE_LENGTH), CRGB::Black);
             y++;
 
-            if (y == CUBE_MAX_INDEX)
+            if (y == CUBE_LENGTH)
                 side = BACK;
 
             break;
         case BACK:
-            Cube.line(Point(x, 8, 0), Point(8 - x, 0, 8), color);
-            Cube.line(Point(8 - x, 0, 0), Point(x, 8, 8), CRGB::Black);
+            Cube.line(Point(x, CUBE_LENGTH, 0), Point(8 - x, 0, CUBE_LENGTH), color);
+            Cube.line(Point(CUBE_LENGTH - x, 0, 0), Point(x, CUBE_LENGTH, CUBE_LENGTH), CRGB::Black);
             x--;
 
             if (x == 0)
@@ -423,8 +423,8 @@ public:
             break;
 
         case RIGHT:
-            Cube.line(Point(0, y, 0), Point(8, 8 - y, 8), color);
-            Cube.line(Point(8, 8 - y, 0), Point(0, y, 8), CRGB::Black);
+            Cube.line(Point(0, y, 0), Point(CUBE_LENGTH, CUBE_LENGTH - y, CUBE_LENGTH), color);
+            Cube.line(Point(CUBE_LENGTH, CUBE_LENGTH - y, 0), Point(0, y, CUBE_LENGTH), CRGB::Black);
             y--;
 
             if (y == 0)
@@ -433,7 +433,7 @@ public:
         }
         color = CHSV(hue++, 255, 255);
         // Cube.fadeAll(35);
-        Cube.setVoxel(4, 4, 4, color); // center as it keeps getting overwritten
+        Cube.setVoxel(4, 4, 4, color); // write to center as it keeps getting blanked out
     }
 };
 

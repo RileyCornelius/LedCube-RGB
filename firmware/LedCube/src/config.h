@@ -5,12 +5,12 @@
  *-------------------------------------------------------------------------------------*/
 
 #define CUBE_SIZE 9
-#define CUBE_MAX_INDEX (CUBE_SIZE - 1)
+#define CUBE_LENGTH (CUBE_SIZE - 1)
 #define LED_COUNT (CUBE_SIZE * CUBE_SIZE * CUBE_SIZE)
 #define LED_TYPE PL9823
 #define LED_COLOR_ORDER RGB
 #define LED_BRIGHTNESS 255
-#define LED_PER_BRANCH_COUNT (LED_COUNT / CUBE_SIZE)
+#define LED_BRANCH_COUNT (LED_COUNT / CUBE_SIZE)
 
 // Display UART
 #define DISPLAY_ENABLE 1
