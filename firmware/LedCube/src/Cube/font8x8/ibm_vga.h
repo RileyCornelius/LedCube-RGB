@@ -1,6 +1,11 @@
-// Constant: font
-// Contains an 8x8 font map for unicode points U+0000 - U+007F
-const char font[128][8] = {
+//
+// FACE_NAME "IBM VGA 8x8"
+//
+// 0-31,127 : Code page 437, cf. https://en.wikipedia.org/wiki/Code_page_437
+// 32-126   : ASCII
+// 160-255  : ISO-8859-1, cf. https://en.wikipedia.org/wiki/ISO/IEC_8859-1
+
+const char vga[128][8] = {
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // U+0000 (nul)
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // U+0001
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // U+0002

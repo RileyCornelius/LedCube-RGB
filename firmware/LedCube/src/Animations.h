@@ -701,10 +701,10 @@ public:
     }
 };
 
-class Font : public Animation
+class CycleFont : public Animation
 {
 public:
-    Font()
+    CycleFont()
     {
         name = __FUNCTION__;
         setDelay(100);
@@ -720,7 +720,7 @@ public:
     {
         Cube.fadeAll(160);
 
-        Cube.ascii(ascii, y, color);
+        Cube.ascii(IBM_VGA, ascii, y, color);
         y--;
 
         if (y < 0)
@@ -764,7 +764,7 @@ public:
 
         Cube.fadeAll(180);
 
-        Cube.ascii(ascii[index], y, color);
+        Cube.ascii(IBM_BIOS, ascii[index], y, color);
         y--;
     }
 };

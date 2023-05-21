@@ -1,6 +1,9 @@
 #include "Cube.h"
 #include "ota.h"
-#include "font8x8.h"
+#include "font8x8/ibm_bios.h"
+#include "font8x8/ibm_vga.h"
+#include "font8x8/ibm_cga.h"
+#include "font8x8/ibm_cga_light.h"
 
 // Global cube helper object for Animation sub classes
 LedCube Cube = LedCube();
@@ -314,12 +317,21 @@ void LedCube::shell(Point p, float r, float thickness, CRGB col)
     shell(p.x, p.y, p.z, r, thickness, col);
 }
 
-void LedCube::ascii(char ascii, uint8_t y, CRGB color)
+void LedCube::ascii(Font font, char ascii, uint8_t y, CRGB color)
 {
     static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
 
-    const char *bitmap = font[ascii];
     bool set;
+    const char *bitmap;
+
+    if (font == IBM_BIOS)
+        bitmap = bios[ascii];
+    else if (font == IBM_VGA)
+        bitmap = vga[ascii];
+    else if (font == IBM_CGA)
+        bitmap = cga[ascii];
+    else if (font == IBM_CGA_LIGHT)
+        bitmap = cgal[ascii];
 
     for (uint8_t z = 1; z < 9; z++)
     {

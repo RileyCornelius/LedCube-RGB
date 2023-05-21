@@ -11,7 +11,7 @@
 
 Animation *animations[] = {
     new TACAM(),
-    new Font(),
+    new CycleFont(),
     new Bounce(),
     new Shell(),
     new Sphere(),

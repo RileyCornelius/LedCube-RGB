@@ -7,6 +7,14 @@
 #include <FastLED.h>
 #include "config.h"
 
+enum Font
+{
+    IBM_BIOS,
+    IBM_VGA,
+    IBM_CGA,
+    IBM_CGA_LIGHT,
+};
+
 /*---------------------------------------------------------------------------------------
  * POINT STRUCT - 3D Point in Cube
  *-------------------------------------------------------------------------------------*/
@@ -73,7 +81,7 @@ public:
     void shell(float x, float y, float z, float r, float thickness, CRGB col);
     void shell(Point p, float r, CRGB col);
     void shell(Point p, float r, float thickness, CRGB col);
-    void ascii(char ascii, uint8_t y, CRGB color);
+    void ascii(Font font, char ascii, uint8_t y, CRGB color);
 };
 
 extern LedCube Cube;
