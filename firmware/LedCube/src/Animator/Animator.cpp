@@ -74,6 +74,11 @@ void Animator::rotate()
     isRotating = !isRotating;
 }
 
+String Animator::getNextAnimationName()
+{
+    return animations[nextIndex]->name;
+}
+
 void Animator::run()
 {
     switch (AnimatorState::get())

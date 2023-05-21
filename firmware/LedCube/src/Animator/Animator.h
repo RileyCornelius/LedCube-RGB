@@ -14,6 +14,7 @@ private:
     bool isRotating;
 
 public:
+    String getNextAnimationName();
     Animator(Animation *animations[], uint16_t length);
     void run();
     void setRotation(uint32_t time);
