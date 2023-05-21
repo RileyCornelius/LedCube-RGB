@@ -7,6 +7,7 @@
 #include "ota.h"
 
 Animation *animations[] = {
+    new Bounce(),
     new Shell(),
     new Sphere(),
     new Spiral(),

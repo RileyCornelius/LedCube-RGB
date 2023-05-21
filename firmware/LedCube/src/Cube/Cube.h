@@ -21,6 +21,15 @@ struct Point
     uint8_t z;
     Point() : x(0), y(0), z(0) {}
     Point(uint8_t X, uint8_t Y, uint8_t Z) : x(X), y(Y), z(Z) {}
+
+    Point operator+(const Point &p)
+    {
+        Point point;
+        point.x = this->x + p.x;
+        point.y = this->y + p.y;
+        point.z = this->z + p.z;
+        return point;
+    }
 };
 
 /*---------------------------------------------------------------------------------------
