@@ -40,7 +40,7 @@ void setup()
     FastLED.addLeds<LED_TYPE, PIN_LED_6, LED_COLOR_ORDER>(Cube.leds, LED_BRANCH_COUNT * 6, LED_BRANCH_COUNT);
     FastLED.addLeds<LED_TYPE, PIN_LED_7, LED_COLOR_ORDER>(Cube.leds, LED_BRANCH_COUNT * 7, LED_BRANCH_COUNT);
     FastLED.addLeds<LED_TYPE, PIN_LED_8, LED_COLOR_ORDER>(Cube.leds, LED_BRANCH_COUNT * 8, LED_BRANCH_COUNT);
-    Cube.clear(); // Turn off all LEDs
+    FastLED.clear(true); // Clear all LEDs
 
     initOta(); // Over the Air Update
 }
