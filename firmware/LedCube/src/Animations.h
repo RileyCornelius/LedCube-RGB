@@ -700,3 +700,71 @@ public:
         updateBall(ball3, v3);
     }
 };
+
+class Font : public Animation
+{
+public:
+    Font()
+    {
+        name = __FUNCTION__;
+        setDelay(100);
+    };
+
+    uint8_t hue = 0;
+    CRGB color = CRGB::Blue;
+
+    int8_t y = CUBE_LENGTH;
+    char ascii = '1';
+
+    void drawFrame() override
+    {
+        Cube.fadeAll(160);
+
+        Cube.ascii(ascii, y, color);
+        y--;
+
+        if (y < 0)
+        {
+            color = CHSV(random8(), 255, 255);
+            y = CUBE_LENGTH;
+            ascii++;
+            if (ascii > 127)
+                ascii = '1';
+        }
+    }
+};
+
+class TACAM : public Animation
+{
+public:
+    TACAM()
+    {
+        name = __FUNCTION__;
+        setDelay(100);
+    };
+
+    CRGB color = CRGB::Blue;
+
+    int8_t y = CUBE_LENGTH;
+    uint8_t index = 0;
+
+    const char *ascii = "TACAM";
+
+    void drawFrame() override
+    {
+        if (y < 0)
+        {
+            color = CHSV(random8(), 255, 255);
+            Cube.fadeYLayer(0, 255);
+            y = CUBE_LENGTH;
+            index++;
+            if (index > 4)
+                index = 0;
+        }
+
+        Cube.fadeAll(180);
+
+        Cube.ascii(ascii[index], y, color);
+        y--;
+    }
+};

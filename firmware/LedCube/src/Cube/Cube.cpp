@@ -1,5 +1,6 @@
 #include "Cube.h"
 #include "ota.h"
+#include "font8x8.h"
 
 // Global cube helper object for Animation sub classes
 LedCube Cube = LedCube();
@@ -311,6 +312,23 @@ void LedCube::shell(float x, float y, float z, float r, float thickness, CRGB co
 void LedCube::shell(Point p, float r, float thickness, CRGB col)
 {
     shell(p.x, p.y, p.z, r, thickness, col);
+}
+
+void LedCube::ascii(char ascii, uint8_t y, CRGB color)
+{
+    static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
+
+    const char *bitmap = font[ascii];
+    bool set;
+
+    for (uint8_t z = 1; z < 9; z++)
+    {
+        for (uint8_t x = 1; x < 9; x++)
+        {
+            set = bitmap[z - 1] & 1 << x - 1;
+            setVoxel(8 - x, y, 8 - z, set ? color : CRGB::Black);
+        }
+    }
 }
 
 /*--------------------------- PRIVATE FUNCTIONS --------------------------*/

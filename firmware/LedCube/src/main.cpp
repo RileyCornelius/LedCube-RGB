@@ -10,6 +10,8 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    new TACAM(),
+    new Font(),
     new Bounce(),
     new Shell(),
     new Sphere(),
