@@ -5,7 +5,7 @@
 // 32-126   : ASCII
 // 160-255  : ISO-8859-1, cf. https://en.wikipedia.org/wiki/ISO/IEC_8859-1
 
-const char cgal[224][8] = {
+const char ibm_cga_light[224][8] = {
     // ---------------------------  0-127 ---------------------------
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 0000 (uni0000.dup1)
     {0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e}, // 0001 (uni0001)

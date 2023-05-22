@@ -688,7 +688,7 @@ public:
 
     void drawFrame() override
     {
-        Cube.fadeAll(150);
+        Cube.fadeAll(170);
 
         setBallVoxel(ball1, CRGB::Blue);
         updateBall(ball1, v1);
@@ -716,11 +716,13 @@ public:
     int8_t y = CUBE_LENGTH;
     char ascii = '1';
 
+    Font font = IBM_BIOS;
+
     void drawFrame() override
     {
         Cube.fadeAll(160);
 
-        Cube.ascii(IBM_VGA, ascii, y, color);
+        Cube.ascii(ascii, y, color);
         y--;
 
         if (y < 0)
@@ -747,6 +749,7 @@ public:
 
     int8_t y = CUBE_LENGTH;
     uint8_t index = 0;
+    bool thin = false;
 
     const char *ascii = "TACAM";
 
@@ -758,13 +761,15 @@ public:
             Cube.fadeYLayer(0, 255);
             y = CUBE_LENGTH;
             index++;
-            if (index > 4)
+            if (ascii[index] == '\0')
+            {
+                thin = !thin;
                 index = 0;
+            }
         }
 
         Cube.fadeAll(180);
-
-        Cube.ascii(IBM_BIOS, ascii[index], y, color);
+        thin ? Cube.asciiThin(ascii[index], y, color) : Cube.ascii(ascii[index], y, color);
         y--;
     }
 };

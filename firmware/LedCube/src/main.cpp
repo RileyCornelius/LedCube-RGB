@@ -12,10 +12,10 @@
 Animation *animations[] = {
     new TACAM(),
     new CycleFont(),
+    new Spiral(),
     new Bounce(),
     new Shell(),
     new Sphere(),
-    new Spiral(),
     new Gradient(),
     new Rainbow(),
     new Ripple(),
@@ -56,8 +56,8 @@ void setup()
     FastLED.addLeds<LED_TYPE, PIN_LED_8, LED_COLOR_ORDER>(Cube.leds, LED_BRANCH_COUNT * 8, LED_BRANCH_COUNT);
     FastLED.clear(true); // Turn off all LEDs
 
-    initOta();                                           // Over the Air Update
     Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS); // Blynk App
+    initOta();                                           // Over the Air Update
 }
 
 void loop()

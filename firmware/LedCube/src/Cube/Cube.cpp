@@ -1,8 +1,6 @@
 #include "Cube.h"
 #include "ota.h"
-#include "font8x8/ibm_bios.h"
 #include "font8x8/ibm_vga.h"
-#include "font8x8/ibm_cga.h"
 #include "font8x8/ibm_cga_light.h"
 
 // Global cube helper object for Animation sub classes
@@ -317,27 +315,36 @@ void LedCube::shell(Point p, float r, float thickness, CRGB col)
     shell(p.x, p.y, p.z, r, thickness, col);
 }
 
-void LedCube::ascii(Font font, char ascii, uint8_t y, CRGB color)
+void LedCube::ascii(char ascii, uint8_t y, CRGB color)
+{
+    static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
+    uint8_t offset = CUBE_SIZE - 8;
+
+    const char *bitmap = ibm_vga[ascii];
+    bool set;
+
+    for (uint8_t z = 0; z < 8; z++)
+    {
+        for (uint8_t x = 0; x < 8; x++)
+        {
+            set = bitmap[z] & 1 << x;
+            setVoxel(8 - x - offset, y, 8 - z - offset, set ? color : CRGB::Black);
+        }
+    }
+}
+
+void LedCube::asciiThin(char ascii, uint8_t y, CRGB color)
 {
     static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
 
+    const char *bitmap = ibm_cga_light[ascii];
     bool set;
-    const char *bitmap;
-
-    if (font == IBM_BIOS)
-        bitmap = bios[ascii];
-    else if (font == IBM_VGA)
-        bitmap = vga[ascii];
-    else if (font == IBM_CGA)
-        bitmap = cga[ascii];
-    else if (font == IBM_CGA_LIGHT)
-        bitmap = cgal[ascii];
 
     for (uint8_t z = 1; z < 9; z++)
     {
         for (uint8_t x = 1; x < 9; x++)
         {
-            set = bitmap[z - 1] & 1 << x - 1;
+            set = bitmap[z - 1] & 1 << 8 - x - 1;
             setVoxel(8 - x, y, 8 - z, set ? color : CRGB::Black);
         }
     }
