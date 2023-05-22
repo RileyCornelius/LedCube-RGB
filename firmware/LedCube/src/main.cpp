@@ -10,9 +10,9 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    new Spiral(),
     new TACAM(),
     new CycleFont(),
-    new Spiral(),
     new Bounce(),
     new Shell(),
     new Sphere(),

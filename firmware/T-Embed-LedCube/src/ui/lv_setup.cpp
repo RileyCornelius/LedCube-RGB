@@ -3,7 +3,9 @@
 #include <RotaryEncoder.h> // https://github.com/mathertel/RotaryEncoder
 #include <OneButton.h>     // https://github.com/mathertel/OneButton
 #include <APA102.h>        // https://github.com/pololu/apa102-arduino
+#include <SimpleTimer.h>
 #include "config.h"
+#include "com/cube_com.h"
 
 /* Screen dimensions */
 #define LV_SCREEN_WIDTH 320
@@ -21,6 +23,8 @@ EventGroupHandle_t lv_input_event;
 RotaryEncoder encoder(PIN_ENCODE_A, PIN_ENCODE_B, RotaryEncoder::LatchMode::TWO03);
 OneButton button(PIN_ENCODE_BTN, true);
 TFT_eSPI tft = TFT_eSPI(LV_SCREEN_HEIGHT, LV_SCREEN_WIDTH);
+
+bool screenFocus = false;
 
 /* Display rendering callback */
 static void lv_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
@@ -61,18 +65,40 @@ static void lv_encoder_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *data)
 /* Read encoder direction */
 static void encoder_read()
 {
+    static Timer debounceTimer(200);
     RotaryEncoder::Direction dir = encoder.getDirection();
-    if (dir != RotaryEncoder::Direction::NOROTATION)
+
+    if (screenFocus)
     {
-        if (dir != RotaryEncoder::Direction::CLOCKWISE)
+        if (dir != RotaryEncoder::Direction::NOROTATION)
         {
-            xEventGroupSetBits(lv_input_event, LV_ENCODER_CW);
-            // xEventGroupSetBits(lv_input_event, LV_ENCODER_LED_CW);
+            if (dir != RotaryEncoder::Direction::CLOCKWISE)
+            {
+                xEventGroupSetBits(lv_input_event, LV_ENCODER_CW);
+                // xEventGroupSetBits(lv_input_event, LV_ENCODER_LED_CW);
+            }
+            else
+            {
+                xEventGroupSetBits(lv_input_event, LV_ENCODER_CCW);
+                // xEventGroupSetBits(lv_input_event, LV_ENCODER_LED_CCW);
+            }
         }
-        else
+    }
+    else
+    {
+
+        if (dir != RotaryEncoder::Direction::NOROTATION && debounceTimer.getElapsed() > debounceTimer.getPeriod())
         {
-            xEventGroupSetBits(lv_input_event, LV_ENCODER_CCW);
-            // xEventGroupSetBits(lv_input_event, LV_ENCODER_LED_CCW);
+            debounceTimer.reset();
+
+            if (dir != RotaryEncoder::Direction::CLOCKWISE)
+            {
+                writeDisplayCommand(CommandNext);
+            }
+            else
+            {
+                writeDisplayCommand(CommandPrevious);
+            }
         }
     }
 }
@@ -89,9 +115,16 @@ void lv_begin()
     button.attachClick(
         [](void *param)
         {
-            EventGroupHandle_t *lv_input_event = (EventGroupHandle_t *)param;
-            xEventGroupSetBits(lv_input_event, LV_BUTTON);
-            // xEventGroupSetBits(global_event_group, WAV_RING_1);
+            if (screenFocus)
+            {
+                EventGroupHandle_t *lv_input_event = (EventGroupHandle_t *)param;
+                xEventGroupSetBits(lv_input_event, LV_BUTTON);
+                // xEventGroupSetBits(global_event_group, WAV_RING_1);
+            }
+            else
+            {
+                screenFocus = true;
+            }
         },
         lv_input_event);
 
