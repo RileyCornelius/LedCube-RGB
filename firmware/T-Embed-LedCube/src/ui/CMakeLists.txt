@@ -1,0 +1,11 @@
+SET(SOURCES screens/ui_rotary_screen.c
+    screens/ui_main_screen.c
+    screens/ui_ota_screen.c
+    ui.c
+    ui_helpers.c
+    images/ui_img_backward_png.c
+    images/ui_img_pause_png.c
+    images/ui_img_play_png.c
+    images/ui_img_forward_png.c)
+
+add_library(ui ${SOURCES})

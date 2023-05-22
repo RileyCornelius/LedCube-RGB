@@ -58,7 +58,7 @@ void handleCom()
             break;
 
         case CommandOtaEnd:
-            lv_scr_load(ui_main_screen);
+            lv_scr_load(ui_rotary_screen);
             break;
 
         case MessageOtaProgress:
@@ -69,6 +69,14 @@ void handleCom()
 
         case MessageAnimation:
             lv_label_set_text(ui_animation_text, data.c_str());
+            lv_label_set_text(ui_animation_text_large, data.c_str());
+            // lv_label_set_text(ui_animation_text_area, data.c_str());
+            break;
+
+        case MessageFps:
+            String fps = "FPS: ";
+            fps += data;
+            lv_label_set_text(ui_fps_text, fps.c_str());
             break;
         }
     }
