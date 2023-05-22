@@ -3,20 +3,19 @@
 #include <Arduino.h>
 #include "config.h"
 
-enum DisplayType : uint8_t
+enum DisplayType
 {
     CommandPlay,
     CommandPause,
     CommandStop,
     CommandNext,
     CommandPrevious,
-    CommandRotation,
     CommandOtaStart,
     CommandOtaEnd,
-    // has params
-    MessageAnimation,
     MessageOtaProgress,
-    // not used
+    MessageAnimation,
+    // not used yet
+    CommandRotation,
     MessageRotationTime,
     MessageFps,
 };
@@ -33,7 +32,7 @@ void writeDisplayMessage(DisplayType type, char *message);
 #define WRITE_DISPLAY_COMMAND(type) writeDisplayCommand(type)
 #define WRITE_DISPLAY_MESSAGE(type, message) writeDisplayMessage(type, message)
 #else
-#define DISPLAY_BEGIN(x) 
+#define DISPLAY_BEGIN(x)
 #define DISPLAY_PRINTLN(x)
 #define WRITE_DISPLAY_COMMAND(type)
 #define WRITE_DISPLAY_MESSAGE(type, message)

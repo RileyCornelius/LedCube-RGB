@@ -3,8 +3,10 @@
 
 #include "ui/lv_setup.h"
 #include "ota/ota.h"
-#include "cube/cube_com.h"
+#include "com/cube_com.h"
 #include "config.h"
+
+
 
 void setup()
 {
@@ -18,6 +20,6 @@ void setup()
 void loop()
 {
     handleOta();
-    readCube();
+    handleCom();
     lv_handler(); // Update the display
 }

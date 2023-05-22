@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include <Logger.h>
-#include "cube/cube_com.h"
+#include "com/cube_com.h"
 #include "ui.h"
 
 static const char *TAG = "[UI Events]";

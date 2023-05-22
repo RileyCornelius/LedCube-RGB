@@ -28,7 +28,7 @@ void writeDisplayMessage(DisplayType type, char *message)
     writeDisplayMessage(type, String(message));
 }
 
-void readCube()
+void handleCom()
 {
     while (SerialCube.available())
     {

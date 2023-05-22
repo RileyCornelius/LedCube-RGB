@@ -2,20 +2,19 @@
 
 #include <Arduino.h>
 
-enum DisplayType : uint8_t
+enum DisplayType
 {
     CommandPlay,
     CommandPause,
     CommandStop,
     CommandNext,
     CommandPrevious,
-    CommandRotation,
     CommandOtaStart,
     CommandOtaEnd,
-    // has params
-    MessageAnimation,
     MessageOtaProgress,
-    // not used
+    MessageAnimation,
+    // not used yet
+    CommandRotation,
     MessageRotationTime,
     MessageFps,
 };
@@ -23,4 +22,4 @@ enum DisplayType : uint8_t
 void writeDisplayCommand(DisplayType command);
 void writeDisplayMessage(DisplayType type, String message);
 void writeDisplayMessage(DisplayType type, char *message);
-void readCube();
+void handleCom();
