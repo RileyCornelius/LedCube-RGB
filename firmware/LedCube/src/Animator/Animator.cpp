@@ -93,6 +93,7 @@ void Animator::run()
             currentIndex = nextIndex;
             animations[currentIndex]->clear();
             WRITE_DISPLAY_MESSAGE(MessageAnimation, animations[currentIndex]->name);
+            WRITE_DISPLAY_MESSAGE(MessageFps, String(animations[currentIndex]->getFps()));
         }
         break;
 

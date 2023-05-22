@@ -706,7 +706,7 @@ class CycleFont : public Animation
 public:
     CycleFont()
     {
-        name = __FUNCTION__;
+        name = "ASCII";
         setDelay(100);
     };
 

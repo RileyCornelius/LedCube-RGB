@@ -6,6 +6,7 @@
 #include <SimpleTimer.h>
 #include "config.h"
 #include "com/cube_com.h"
+#include "ui/ui.h"
 
 /* Screen dimensions */
 #define LV_SCREEN_WIDTH 320
@@ -86,7 +87,6 @@ static void encoder_read()
     }
     else
     {
-
         if (dir != RotaryEncoder::Direction::NOROTATION && debounceTimer.getElapsed() > debounceTimer.getPeriod())
         {
             debounceTimer.reset();
@@ -103,6 +103,37 @@ static void encoder_read()
     }
 }
 
+static void button_clicked(void *param)
+{
+    static bool playing = false;
+    static Timer debounceTimer(200);
+
+    if (screenFocus)
+    {
+        EventGroupHandle_t *lv_input_event = (EventGroupHandle_t *)param;
+        xEventGroupSetBits(lv_input_event, LV_BUTTON);
+        // xEventGroupSetBits(global_event_group, WAV_RING_1);
+    }
+    else
+    {
+        if (playing)
+            writeDisplayCommand(CommandPlay);
+        else
+            writeDisplayCommand(CommandPause);
+
+        playing = !playing;
+    }
+}
+
+static void button_long_pressed()
+{
+    screenFocus = !screenFocus;
+    if (screenFocus)
+        lv_scr_load(ui_main_screen);
+    else
+        lv_scr_load(ui_rotary_screen);
+}
+
 /* Setup display, rotary encoder and button */
 void lv_begin()
 {
@@ -112,21 +143,8 @@ void lv_begin()
 
     /* Initialize rotary encoder button*/
     lv_input_event = xEventGroupCreate();
-    button.attachClick(
-        [](void *param)
-        {
-            if (screenFocus)
-            {
-                EventGroupHandle_t *lv_input_event = (EventGroupHandle_t *)param;
-                xEventGroupSetBits(lv_input_event, LV_BUTTON);
-                // xEventGroupSetBits(global_event_group, WAV_RING_1);
-            }
-            else
-            {
-                screenFocus = true;
-            }
-        },
-        lv_input_event);
+    button.attachClick(button_clicked, lv_input_event);
+    button.attachLongPressStart(button_long_pressed);
 
     /* Initialize tft */
     tft.begin();

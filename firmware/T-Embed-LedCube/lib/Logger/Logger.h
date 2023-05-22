@@ -6,7 +6,7 @@
 
 // Min log level variable
 #ifndef LOG_LEVEL_MIN
-#define LOG_LEVEL_MIN LOG_LEVEL_DEBUG
+#define LOG_LEVEL_MIN LOG_LEVEL_NONE
 #endif
 
 // Log level variable

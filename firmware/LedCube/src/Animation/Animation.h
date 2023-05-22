@@ -11,13 +11,13 @@ class Animation
 protected:
     Timer timer;
     Timer transitionTimer = Timer(3);
-    uint16_t getFps();
     void setFps(uint16_t fps);
     void setDelay(uint32_t millis);
 
 public:
     String name;
     Animation();
+    uint16_t getFps();
     void animate();
     void clear();
     virtual void drawFrame() = 0; // pure virtual, needs to be overridden
