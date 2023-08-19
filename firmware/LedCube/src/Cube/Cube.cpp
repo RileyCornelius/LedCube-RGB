@@ -71,7 +71,6 @@ void LedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col)
 void LedCube::setVoxel(uint16_t index, CRGB col)
 {
     SAFE_VOXEL_GUARD(index)
-    // index = getIndex(getPoint(index));
     leds[index] = col;
 }
 
@@ -259,6 +258,21 @@ void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col)
 void LedCube::line(Point p1, Point p2, CRGB col)
 {
     line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, col);
+}
+
+void LedCube::triangle(Point p1, Point p2, Point p3, CRGB col)
+{
+    line(p1, p2, col);
+    line(p2, p3, col);
+    line(p3, p1, col);
+}
+
+void LedCube::square(Point p1, Point p2, Point p3, Point p4, CRGB col)
+{
+    line(p1, p2, col);
+    line(p2, p3, col);
+    line(p3, p4, col);
+    line(p4, p1, col);
 }
 
 void LedCube::sphere(int x, int y, int z, int r, CRGB col)

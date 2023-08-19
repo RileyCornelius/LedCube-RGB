@@ -29,14 +29,12 @@ struct Point
     uint8_t z;
     Point() : x(0), y(0), z(0) {}
     Point(uint8_t X, uint8_t Y, uint8_t Z) : x(X), y(Y), z(Z) {}
+    Point(const Point &p) : x(p.x), y(p.y), z(p.z) {}
 
+    // add two points together
     Point operator+(const Point &p)
     {
-        Point point;
-        point.x = this->x + p.x;
-        point.y = this->y + p.y;
-        point.z = this->z + p.z;
-        return point;
+        return Point(x + p.x, y + p.y, z + p.z);
     }
 };
 
@@ -75,6 +73,8 @@ public:
     void clear();
     void line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col);
     void line(Point p1, Point p2, CRGB col);
+    void triangle(Point p1, Point p2, Point p3, CRGB col);
+    void square(Point p1, Point p2, Point p3, Point p4, CRGB col);
     void sphere(int x, int y, int z, int radius, CRGB col);
     void sphere(Point p, int radius, CRGB col);
     void shell(float x, float y, float z, float r, CRGB col);
