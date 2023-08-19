@@ -150,7 +150,6 @@ public:
     void shell(float x, float y, float z, float r, float thickness, CRGB col);
     void shell(Point p, float r, CRGB col);
     void shell(Point p, float r, float thickness, CRGB col);
-    void ascii_1(Font font, char ascii, uint8_t y, CRGB color);
     void ascii(char ascii, uint8_t y, CRGB color);
     void asciiThin(char ascii, uint8_t y, CRGB color);
 };

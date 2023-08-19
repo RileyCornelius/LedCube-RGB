@@ -332,8 +332,8 @@ void LedCube::shell(Point p, float r, float thickness, CRGB col)
 void LedCube::ascii(char ascii, uint8_t y, CRGB color)
 {
     static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
-    uint8_t offset = CUBE_SIZE - 8;
 
+    uint8_t offset = CUBE_SIZE - 8;
     const char *bitmap = ibm_vga[ascii];
     bool set;
 

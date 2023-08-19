@@ -10,6 +10,7 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    new Ripple(),
     new Rain(),
     new Sinelon(),
     new Spiral(),
@@ -20,7 +21,6 @@ Animation *animations[] = {
     new Sphere(),
     new Gradient(),
     new Rainbow(),
-    new Ripple(),
 };
 
 Animator animator(animations, ARRAY_SIZE(animations));

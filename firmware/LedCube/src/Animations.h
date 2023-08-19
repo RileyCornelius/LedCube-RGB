@@ -643,7 +643,7 @@ public:
 
     const float amplitude = (float)(CUBE_SIZE - 1) / 2.0f;
     const float zOffset = (float)(CUBE_SIZE - 1) / 2.0f;
-    const float waveScale = 0.75f;
+    const float waveScale = 0.55f;
     const uint8_t maxCounter = 100;
 
     uint8_t hue = 0;
@@ -651,13 +651,16 @@ public:
     CRGB color = CRGB::Blue;
 
     uint8_t counter = 0;
-    uint8_t x = 0, y = 0, z = 0;
+    // uint8_t x = 0, y = 0, z = 0;
+
+    CRGB gradientCube[LED_COUNT];
 
     void drawFrame() override
     {
+        fill_gradient(gradientCube, LED_COUNT, CHSV(hue, 200, 255), CHSV(hue + 50, 255, 200));
+        hue++;
+
         Cube.fadeAll(170);
-        // Cube.clear();
-        color = CHSV(hue++, 255, 255);
         for (uint8_t x = 0; x < CUBE_SIZE / 2 + 1; x++)
         {
             for (uint8_t y = 0; y < CUBE_SIZE / 2 + 1; y++)
@@ -667,6 +670,8 @@ public:
                 float sineFunction = (amplitude * sin(insideSine)) + zOffset;
                 float z = round(sineFunction);
 
+                uint16_t index = (y * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + z;
+                CRGB color = gradientCube[index];
                 Cube.setVoxel(x, y, z, color);
                 Cube.setVoxel(x, CUBE_SIZE - y - 1, z, color);
                 Cube.setVoxel(CUBE_SIZE - x - 1, y, z, color);
