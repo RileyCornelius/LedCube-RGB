@@ -855,57 +855,21 @@ public:
     }
 };
 
-class CycleFont : public Animation
+class Text : public Animation
 {
 public:
-    CycleFont()
+    Text(const char *text)
     {
-        name = "ASCII";
+        name = text;
+        ascii = text;
         setDelay(100);
     };
 
-    uint8_t hue = 0;
+    const char *ascii;
     CRGB color = CRGB::Blue;
-
-    int8_t y = CUBE_LENGTH;
-    char ascii = '1';
-
-    Font font = IBM_BIOS;
-
-    void drawFrame() override
-    {
-        Cube.fadeAll(160);
-
-        Cube.ascii(ascii, y, color);
-        y--;
-
-        if (y < 0)
-        {
-            color = CHSV(random8(), 255, 255);
-            y = CUBE_LENGTH;
-            ascii++;
-            if (ascii > 127)
-                ascii = '1';
-        }
-    }
-};
-
-class TACAM : public Animation
-{
-public:
-    TACAM()
-    {
-        name = __FUNCTION__;
-        setDelay(100);
-    };
-
-    CRGB color = CRGB::Blue;
-
     int8_t y = CUBE_LENGTH;
     uint8_t index = 0;
     bool thin = false;
-
-    const char *ascii = "TACAM";
 
     void drawFrame() override
     {
@@ -920,6 +884,8 @@ public:
                 thin = !thin;
                 index = 0;
             }
+            if (ascii[index] == ' ')
+                Cube.fadeAll(200);
         }
 
         Cube.fadeAll(180);
