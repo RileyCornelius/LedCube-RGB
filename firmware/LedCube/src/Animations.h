@@ -4,6 +4,256 @@
 #include "Animation.h"
 #include "Cube.h"
 
+// class Fire : public Animation
+// {
+// public:
+//     Fire()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(40);
+//     };
+
+//     CRGBPalette16 firePalette = HeatColors_p;
+//     ;
+//     const uint8_t cooling = 55;
+//     const uint8_t sparking = 120;
+//     CHSV color = CHSV(0, 255, 255);
+
+//     uint8_t heat[LED_COUNT];
+
+//     uint8_t speed = 20;
+//     uint8_t radii[LED_COUNT] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+
+//     uint8_t hue = 0;
+
+//     void drawFrame() override
+//     {
+
+//         static uint16_t sPseudotime = 0;
+//         static uint16_t sLastMillis = 0;
+//         static uint16_t sHue16 = 0;
+
+//         // uint8_t sat8 = beatsin88( 87, 220, 250);
+//         uint8_t brightdepth = beatsin88(341, 96, 224);
+//         uint16_t brightnessthetainc16 = beatsin88(203, (25 * 256), (40 * 256));
+//         uint8_t msmultiplier = beatsin88(147, 23, 60);
+
+//         uint16_t hue16 = sHue16; // gHue * 256;
+//         uint16_t hueinc16 = beatsin88(113, 300, 1500);
+
+//         uint16_t ms = millis();
+//         uint16_t deltams = ms - sLastMillis;
+//         sLastMillis = ms;
+//         sPseudotime += deltams * msmultiplier;
+//         sHue16 += deltams * beatsin88(400, 5, 9);
+//         uint16_t brightnesstheta16 = sPseudotime;
+
+//         for (uint16_t i = 0; i < LED_COUNT; i++)
+//         {
+//             hue16 += hueinc16;
+//             uint8_t hue8 = hue16 / 256;
+//             uint16_t h16_128 = hue16 >> 7;
+//             if (h16_128 & 0x100)
+//             {
+//                 hue8 = 255 - (h16_128 >> 1);
+//             }
+//             else
+//             {
+//                 hue8 = h16_128 >> 1;
+//             }
+
+//             brightnesstheta16 += brightnessthetainc16;
+//             uint16_t b16 = sin16(brightnesstheta16) + 32768;
+
+//             uint16_t bri16 = (uint32_t)((uint32_t)b16 * (uint32_t)b16) / 65536;
+//             uint8_t bri8 = (uint32_t)(((uint32_t)bri16) * brightdepth) / 65536;
+//             bri8 += (255 - brightdepth);
+
+//             uint8_t index = hue8;
+//             index = scale8(index, 240);
+
+//             CRGB newcolor = ColorFromPalette(firePalette, index, bri8);
+
+//             uint16_t pixelnumber = i;
+//             pixelnumber = (LED_COUNT - 1) - pixelnumber;
+
+//             nblend(Cube.leds[pixelnumber], newcolor, 128);
+//         }
+
+//         // void drawFrame() override
+//         // {
+//         //     for (uint8_t x = 0; x < CUBE_SIZE; x++)
+//         //     {
+//         //         for (uint8_t y = 0; y < CUBE_SIZE; y++)
+//         //         {
+//         //             // Step 1.  Cool down every cell a little
+//         //             heat[x][y][0] = qsub8(heat[x][y][0], random8(0, ((cooling * 10) / CUBE_SIZE) + 2));
+
+//         //             // Step 2.  Heat from each cell drifts 'up' and diffuses a little
+//         //             for (uint8_t z = CUBE_SIZE - 1; z > 0; z--)
+//         //             {
+//         //                 heat[x][y][z] = (heat[x][y][z - 1] + heat[x][y][z - 2] + heat[x][y][z - 2]) / 3;
+//         //             }
+
+//         //             // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
+//         //             if (random8() < sparking)
+//         //             {
+//         //                 uint8_t z = random8(2);
+//         //                 heat[x][y][z] = qadd8(heat[x][y][z], random8(160, 255));
+//         //             }
+
+//         //             // Step 4.  Map from heat cells to LED colors
+//         //             for (uint8_t z = 0; z < CUBE_SIZE; z++)
+//         //             {
+//         //                 // Scale the heat value from 0-255 down to 0-240
+//         //                 // for best results with color palettes.
+//         //                 uint8_t colorindex = scale8(heat[x][y][z], 240);
+//         //                 CRGB color = ColorFromPalette(firePalette, colorindex);
+//         //                 Cube.setVoxel(x, y, z, color);
+//         //             }
+//         //         }
+//         //     }
+//         // }
+//     }
+// };
+
+// class Plasma : public Animation
+// {
+// public:
+//     Plasma()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(100);
+//     };
+
+//     uint16_t xRandom = random16();
+//     uint16_t yRandom = random16();
+//     uint16_t zRandom = random16();
+
+//     uint16_t noise[CUBE_SIZE][CUBE_SIZE][CUBE_SIZE];
+//     uint8_t ihue = 0;
+
+//     uint16_t speed = 20;
+//     uint16_t scale = 311;
+
+//     void fillNoise8()
+//     {
+//         for (int x = 0; x < CUBE_SIZE; x++)
+//         {
+//             int xOffset = scale * x;
+//             for (int y = 0; y < CUBE_SIZE; y++)
+//             {
+//                 int yOffset = scale * y;
+//                 for (int z = 0; z < CUBE_SIZE; z++)
+//                 {
+//                     int zOffset = scale * z;
+//                     noise[x][y][z] = inoise8(xRandom + xOffset, yRandom + yOffset, zRandom + zOffset);
+//                 }
+//             }
+//         }
+
+//         zRandom += speed;
+//     }
+
+//     void drawFrame() override
+//     {
+//         fillNoise8();
+//         for (int x = 0; x < CUBE_SIZE; x++)
+//         {
+//             for (int y = 0; y < CUBE_SIZE; y++)
+//             {
+//                 for (int z = 0; z < CUBE_SIZE; z++)
+//                 {
+//                     // Cube.setVoxel(x, y, z, CHSV(noise[x][y][z], 255, noise[x][y][z]));
+//                     Cube.setVoxel(x, y, z, CHSV(ihue + noise[x][y][z] >> 2, 255, noise[x][y][z]));
+//                 }
+//             }
+//         }
+//         ihue += 1;
+//     }
+// };
+
+// class Square : public Animation
+// {
+// public:
+//     Square()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(100);
+//     };
+
+//     uint8_t hue = 0;
+//     uint8_t rotation = 0;
+
+//     enum Side
+//     {
+//         FRONT,
+//         LEFT,
+//         BACK,
+//         RIGHT,
+//         RESET,
+//     };
+//     Side side = FRONT;
+
+//     CRGB color = CHSV(hue, 255, 255);
+//     uint8_t x = 0, y = 0, z = 0;
+
+//     uint8_t MIDDLE = CUBE_SIZE / 2;
+
+//     void drawFrame() override
+//     {
+//         Cube.clear();
+//         switch (side)
+//         {
+//         case FRONT:
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH, CUBE_LENGTH - x, MIDDLE), color);
+//             // Cube.line(Point(4, 4, 4), Point(CUBE_LENGTH - x, CUBE_LENGTH, CUBE_LENGTH), color);
+//             // Cube.line(Point(CUBE_LENGTH - x, CUBE_LENGTH, 0), Point(x, 0, CUBE_LENGTH), CRGB::Black);
+//             x++;
+
+//             if (x == CUBE_LENGTH)
+//                 side = LEFT;
+
+//             break;
+//         case LEFT:
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH - y, CUBE_LENGTH, MIDDLE), color);
+
+//             // Cube.line(Point(CUBE_LENGTH, y, 0), Point(0, CUBE_LENGTH - y, CUBE_LENGTH), color);
+//             // Cube.line(Point(0, CUBE_LENGTH - y, 0), Point(CUBE_LENGTH, y, CUBE_LENGTH), CRGB::Black);
+//             y++;
+
+//             if (y == CUBE_LENGTH)
+//                 side = BACK;
+
+//             break;
+//         case BACK:
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH - x, CUBE_LENGTH, MIDDLE), color);
+
+//             // Cube.line(Point(x, CUBE_LENGTH, 0), Point(8 - x, 0, CUBE_LENGTH), color);
+//             // Cube.line(Point(CUBE_LENGTH - x, 0, 0), Point(x, CUBE_LENGTH, CUBE_LENGTH), CRGB::Black);
+//             x--;
+
+//             if (x == 0)
+//                 side = RIGHT;
+//             break;
+
+//         case RIGHT:
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH, CUBE_LENGTH - y, MIDDLE), color);
+
+//             // Cube.line(Point(0, y, 0), Point(CUBE_LENGTH, CUBE_LENGTH - y, CUBE_LENGTH), color);
+//             // Cube.line(Point(CUBE_LENGTH, CUBE_LENGTH - y, 0), Point(0, y, CUBE_LENGTH), CRGB::Black);
+//             y--;
+
+//             if (y == 0)
+//                 side = FRONT;
+//             break;
+//         }
+//         color = CHSV(hue++, 255, 255);
+//         // Cube.fadeAll(35);
+//         Cube.setVoxel(MIDDLE, MIDDLE, MIDDLE, color); // write to center as it keeps getting blanked out
+//     }
+// };
+
 class Linear : public Animation
 {
 public:
@@ -137,19 +387,25 @@ public:
     Sinelon()
     {
         name = __FUNCTION__;
-        setDelay(10);
+        setDelay(5);
     };
 
     const CRGBPalette16 palette = PartyColors_p;
-    const uint8_t beatsPerMinute = 15;
+    const uint8_t beatsPerMinute = 6;
     uint8_t hue = 0;
+    Timer timer = Timer(50);
+    Timer timer2 = Timer(10);
 
     void drawFrame() override
     {
-        Cube.fadeAll(20);
         int pos = beatsin16(beatsPerMinute, 0, LED_COUNT - 1);
-        Cube.leds[pos] = ColorFromPalette(palette, hue);
-        hue++;
+        Cube.setVoxel(pos, ColorFromPalette(palette, hue));
+
+        if (timer2.ready())
+            Cube.fadeAll(2);
+
+        if (timer.ready())
+            hue++;
     }
 };
 
@@ -247,123 +503,6 @@ public:
         {
             Cube.setVoxel(i, ColorFromPalette(palette, hue + (i * 2), beat + (i * 10)));
             hue += 2;
-        }
-    }
-};
-
-class Plasma : public Animation
-{
-public:
-    Plasma()
-    {
-        name = __FUNCTION__;
-        setDelay(10);
-    };
-
-    uint16_t xRandom = random16();
-    uint16_t yRandom = random16();
-    uint16_t zRandom = random16();
-
-    uint16_t noise[CUBE_SIZE][CUBE_SIZE][CUBE_SIZE];
-    uint8_t ihue = 0;
-
-    uint16_t speed = 20;
-    uint16_t scale = 311;
-
-    void fillNoise8()
-    {
-        for (int x = 0; x < CUBE_SIZE; x++)
-        {
-            int xOffset = scale * x;
-            for (int y = 0; y < CUBE_SIZE; y++)
-            {
-                int yOffset = scale * y;
-                for (int z = 0; z < CUBE_SIZE; z++)
-                {
-                    int zOffset = scale * z;
-                    noise[x][y][z] = inoise8(xRandom + xOffset, yRandom + yOffset, zRandom + zOffset);
-                }
-            }
-        }
-
-        zRandom += speed;
-    }
-
-    void drawFrame() override
-    {
-        fillNoise8();
-        for (int x = 0; x < CUBE_SIZE; x++)
-        {
-            for (int y = 0; y < CUBE_SIZE; y++)
-            {
-                for (int z = 0; z < CUBE_SIZE; z++)
-                {
-                    Cube.setVoxel(x, y, z, CHSV(noise[x][y][z], 255, noise[x][y][z]));
-                    // Cube.setVoxel(x, y, z, CHSV(ihue + noise[x][y][z] >> 2, 255, noise[x][y][z]));
-                }
-            }
-        }
-        ihue += 1;
-    }
-};
-
-class Fire : public Animation
-{
-public:
-    Fire()
-    {
-        name = __FUNCTION__;
-        setDelay(100);
-    };
-
-    CRGBPalette16 palette;
-    bool gReverseDirection = false;
-    uint8_t heat[LED_COUNT]; // Array of temperature readings at each simulation cell
-
-    // Less cooling = taller flames.  More cooling = shorter flames.
-    // Default 55, suggested range 20-100
-    const uint8_t cooling = 55;
-    // Higher chance = more roaring fire.  Lower chance = more flickery fire.
-    // Default 120, suggested range 50-200.
-    const uint8_t sparking = 120;
-
-    void drawFrame() override
-    {
-        // Step 1.  Cool down every cell a little
-        for (int i = 0; i < LED_COUNT; i++)
-        {
-            heat[i] = qsub8(heat[i], random8(0, ((cooling * 10) / LED_COUNT) + 2));
-        }
-        // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-        for (int k = LED_COUNT - 1; k >= 2; k--)
-        {
-            heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2]) / 3;
-        }
-
-        // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-        if (random8() < sparking)
-        {
-            int y = random8(7);
-            heat[y] = qadd8(heat[y], random8(160, 255));
-        }
-
-        // Step 4.  Map from heat cells to LED colors
-        for (int j = 0; j < LED_COUNT; j++)
-        {
-            // Scale the heat value from 0-255 down to 0-240
-            // for best results with color palettes.
-            uint8_t colorindex = scale8(heat[j], 240);
-            CRGB color = ColorFromPalette(palette, colorindex);
-            int pixelnumber;
-            if (gReverseDirection)
-            {
-                pixelnumber = (LED_COUNT - 1) - j;
-            }
-            else
-            {
-                pixelnumber = j;
-            }
-            Cube.setVoxel(pixelnumber, color);
         }
     }
 };
@@ -548,51 +687,66 @@ public:
     Rain()
     {
         name = __FUNCTION__;
-        setDelay(60);
+        setDelay(30);
     };
 
-    const uint8_t scaleAmount = 1;
-    uint8_t tempZ[CUBE_SIZE * CUBE_SIZE] = {0};
-    uint16_t previousLed = 0;
-
-    Timer timer = Timer(40);
-    Timer fadeTimer = Timer(150);
-
-    uint8_t hue = 0;
-    uint16_t index = 0;
-    CRGB color = CRGB::Blue;
-
-    uint8_t counter = 0;
-    uint8_t x = 0, y = 0, z = 0;
+    const uint8_t rainAmount = 150;
+    const uint8_t fadeScale = 40;
+    const CRGBPalette16 rainColor_p =
+        {
+            CRGB(0, 0, 255),
+            CRGB(0, 80, 245),
+            CRGB(0, 0, 235),
+            CRGB(20, 0, 225),
+            CRGB(0, 0, 215),
+            CRGB(0, 120, 190),
+            CRGB(20, 20, 245),
+            CRGB(0, 10, 235),
+            CRGB(20, 30, 225),
+            CRGB(30, 90, 180),
+            CRGB(10, 20, 245),
+            CRGB(30, 40, 235),
+            CRGB(20, 80, 225),
+            CRGB(10, 70, 180),
+            CRGB(10, 60, 205),
+            CRGB(20, 50, 160),
+        };
 
     void drawFrame() override
     {
-        uint16_t newLed = 0;
-        do
+        // Move raindrops down
+        EVERY_N_MILLISECONDS(60)
         {
-            newLed = (rand() % CUBE_SIZE * CUBE_SIZE) + ((CUBE_SIZE - 1) * CUBE_SIZE * CUBE_SIZE);
-        } while (newLed == previousLed);
+            for (int i = 0; i < CUBE_SIZE; i++)
+                for (int j = 0; j < CUBE_SIZE; j++)
+                    for (int k = 0; k < CUBE_SIZE; k++)
+                        if (Cube.getVoxel(i, j, k) != CRGB(0, 0, 0))
+                        {
+                            if (k >= 1) // bottom layers are not affected
+                            {
+                                Cube.setVoxel(i, j, k - 1, Cube.getVoxel(i, j, k));
+                                Cube.setVoxel(i, j, k, CRGB(0, 0, 0));
+                            }
+                            else
+                            {
+                                Cube.fadeVoxel(i, j, k, fadeScale);
+                            }
+                        }
+        }
 
-        previousLed = newLed; // Ensure the same LED cannot be set twice in a row
+        // Create new raindrops
+        if (random8() < rainAmount)
+        {
+            static Point prevPoint;
+            Point point;
+            do // Ensure the same point doesnt get set twice in a row
+            {
+                point = Point(random8(0, CUBE_SIZE), random8(0, CUBE_SIZE), CUBE_SIZE - 1);
+            } while (point == prevPoint);
+            prevPoint = point;
 
-        Cube.setVoxel(newLed, color);
-
-        // if (timer.ready())
-        // {
-
-        //     ledCube.copyZLayer(0, tempZ);
-        //     ledCube.setZLayer(0, 0);
-        //     ledCube.shiftZ(-1);
-        //     for (uint8_t i = 0; i < CUBE_SIZE * CUBE_SIZE; i++)
-        //         if (ledCube.getLedBrightness(i) != 0)
-        //             tempZ[i] = ledCube.getLedBrightness(i);
-        //     ledCube.setZLayerWithArray(0, tempZ);
-        // }
-
-        // if (fadeTimer.ready())
-        // {
-        //     ledCube.scaleZLayer(0, -scaleAmount);
-        // }
+            Cube.setVoxel(point, ColorFromPalette(rainColor_p, random8(0, 255)));
+        }
     }
 };
 

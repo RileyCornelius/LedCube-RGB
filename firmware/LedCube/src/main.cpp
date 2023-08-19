@@ -10,6 +10,8 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    new Rain(),
+    new Sinelon(),
     new Spiral(),
     new TACAM(),
     new CycleFont(),
