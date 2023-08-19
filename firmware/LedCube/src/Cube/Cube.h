@@ -31,10 +31,79 @@ struct Point
     Point(uint8_t X, uint8_t Y, uint8_t Z) : x(X), y(Y), z(Z) {}
     Point(const Point &p) : x(p.x), y(p.y), z(p.z) {}
 
+    // set this point equal to another
+    Point operator=(const Point &p)
+    {
+        x = p.x;
+        y = p.y;
+        z = p.z;
+        return *this;
+    }
+
+    // compare two points
+    bool operator==(const Point &p)
+    {
+        return (x == p.x && y == p.y && z == p.z);
+    }
+
     // add two points together
     Point operator+(const Point &p)
     {
         return Point(x + p.x, y + p.y, z + p.z);
+    }
+
+    // subtract two points
+    Point operator-(const Point &p)
+    {
+        return Point(x - p.x, y - p.y, z - p.z);
+    }
+
+    // add to this point
+    Point operator+=(const Point &p)
+    {
+        x += p.x;
+        y += p.y;
+        z += p.z;
+        return *this;
+    }
+
+    // subtract from this point
+    Point operator-=(const Point &p)
+    {
+        x -= p.x;
+        y -= p.y;
+        z -= p.z;
+        return *this;
+    }
+
+    // multiply a point by a scalar
+    Point operator*(const int &s)
+    {
+        return Point(x * s, y * s, z * s);
+    }
+
+    // divide a point by a scalar
+    Point operator/(const int &s)
+    {
+        return Point(x / s, y / s, z / s);
+    }
+
+    // multiply this point by a scalar
+    Point operator*=(const int &s)
+    {
+        x *= s;
+        y *= s;
+        z *= s;
+        return *this;
+    }
+
+    // divide this point by a scalar
+    Point operator/=(const int &s)
+    {
+        x /= s;
+        y /= s;
+        z /= s;
+        return *this;
     }
 };
 
