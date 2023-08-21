@@ -91,4 +91,7 @@ struct Point
         z /= s;
         return *this;
     }
+
+    // negative (operator -)
+    Point operator-() const { return Point(-x, -y, -z); }
 };

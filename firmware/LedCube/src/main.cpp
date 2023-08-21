@@ -10,6 +10,7 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    new Sparkles(),
     new Ripple(),
     new Rain(),
     new Sinelon(),
