@@ -6,6 +6,7 @@
 #endif
 #include <FastLED.h>
 #include "Point.h"
+#include "Cube/Math3D/Math3D.h"
 #include "config.h"
 
 /*---------------------------------------------------------------------------------------
@@ -29,6 +30,7 @@ public:
     void setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col);
     void setVoxel(uint16_t index, CRGB col);
     void setVoxel(Point p, CRGB col);
+    void setVoxel(Vector3 p, CRGB col);
     CRGB getVoxel(uint8_t x, uint8_t y, uint8_t z);
     CRGB getVoxel(uint16_t index);
     CRGB getVoxel(Point p);

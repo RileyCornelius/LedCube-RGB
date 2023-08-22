@@ -254,6 +254,8 @@
 //     }
 // };
 
+#include "Cube/Math3D/Math3D.h"
+
 class Draw : public Animation
 {
 public:
@@ -266,18 +268,40 @@ public:
     uint8_t hue = 0;
     CRGB color = CRGB::White;
 
-    float angle = 0.0f;
+    float angle = 45.0f;
+
     void drawFrame() override
     {
-        Point p = Point(4, 7, 4);
-        p = p.rotate(Point(4, 4, 4), Angles(angle, 0, 0));
-        // Point p = rotateUsingAxis(Point(4, 4, 4), Point(4, 7, 4), Angles(angle, 0, 0));
+        // Quaternion q = Quaternion(angle, Vector3(0, 0, 1));
+        // Vector3 v = Vector3(6, 6, 4) - Vector3(4, 4, 4);
+        // v = q.rotate(v) + Vector3(4, 4, 4);
+
+        Quaternion q = Quaternion(angle, Vector3(0, 0, 1));
+        Vector3 v = Vector3(6, 6, 4);
+        v = q.rotate(v);
+
+        // Vector3 v = Vector3(0, 0, 1);
+        // v = v.rotate(angle, Vector3(5, 5, 5));
+
+        //         Vector3 v = Vector3(0, 0, 1);
+        // v = v.rotate(angle, Vector3(5, 5, 5) - Vector3(4, 4, 4)) + Vector3(4, 4, 4);
+
         Cube.fadeAll(200);
-        Cube.setVoxel(p, color);
+        Cube.setVoxel(v, color);
 
         angle += 45;
         if (angle >= 360)
             angle = 0;
+
+        // Point p = Point(4, 7, 4);
+        // p = p.rotate(Point(4, 4, 4), Angles(angle, 0, 0));
+        // // Point p = rotateUsingAxis(Point(4, 4, 4), Point(4, 7, 4), Angles(angle, 0, 0));
+        // Cube.fadeAll(200);
+        // Cube.setVoxel(p, color);
+
+        // angle += 45;
+        // if (angle >= 360)
+        //     angle = 0;
     }
 };
 
