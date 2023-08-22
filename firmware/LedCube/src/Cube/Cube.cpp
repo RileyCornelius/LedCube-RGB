@@ -300,22 +300,7 @@ void LedCube::sphere(Point p, int r, CRGB col)
     sphere(p.x, p.y, p.z, r, col);
 }
 
-void LedCube::shell(float x, float y, float z, float r, CRGB col)
-{
-    float thickness = 0.1;
-    for (int i = 0; i < CUBE_SIZE; i++)
-        for (int j = 0; j < CUBE_SIZE; j++)
-            for (int k = 0; k < CUBE_SIZE; k++)
-                if (abs(sqrt((i - x, 2) + pow(j - y, 2) + pow(k - z, 2)) - r) < thickness)
-                    setVoxel(i, j, k, col);
-}
-
-void LedCube::shell(Point p, float r, CRGB col)
-{
-    shell(p.x, p.y, p.z, r, col);
-}
-
-void LedCube::shell(float x, float y, float z, float r, float thickness, CRGB col)
+void LedCube::shell(float x, float y, float z, float r, CRGB col, float thickness /* = 0.1 */)
 {
     for (int i = 0; i < CUBE_SIZE; i++)
         for (int j = 0; j < CUBE_SIZE; j++)
@@ -324,9 +309,9 @@ void LedCube::shell(float x, float y, float z, float r, float thickness, CRGB co
                     setVoxel(i, j, k, col);
 }
 
-void LedCube::shell(Point p, float r, float thickness, CRGB col)
+void LedCube::shell(Point p, float r, CRGB col, float thickness /* = 0.1 */)
 {
-    shell(p.x, p.y, p.z, r, thickness, col);
+    shell(p.x, p.y, p.z, r, col, thickness);
 }
 
 void LedCube::ascii(char ascii, uint8_t y, CRGB color)

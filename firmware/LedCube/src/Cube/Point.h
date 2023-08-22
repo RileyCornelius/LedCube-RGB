@@ -1,4 +1,30 @@
+#pragma once
+
 #include <Arduino.h>
+
+/*---------------------------------------------------------------------------------------
+ * Angles STRUCT - Rotate in 3D
+ *-------------------------------------------------------------------------------------*/
+
+struct Angles
+{
+    float x; // rad
+    float y; // rad
+    float z; // rad
+
+    Angles(float degreeX, float degreeY, float degreeZ)
+    {
+        x = deg2rad(degreeX);
+        y = deg2rad(degreeY);
+        z = deg2rad(degreeZ);
+    }
+
+private:
+    float deg2rad(float degrees)
+    {
+        return degrees * M_PI / 180;
+    }
+};
 
 /*---------------------------------------------------------------------------------------
  * POINT STRUCT - 3D Point in Cube
@@ -9,9 +35,9 @@
  */
 struct Point
 {
-    uint8_t x;
-    uint8_t y;
-    uint8_t z;
+    int8_t x;
+    int8_t y;
+    int8_t z;
 
     Point() : x(0), y(0), z(0) {}
     Point(uint8_t X, uint8_t Y, uint8_t Z) : x(X), y(Y), z(Z) {}
@@ -33,19 +59,19 @@ struct Point
     }
 
     // add two points together
-    Point operator+(const Point &p)
+    Point operator+(const Point &p) const
     {
         return Point(x + p.x, y + p.y, z + p.z);
     }
 
     // subtract two points
-    Point operator-(const Point &p)
+    Point operator-(const Point &p) const
     {
         return Point(x - p.x, y - p.y, z - p.z);
     }
 
     // add to this point
-    Point operator+=(const Point &p)
+    Point &operator+=(const Point &p)
     {
         x += p.x;
         y += p.y;
@@ -54,7 +80,7 @@ struct Point
     }
 
     // subtract from this point
-    Point operator-=(const Point &p)
+    Point &operator-=(const Point &p)
     {
         x -= p.x;
         y -= p.y;
@@ -63,19 +89,19 @@ struct Point
     }
 
     // multiply a point by a scalar
-    Point operator*(const int &s)
+    Point operator*(const float &s) const
     {
         return Point(x * s, y * s, z * s);
     }
 
     // divide a point by a scalar
-    Point operator/(const int &s)
+    Point operator/(const float &s) const
     {
         return Point(x / s, y / s, z / s);
     }
 
     // multiply this point by a scalar
-    Point operator*=(const int &s)
+    Point &operator*=(const float &s)
     {
         x *= s;
         y *= s;
@@ -84,7 +110,7 @@ struct Point
     }
 
     // divide this point by a scalar
-    Point operator/=(const int &s)
+    Point &operator/=(const float &s)
     {
         x /= s;
         y /= s;
@@ -94,4 +120,27 @@ struct Point
 
     // negative (operator -)
     Point operator-() const { return Point(-x, -y, -z); }
+
+    Point rotate(const Point &c, Angles a)
+    {
+        Point p = *this;
+        float dx = p.x - c.x, dy = p.y - c.y, dz = p.z - c.z;
+
+        return Point(
+            round(
+                ((cos(a.y) * cos(a.z)) * dx +
+                 (-cos(a.x) * sin(a.z) + sin(a.x) * sin(a.y) * cos(a.z)) * dy +
+                 (sin(a.x) * sin(a.z) + cos(a.x) * sin(a.y) * cos(a.z)) * dz) +
+                c.x),
+            round(
+                ((cos(a.y) * sin(a.z)) * dx +
+                 (cos(a.x) * cos(a.z) + sin(a.x) * sin(a.y) * sin(a.z)) * dy +
+                 (-sin(a.x) * cos(a.z) + cos(a.x) * sin(a.y) * sin(a.z)) * dz) +
+                c.y),
+            round(((-sin(a.y)) * dx + (sin(a.x) * cos(a.y)) * dy +
+                   (cos(a.x) * cos(a.y)) * dz) +
+                  c.z));
+    }
 };
+
+Point rotateUsingAxis(const Point &c, const Point &p, const Angles &a);

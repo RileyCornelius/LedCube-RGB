@@ -47,10 +47,8 @@ public:
     void square(Point p1, Point p2, Point p3, Point p4, CRGB col);
     void sphere(int x, int y, int z, int radius, CRGB col);
     void sphere(Point p, int radius, CRGB col);
-    void shell(float x, float y, float z, float r, CRGB col);
-    void shell(float x, float y, float z, float r, float thickness, CRGB col);
-    void shell(Point p, float r, CRGB col);
-    void shell(Point p, float r, float thickness, CRGB col);
+    void shell(float x, float y, float z, float r, CRGB col, float thickness = 0.1);
+    void shell(Point p, float r, CRGB col, float thickness = 0.1);
     void ascii(char ascii, uint8_t y, CRGB color);
     void asciiThin(char ascii, uint8_t y, CRGB color);
 };

@@ -260,21 +260,24 @@ public:
     Draw()
     {
         name = __FUNCTION__;
-        setDelay(40);
+        setDelay(500);
     };
 
     uint8_t hue = 0;
-    uint16_t index = 0;
     CRGB color = CRGB::White;
-    Point prevPoint = Point();
+
+    float angle = 0.0f;
     void drawFrame() override
     {
-        Point p = prevPoint;
-        p += Point(1, 0, 0);
-        if (p.x == CUBE_SIZE)
-            p = Point();
-        Cube.setVoxel(prevPoint, CRGB::Black);
+        Point p = Point(4, 7, 4);
+        p = p.rotate(Point(4, 4, 4), Angles(angle, 0, 0));
+        // Point p = rotateUsingAxis(Point(4, 4, 4), Point(4, 7, 4), Angles(angle, 0, 0));
+        Cube.fadeAll(200);
         Cube.setVoxel(p, color);
+
+        angle += 45;
+        if (angle >= 360)
+            angle = 0;
     }
 };
 
