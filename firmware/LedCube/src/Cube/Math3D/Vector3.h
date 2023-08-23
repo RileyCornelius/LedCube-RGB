@@ -17,10 +17,6 @@
 class Vector3
 {
 public:
-    static const Vector3 X;
-    static const Vector3 Y;
-    static const Vector3 Z;
-
 public:
     float x, y, z;
 
@@ -29,14 +25,13 @@ public:
     Vector3();
     Vector3(float x, float y, float z);
     Vector3(const Vector3 &v);
+    Vector3(const Point &p);
 
     // moving
     Vector3 operator+(const Vector3 &v) const;
     Vector3 operator-(const Vector3 &v) const;
     Vector3 &operator+=(const Vector3 &v);
     Vector3 &operator-=(const Vector3 &v);
-    // negate
-    Vector3 operator-() const;
 
     // scaling
     Vector3 operator*(float s) const;
@@ -53,9 +48,13 @@ public:
     float dot(const Vector3 &v) const;
     float operator%(const Vector3 &v) const;
 
+    // negate
+    Vector3 operator-() const;
+
     // unit vector
     Vector3 &normalize();
     Vector3 normalized() const;
+
     // magnitude or length of the vector
     float magnitude() const;
     float norm() const;
@@ -67,4 +66,12 @@ public:
     bool inside(const Vector3 &v, float radius) const;
     // test square boundary of this vector
     bool inside(const Vector3 &l, const Vector3 &h) const;
+};
+
+// Constants to used for rotations
+struct Axis
+{
+    static const Vector3 X;
+    static const Vector3 Y;
+    static const Vector3 Z;
 };

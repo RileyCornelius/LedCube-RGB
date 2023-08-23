@@ -5,13 +5,11 @@
 /*------------------------------------------------------------------------------
  * Vector3 CLASS
  *----------------------------------------------------------------------------*/
-const Vector3 Vector3::Y(0, 1, 0);
-const Vector3 Vector3::X(1, 0, 0);
-const Vector3 Vector3::Z(0, 0, 1);
 
 Vector3::Vector3() : x(0.0f), y(0.0f), z(0.0f){};
 Vector3::Vector3(float x_, float y_, float z_) : x(x_), y(y_), z(z_){};
 Vector3::Vector3(const Vector3 &v) : x(v.x), y(v.y), z(v.z){};
+Vector3::Vector3(const Point &p) : x(p.x), y(p.y), z(p.z){};
 
 // add, subtract (operator +, -, +=, -=)
 Vector3 Vector3::operator+(const Vector3 &v) const
@@ -118,3 +116,9 @@ Vector3 Vector3::rotate(float angle, const Vector3 &axis, const Vector3 &center 
     // (1-cos(0))(v.n)n + cos(0)v + sin(0)(n x v) + c
     return (n * shifted.dot(n) * (1 - cosf(rad)) + shifted * cosf(rad) + n.cross(shifted) * sinf(rad)) + center;
 }
+
+// Constants to used for rotations
+
+const Vector3 Axis::X(1, 0, 0);
+const Vector3 Axis::Y(0, 1, 0);
+const Vector3 Axis::Z(0, 0, 1);

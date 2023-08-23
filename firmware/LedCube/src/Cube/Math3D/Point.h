@@ -34,6 +34,7 @@ struct Point
     Point();
     Point(uint8_t X, uint8_t Y, uint8_t Z);
     Point(const Point &p);
+    Point(const Vector3 &v);
 
     Point operator=(const Point &p);
     bool operator==(const Point &p);
@@ -47,5 +48,6 @@ struct Point
     Point &operator/=(const float &s);
     Point operator-() const;
 
+    bool isValid();
     Point rotate(const Point &c, Angles a);
 };
