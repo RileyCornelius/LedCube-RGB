@@ -4,8 +4,8 @@
 // Changes data transfer from RMT to I2S which can handle up to 24 parallel branches
 #define FASTLED_ESP32_I2S true // This must be defined before including FastLED.h
 #endif
+
 #include <FastLED.h>
-#include "Point.h"
 #include "Cube/Math3D/Math3D.h"
 #include "config.h"
 

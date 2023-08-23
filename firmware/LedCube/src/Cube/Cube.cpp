@@ -1,7 +1,7 @@
 #include "Cube.h"
 #include "ota.h"
-#include "font8x8/ibm_vga.h"
-#include "font8x8/ibm_cga_light.h"
+#include "Font8x8/ibm_vga.h"
+#include "Font8x8/ibm_cga_light.h"
 
 // Global cube helper object for Animation sub classes
 LedCube Cube = LedCube();
