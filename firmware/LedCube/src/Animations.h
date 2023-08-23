@@ -276,12 +276,12 @@ public:
         // Vector3 v = Vector3(6, 6, 4) - Vector3(4, 4, 4);
         // v = q.rotate(v) + Vector3(4, 4, 4);
 
-        Quaternion q = Quaternion(angle, Vector3(0, 0, 1));
-        Vector3 v = Vector3(6, 6, 4);
-        v = q.rotate(v);
+        // Quaternion q = Quaternion(angle, Vector3(0, 0, 1));
+        // Vector3 v = Vector3(6, 6, 4);
+        // v = q.rotate(v);
 
-        // Vector3 v = Vector3(0, 0, 1);
-        // v = v.rotate(angle, Vector3(5, 5, 5));
+        Vector3 v = Vector3(5, 5, 5);
+        v = v.rotate(angle, Vector3(0, 0, 1));
 
         //         Vector3 v = Vector3(0, 0, 1);
         // v = v.rotate(angle, Vector3(5, 5, 5) - Vector3(4, 4, 4)) + Vector3(4, 4, 4);

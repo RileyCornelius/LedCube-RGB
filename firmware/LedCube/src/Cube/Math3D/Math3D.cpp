@@ -90,20 +90,6 @@ Vector3 Vector3::normalized() const { return *this / magnitude(); }
 float Vector3::magnitude() const { return sqrt(norm()); }
 float Vector3::norm() const { return x * x + y * y + z * z; }
 
-// rotate v by an angle and this vector holding an axis using Rodrigues formula
-Vector3 Vector3::rotate(float angle, const Vector3 &v, const Vector3 &c /*= Vector3(4, 4, 4)*/)
-{
-  // Angle is in degree and is converted to radian by multiplying by 2PI/360
-  float rad = 2 * M_PI / 360 * angle;
-  Vector3 shift = v - c;
-  // float c = cosf(2 * M_PI / 360 * angle);
-  // float s = sinf(2 * M_PI / 360 * angle);
-  // normalize this vector to get n hat
-  Vector3 n = normalized();
-  // (1-cos(0))(v.n)n + cos(0)v + sin(0)(n x v)
-  return (n * shift.dot(n) * (1 - cosf(rad)) + shift * cosf(rad) + n.cross(shift) * sinf(rad)) + c;
-}
-
 // Test if this vector (point) is within a spherical radius of v inclusive
 bool Vector3::inside(const Vector3 &v, float radius) const
 {
@@ -117,6 +103,27 @@ bool Vector3::inside(const Vector3 &l, const Vector3 &h) const
   return (x < h.x && x >= l.x) && (y < h.y && y >= l.y) &&
          (z < h.z && z >= l.z);
 }
+
+/**
+ * Rotate this vector by an angle, with axis around the centroid using Rodrigues formula
+ *
+ * @param angle: angle in degrees
+ * @param axis: axis of rotation
+ * @param center: point to rotate around (default: center of cube)
+ * @return: this vector rotated
+ */
+Vector3 Vector3::rotate(float angle, const Vector3 &axis, const Vector3 &center /*= Vector3(4, 4, 4)*/)
+{
+  // Angle is in degree and is converted to radian by multiplying by PI/180
+  float rad = angle * M_PI / 180;
+  // shift the vector to rotate around the center instead of the origin
+  Vector3 shifted = *this - center;
+  // normalize this axis to get n hat
+  Vector3 n = axis.normalized();
+  // (1-cos(0))(v.n)n + cos(0)v + sin(0)(n x v) + c
+  return (n * shifted.dot(n) * (1 - cosf(rad)) + shifted * cosf(rad) + n.cross(shifted) * sinf(rad)) + center;
+}
+
 /*------------------------------------------------------------------------------
  * Quaternion CLASS
  *----------------------------------------------------------------------------*/
@@ -232,11 +239,16 @@ Quaternion Quaternion::normalized() const { return *this / magnitude(); }
 float Quaternion::magnitude() const { return sqrt(norm()); }
 float Quaternion::norm() const { return w * w + v.dot(v); }
 
-// rotate v_ by this quaternion holding an angle and axis
-Vector3 Quaternion::rotate(const Vector3 &v_, const Vector3 &c_ /*= Vector3(4, 4, 4)*/)
+/**
+ * Rotate vec by this quaternion holding an angle and axis around the center
+ * parm vec: Vector3 to rotate
+ * parm center: Vector3 to rotate around (default: center of cube)
+ * return: Vector3 rotated
+ */
+Vector3 Quaternion::rotate(const Vector3 &vec, const Vector3 &center /*= Vector3(4, 4, 4)*/)
 {
-  Vector3 shift = v_ - c_;
-  Vector3 vcv_ = v.cross(shift);
+  Vector3 shifted = vec - center;
+  Vector3 vcv = v.cross(shifted);
 
-  return (shift + vcv_ * (2 * w) + v.cross(vcv_) * 2) + c_;
+  return (shifted + vcv * (2 * w) + v.cross(vcv) * 2) + center;
 }
