@@ -17,7 +17,6 @@
 class Vector3
 {
 public:
-public:
     float x, y, z;
 
 public:
@@ -25,7 +24,6 @@ public:
     Vector3();
     Vector3(float x, float y, float z);
     Vector3(const Vector3 &v);
-    Vector3(const Point &p);
 
     // moving
     Vector3 operator+(const Vector3 &v) const;

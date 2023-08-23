@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Math3D.h"
+#include <Arduino.h>
+#include "Vector3.h"
 
 /*---------------------------------------------------------------------------------------
  * Angles STRUCT - Rotate in 3D
@@ -25,12 +26,14 @@ struct Angles
 /**
  * x, y, z location
  */
-struct Point
+class Point
 {
+public:
     int8_t x;
     int8_t y;
     int8_t z;
 
+public:
     Point();
     Point(uint8_t X, uint8_t Y, uint8_t Z);
     Point(const Point &p);

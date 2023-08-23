@@ -58,28 +58,28 @@ LedCube::LedCube()
 {
 }
 
-void LedCube::setVoxel(Vector3 p, CRGB col)
+void LedCube::setVoxel(const Vector3 &v, const CRGB &col)
 {
-    setVoxel(round(p.x), round(p.y), round(p.z), col);
+    setVoxel(Point(v), col);
 }
 
-void LedCube::setVoxel(Point p, CRGB col)
+void LedCube::setVoxel(const Point &p, const CRGB &col)
 {
     setVoxel(p.x, p.y, p.z, col);
 }
 
-void LedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, CRGB col)
+void LedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, const CRGB &col)
 {
     setVoxel(getIndex(x, y, z), col);
 }
 
-void LedCube::setVoxel(uint16_t index, CRGB col)
+void LedCube::setVoxel(uint16_t index, const CRGB &col)
 {
     SAFE_VOXEL_GUARD(index)
     leds[index] = col;
 }
 
-CRGB LedCube::getVoxel(Point p)
+CRGB LedCube::getVoxel(const Point &p)
 {
     return getVoxel(p.x, p.y, p.z);
 }
@@ -95,7 +95,7 @@ CRGB LedCube::getVoxel(uint16_t index)
     return CRGB(leds[index].r, leds[index].g, leds[index].b);
 }
 
-void LedCube::fadeVoxel(Point p, uint8_t scale)
+void LedCube::fadeVoxel(const Point &p, uint8_t scale)
 {
     fadeVoxel(p.x, p.y, p.z, scale);
 }
@@ -150,7 +150,7 @@ void LedCube::fadeAll(uint8_t scale) // scale / 256 * color
         fadeVoxel(i, scale);
 }
 
-void LedCube::fill(CRGB col)
+void LedCube::fill(const CRGB &col)
 {
     for (uint16_t i = 0; i < LED_COUNT; i++)
         setVoxel(i, col);
@@ -161,7 +161,7 @@ void LedCube::clear()
     fill(CRGB::Black);
 }
 
-void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col)
+void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, const CRGB &col)
 {
     Point currentPoint = Point(x1, y1, z1);
 
@@ -260,19 +260,19 @@ void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, CRGB col)
     setVoxel(currentPoint, col);
 }
 
-void LedCube::line(Point p1, Point p2, CRGB col)
+void LedCube::line(const Point &p1, const Point &p2, const CRGB &col)
 {
     line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, col);
 }
 
-void LedCube::triangle(Point p1, Point p2, Point p3, CRGB col)
+void LedCube::triangle(const Point &p1, const Point &p2, const Point &p3, const CRGB &col)
 {
     line(p1, p2, col);
     line(p2, p3, col);
     line(p3, p1, col);
 }
 
-void LedCube::square(Point p1, Point p2, Point p3, Point p4, CRGB col)
+void LedCube::square(const Point &p1, const Point &p2, const Point &p3, const Point &p4, const CRGB &col)
 {
     line(p1, p2, col);
     line(p2, p3, col);
@@ -280,7 +280,7 @@ void LedCube::square(Point p1, Point p2, Point p3, Point p4, CRGB col)
     line(p4, p1, col);
 }
 
-void LedCube::sphere(int x, int y, int z, int r, CRGB col)
+void LedCube::sphere(int x, int y, int z, int r, const CRGB &col)
 {
     for (int dx = -r; dx <= r; dx++)
     {
@@ -300,12 +300,12 @@ void LedCube::sphere(int x, int y, int z, int r, CRGB col)
     }
 }
 
-void LedCube::sphere(Point p, int r, CRGB col)
+void LedCube::sphere(const Point &p, int r, const CRGB &col)
 {
     sphere(p.x, p.y, p.z, r, col);
 }
 
-void LedCube::shell(float x, float y, float z, float r, CRGB col, float thickness /* = 0.1 */)
+void LedCube::shell(float x, float y, float z, float r, const CRGB &col, float thickness /* = 0.1 */)
 {
     for (int i = 0; i < CUBE_SIZE; i++)
         for (int j = 0; j < CUBE_SIZE; j++)
@@ -314,12 +314,12 @@ void LedCube::shell(float x, float y, float z, float r, CRGB col, float thicknes
                     setVoxel(i, j, k, col);
 }
 
-void LedCube::shell(Point p, float r, CRGB col, float thickness /* = 0.1 */)
+void LedCube::shell(const Point &p, float r, const CRGB &col, float thickness /* = 0.1 */)
 {
     shell(p.x, p.y, p.z, r, col, thickness);
 }
 
-void LedCube::ascii(char ascii, uint8_t y, CRGB color)
+void LedCube::ascii(char ascii, uint8_t y, const CRGB &color)
 {
     static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
 
@@ -337,7 +337,7 @@ void LedCube::ascii(char ascii, uint8_t y, CRGB color)
     }
 }
 
-void LedCube::asciiThin(char ascii, uint8_t y, CRGB color)
+void LedCube::asciiThin(char ascii, uint8_t y, const CRGB &color)
 {
     static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
 
@@ -356,7 +356,7 @@ void LedCube::asciiThin(char ascii, uint8_t y, CRGB color)
 
 /*--------------------------- PRIVATE FUNCTIONS --------------------------*/
 
-uint16_t LedCube::getIndex(Point p)
+uint16_t LedCube::getIndex(const Point &p)
 {
     return getIndex(p.x, p.y, p.z);
 }

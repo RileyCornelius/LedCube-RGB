@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Math3D.h"
+#include <Arduino.h>
+#include "Vector3.h"
 
 /*------------------------------------------------------------------------------
  * Quaternion CLASS

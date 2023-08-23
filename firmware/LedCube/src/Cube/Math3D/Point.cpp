@@ -1,5 +1,6 @@
 #include "Point.h"
 #include "config.h"
+#include "Math3D.h"
 
 /*---------------------------------------------------------------------------------------
  * POINT STRUCT - 3D Point in Cube

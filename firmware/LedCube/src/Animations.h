@@ -276,11 +276,11 @@ public:
         // Vector3 v = Vector3(6, 6, 4) - Vector3(4, 4, 4);
         // v = q.rotate(v) + Vector3(4, 4, 4);
 
-        // Quaternion q = Quaternion(angle, Axis::Z);
-        // Quaternion q2 = Quaternion(90, Axis::Y);
-        // Quaternion q3 = q * q2;
-        // Vector3 v = Vector3(6, 6, 4);
-        // v = q3.rotate(v);
+        Quaternion q = Quaternion(angle, Axis::Z);
+        Quaternion q2 = Quaternion(90, Axis::Y);
+        Quaternion q3 = q * q2;
+        Vector3 v = Vector3(7, 7, 4);
+        v = q.rotate(v);
 
         // Vector3 v = Vector3(6, 6, 5);
         // v = v.rotate(angle, Axis::Z);
@@ -289,21 +289,17 @@ public:
         //         Vector3 v = Vector3(0, 0, 1);
         // v = v.rotate(angle, Vector3(5, 5, 5) - Vector3(4, 4, 4)) + Vector3(4, 4, 4);
 
-        // Cube.fadeAll(200);
-        // Cube.setVoxel(v, color);
-
-        angle += 45;
-        if (angle >= 360)
-            angle = 0;
+        Cube.fadeAll(200);
+        Cube.setVoxel(v, color);
 
         // Point p = Point(4, 7, 4);
         // p = p.rotate(Point(4, 4, 4), Angles(angle, 0, 90));
         // Cube.fadeAll(200);
         // Cube.setVoxel(p, color);
 
-        // angle += 45;
-        // if (angle >= 360)
-        //     angle = 0;
+        angle += 45;
+        if (angle >= 360)
+            angle = 0;
     }
 };
 

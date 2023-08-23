@@ -9,7 +9,6 @@
 Vector3::Vector3() : x(0.0f), y(0.0f), z(0.0f){};
 Vector3::Vector3(float x_, float y_, float z_) : x(x_), y(y_), z(z_){};
 Vector3::Vector3(const Vector3 &v) : x(v.x), y(v.y), z(v.z){};
-Vector3::Vector3(const Point &p) : x(p.x), y(p.y), z(p.z){};
 
 // add, subtract (operator +, -, +=, -=)
 Vector3 Vector3::operator+(const Vector3 &v) const
@@ -108,7 +107,7 @@ bool Vector3::inside(const Vector3 &l, const Vector3 &h) const
 Vector3 Vector3::rotate(float angle, const Vector3 &axis, const Vector3 &center /*= Vector3(4, 4, 4)*/)
 {
     // Angle is in degree and is converted to radian by multiplying by PI/180
-    float rad = angle * M_PI / 180;
+    float rad = deg2rad(angle);
     // shift the vector to rotate around the center instead of the origin
     Vector3 shifted = *this - center;
     // normalize this axis to get n hat
