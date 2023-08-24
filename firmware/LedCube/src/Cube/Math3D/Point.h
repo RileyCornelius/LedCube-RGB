@@ -35,7 +35,7 @@ public:
 
 public:
     Point();
-    Point(uint8_t X, uint8_t Y, uint8_t Z);
+    Point(int8_t X, int8_t Y, int8_t Z);
     Point(const Point &p);
     Point(const Vector3 &v);
 
@@ -52,5 +52,5 @@ public:
     Point operator-() const;
 
     bool isValid();
-    Point rotate(const Point &c, Angles a);
+    Point rotate(Angles a, const Point &c = Point(4.5, 4.5, 4.5));
 };

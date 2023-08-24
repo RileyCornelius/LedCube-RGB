@@ -66,7 +66,7 @@ public:
     bool inside(const Vector3 &l, const Vector3 &h) const;
 };
 
-// Constants to used for rotations
+// Axis of rotation constants
 struct Axis
 {
     static const Vector3 X;

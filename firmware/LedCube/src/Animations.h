@@ -254,7 +254,57 @@
 //     }
 // };
 
-#include "Cube/Math3D/Math3D.h"
+// class Explosion : public Animation
+// {
+// public:
+//     Explosion()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(300);
+//     };
+
+//     uint8_t hue = 0;
+//     uint8_t radius = 0;
+//     CRGB color = CRGB::White;
+//     uint8_t i;
+
+//     Particle debris[100];
+
+//     float noisef;
+
+//     float normalized(int16_t inputValue, float minValue, float maxValue,
+//                      float desiredMin, float desiredMax)
+//     {
+//         return -desiredMin + ((inputValue - minValue) / (maxValue - minValue)) * (desiredMax - desiredMin);
+//     }
+
+//     void explosion()
+//     {
+//         uint8_t hue = 0;
+//         float pwr = 3.00f;
+//         ARRAY_SIZE(debris);
+//         for (uint16_t i = 0; i < sizeof(debris) / sizeof(Particle); i++)
+//         {
+//             Vector3 explode =
+//                 Vector3(normalized(inoise8(i), 0, 255, -pwr, pwr), normalized(inoise8(i), 0, 255, -pwr, pwr),
+//                         normalized(inoise8(i), 0, 255, 0, pwr));
+//             float x = normalized(inoise8(i), 0, 255, 3, 5);
+//             float y = normalized(inoise8(i), 0, 255, 3, 5);
+//             float z = normalized(inoise8(i), 2, 255, 3, 5);
+
+//             debris[i] = Particle(Vector3(x, y, z), explode, uint8_t(hue + random8(0, 24)),
+//                                  1.0f, normalized(inoise8(i), 0, 255, 1.0f, 2.0f));
+//         }
+//     }
+
+//     void drawFrame() override
+//     {
+//         explosion();
+//         Cube.setVoxel(debris[i].position, color);
+//         Cube.setVoxel(debris[i].position, CRGB::Blue);
+//         i++;
+//     }
+// };
 
 class Draw : public Animation
 {
@@ -276,19 +326,23 @@ public:
         // Vector3 v = Vector3(6, 6, 4) - Vector3(4, 4, 4);
         // v = q.rotate(v) + Vector3(4, 4, 4);
 
-        Quaternion q = Quaternion(angle, Axis::Z);
-        Quaternion q2 = Quaternion(90, Axis::Y);
-        Quaternion q3 = q * q2;
-        Vector3 v = Vector3(7, 7, 4);
-        v = q.rotate(v);
+        // Quaternion q = Quaternion(angle, Axis::Z);
+        // Quaternion q2 = Quaternion(90, Axis::Y);
+        // Quaternion q3 = q * q2;
+        // Vector3 v = Vector3(7, 7, 4);
+        // v = q.rotate(v);
 
-        // Vector3 v = Vector3(6, 6, 5);
-        // v = v.rotate(angle, Axis::Z);
-        // v = v.rotate(90.0f, Axis::Y);
+        Vector3 v = Vector3(6, 6, 5);
+        v = v.rotate(angle, Axis::Z);
+        v = v.rotate(90.0f, Axis::Y);
 
         //         Vector3 v = Vector3(0, 0, 1);
         // v = v.rotate(angle, Vector3(5, 5, 5) - Vector3(4, 4, 4)) + Vector3(4, 4, 4);
 
+        // Cube.setVoxel(Point(5, 5, 4), color);
+        // Cube.setVoxel(Point(6, 6, 4), color);
+
+        // clear colors
         Cube.fadeAll(200);
         Cube.setVoxel(v, color);
 
@@ -297,7 +351,7 @@ public:
         // Cube.fadeAll(200);
         // Cube.setVoxel(p, color);
 
-        angle += 45;
+        angle += 90;
         if (angle >= 360)
             angle = 0;
     }
@@ -1004,5 +1058,67 @@ public:
         Cube.fadeAll(180);
         thin ? Cube.asciiThin(ascii[index], y, color) : Cube.ascii(ascii[index], y, color);
         y--;
+    }
+};
+
+class TextRotate : public Animation
+{
+public:
+    TextRotate(const char *text)
+    {
+        name = text;
+        ascii = text;
+        setDelay(80);
+    };
+
+    const char *ascii;
+    CRGB color = CRGB::Blue;
+    uint8_t index = 0;
+    float angle = 0.0f;
+    LedCube tempCube = LedCube();
+
+    void drawFrame() override
+    {
+        // Motion blur
+        Cube.fadeAll(150);
+
+        // Draw text on temp cube
+        tempCube.clear();
+        tempCube.asciiThin(ascii[index], CUBE_CENTER, color);
+
+        // Rotate text
+        for (int x = 0; x < CUBE_SIZE; x++)
+            for (int y = 0; y < CUBE_SIZE; y++)
+                for (int z = 0; z < CUBE_SIZE; z++)
+                    if (tempCube.getVoxel(x, y, z) != CRGB(CRGB::Black))
+                    {
+                        // Quaternion q = Quaternion(angle, Axis::Z);
+                        // Vector3 v = q.rotate(Vector3(x, y, z));
+
+                        // Vector3 v = Vector3(x, y, z).rotate(angle, Axis::Z);
+                        // Point p = Point(v.x, v.y, v.z);
+                        // Cube.setVoxel(p, color);
+
+                        Point p = Point(x, y, z).rotate(Angles(0, 0, angle));
+                        Cube.setVoxel(p, color);
+                    }
+
+        // fade in and out
+        if (angle > 300)
+            Cube.fadeAll(map(angle, 300, 360, 0, 255));
+        else if (angle < 60)
+            Cube.fadeAll(map(angle, 60, 0, 0, 255));
+
+        // Increase angle and go to next letter after full rotation
+        angle += 10;
+        if (angle >= 360)
+        {
+            angle = 0;
+            index++;
+            if (ascii[index] == '\0')
+            {
+                index = 0;
+            }
+        }
     }
 };

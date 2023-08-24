@@ -10,6 +10,8 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    new TextRotate("RC"),
+    // new Explosion(),
     new Draw(),
     new Sparkles(),
     new Ripple(),

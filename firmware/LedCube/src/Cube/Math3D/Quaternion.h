@@ -54,7 +54,7 @@ public:
     // unit quaternion
     Quaternion &normalize();
     Quaternion normalized() const;
-    // magnitude or length of the quaterion
+    // magnitude or length of the quaternion
     float magnitude() const;
     float norm() const;
     // rotate v by quaternion
