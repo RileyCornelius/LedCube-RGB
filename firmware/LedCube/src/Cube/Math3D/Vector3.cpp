@@ -74,6 +74,10 @@ Vector3 &Vector3::operator/=(float s)
     return *this;
 }
 
+Vector3 Vector3::operator*(const Vector3 &v) const { return cross(v); }
+Vector3 &Vector3::operator*=(const Vector3 &v) { return *this = cross(v); }
+float Vector3::operator%(const Vector3 &v) const { return dot(v); }
+
 // cross product
 Vector3 Vector3::cross(const Vector3 &v) const
 {
@@ -110,9 +114,9 @@ bool Vector3::inside(const Vector3 &l, const Vector3 &h) const
 }
 
 // Check if this vector is inside the led cube
-bool Vector3::isValid() const
+bool Vector3::inbounds() const
 {
-    return (x >= 0 && x < CUBE_LENGTH && y >= 0 && y < CUBE_LENGTH && z >= 0 && z < CUBE_LENGTH);
+    return (x >= 0 && x < CUBE_SIZE_M1 && y >= 0 && y < CUBE_SIZE_M1 && z >= 0 && z < CUBE_SIZE_M1);
 }
 
 /**

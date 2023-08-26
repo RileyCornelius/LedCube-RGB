@@ -96,7 +96,7 @@ Point Point::operator-() const
 // Check if point is inside the cube
 bool Point::isValid()
 {
-    return (x >= 0 && x < CUBE_LENGTH && y >= 0 && y < CUBE_LENGTH && z >= 0 && z < CUBE_LENGTH);
+    return (x >= 0 && x < CUBE_SIZE_M1 && y >= 0 && y < CUBE_SIZE_M1 && z >= 0 && z < CUBE_SIZE_M1);
 }
 
 /**

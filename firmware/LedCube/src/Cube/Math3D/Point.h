@@ -53,5 +53,5 @@ public:
     Point operator-() const;
 
     bool isValid();
-    Point rotate(Angles a, const Point &c = Point(CUBE_LENGTH, CUBE_LENGTH, CUBE_LENGTH));
+    Point rotate(Angles a, const Point &c = Point(CUBE_CENTER, CUBE_CENTER, CUBE_CENTER));
 };

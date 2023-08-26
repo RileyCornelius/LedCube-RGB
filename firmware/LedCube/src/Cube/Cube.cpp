@@ -11,15 +11,16 @@ LedCube Cube = LedCube();
 
 #if SAFE_VOXEL_ON
 // Checks if invalid index is trying to be accessed and stops the program if so
-#define SAFE_VOXEL_GUARD(index) \
-    if (index >= LED_COUNT)     \
-    {                           \
-        Cube.fill(CRGB::Red);   \
-        FastLED.show();         \
-        while (1)               \
-        {                       \
-            handleOta();        \
-        }                       \
+#define SAFE_VOXEL_GUARD(index)                   \
+    if (index >= LED_COUNT)                       \
+    {                                             \
+        Cube.clear();                             \
+        Cube.setVoxel(Point(4, 4, 4), CRGB::Red); \
+        FastLED.show();                           \
+        while (1)                                 \
+        {                                         \
+            handleOta();                          \
+        }                                         \
     }
 
 #else
@@ -58,17 +59,17 @@ LedCube::LedCube()
 {
 }
 
-void LedCube::setVoxel(const Vector3 &v, const CRGB &col)
-{
-    setVoxel(Point(v), col);
-}
+// void LedCube::setVoxel(const Vector3 &v, const CRGB &col)
+// {
+//     setVoxel(Point(v), col);
+// }
 
 void LedCube::setVoxel(const Point &p, const CRGB &col)
 {
     setVoxel(p.x, p.y, p.z, col);
 }
 
-void LedCube::setVoxel(uint8_t x, uint8_t y, uint8_t z, const CRGB &col)
+void LedCube::setVoxel(int8_t x, int8_t y, int8_t z, const CRGB &col)
 {
     setVoxel(getIndex(x, y, z), col);
 }
@@ -84,7 +85,7 @@ CRGB LedCube::getVoxel(const Point &p)
     return getVoxel(p.x, p.y, p.z);
 }
 
-CRGB LedCube::getVoxel(uint8_t x, uint8_t y, uint8_t z)
+CRGB LedCube::getVoxel(int8_t x, int8_t y, int8_t z)
 {
     return getVoxel(getIndex(x, y, z));
 }
@@ -95,56 +96,23 @@ CRGB LedCube::getVoxel(uint16_t index)
     return CRGB(leds[index].r, leds[index].g, leds[index].b);
 }
 
-void LedCube::fadeVoxel(const Point &p, uint8_t scale)
+void LedCube::fadeVoxel(const Point &p, int8_t scale)
 {
     fadeVoxel(p.x, p.y, p.z, scale);
 }
 
-void LedCube::fadeVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t scale)
+void LedCube::fadeVoxel(int8_t x, int8_t y, int8_t z, int8_t scale)
 {
     fadeVoxel(getIndex(x, y, z), scale);
 }
 
-void LedCube::fadeVoxel(uint16_t index, uint8_t scale)
+void LedCube::fadeVoxel(uint16_t index, int8_t scale)
 {
     SAFE_VOXEL_GUARD(index)
     leds[index].nscale8(255 - scale);
 }
 
-void LedCube::fadeXLayer(uint8_t x, uint8_t scale)
-{
-    for (uint8_t y = 0; y < CUBE_SIZE; y++)
-    {
-        for (uint8_t z = 0; z < CUBE_SIZE; z++)
-        {
-            fadeVoxel(x, y, z, scale);
-        }
-    }
-}
-
-void LedCube::fadeYLayer(uint8_t y, uint8_t scale)
-{
-    for (uint8_t x = 0; x < CUBE_SIZE; x++)
-    {
-        for (uint8_t z = 0; z < CUBE_SIZE; z++)
-        {
-            fadeVoxel(x, y, z, scale);
-        }
-    }
-}
-
-void LedCube::fadeZLayer(uint8_t z, uint8_t scale)
-{
-    for (uint8_t x = 0; x < CUBE_SIZE; x++)
-    {
-        for (uint8_t y = 0; y < CUBE_SIZE; y++)
-        {
-            fadeVoxel(x, y, z, scale);
-        }
-    }
-}
-
-void LedCube::fadeAll(uint8_t scale) // scale / 256 * color
+void LedCube::fadeAll(int8_t scale) // scale / 256 * color
 {
     for (uint16_t i = 0; i < LED_COUNT; i++)
         fadeVoxel(i, scale);
@@ -319,17 +287,17 @@ void LedCube::shell(const Point &p, float r, const CRGB &col, float thickness /*
     shell(p.x, p.y, p.z, r, col, thickness);
 }
 
-void LedCube::ascii(char ascii, uint8_t y, const CRGB &color)
+void LedCube::ascii(char ascii, int8_t y, const CRGB &color)
 {
     static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
 
-    uint8_t offset = CUBE_SIZE - 8;
+    int8_t offset = CUBE_SIZE - 8;
     const char *bitmap = ibm_vga[ascii];
     bool set;
 
-    for (uint8_t z = 0; z < 8; z++)
+    for (int8_t z = 0; z < 8; z++)
     {
-        for (uint8_t x = 0; x < 8; x++)
+        for (int8_t x = 0; x < 8; x++)
         {
             set = bitmap[z] & 1 << x;
             setVoxel(8 - x - offset, y, 8 - z - offset, set ? color : CRGB::Black);
@@ -337,16 +305,16 @@ void LedCube::ascii(char ascii, uint8_t y, const CRGB &color)
     }
 }
 
-void LedCube::asciiThin(char ascii, uint8_t y, const CRGB &color)
+void LedCube::asciiThin(char ascii, int8_t y, const CRGB &color)
 {
     static_assert(CUBE_SIZE > 8, "CUBE_SIZE must be 8 or larger");
 
     const char *bitmap = ibm_cga_light[ascii];
     bool set;
 
-    for (uint8_t z = 1; z < 9; z++)
+    for (int8_t z = 1; z < 9; z++)
     {
-        for (uint8_t x = 1; x < 9; x++)
+        for (int8_t x = 1; x < 9; x++)
         {
             set = bitmap[z - 1] & 1 << 8 - x - 1;
             setVoxel(8 - x, y, 8 - z, set ? color : CRGB::Black);
@@ -361,7 +329,7 @@ uint16_t LedCube::getIndex(const Point &p)
     return getIndex(p.x, p.y, p.z);
 }
 
-uint16_t LedCube::getIndex(uint8_t x, uint8_t y, uint8_t z)
+uint16_t LedCube::getIndex(int8_t x, int8_t y, int8_t z)
 {
 #if SERPENTINE_LAYOUT
     if (x & 0x01) // if x is odd then run z backwards
@@ -387,10 +355,10 @@ uint16_t LedCube::getIndex(uint16_t index)
 
 Point LedCube::getPoint(uint16_t index)
 {
-    uint8_t z = index / (CUBE_SIZE * CUBE_SIZE);              // get layer
-    uint8_t layerIndex = index - (z * CUBE_SIZE * CUBE_SIZE); // get 2D index of layer
-    uint8_t x = layerIndex / CUBE_SIZE;                       // get y on layer
-    uint8_t y = layerIndex % CUBE_SIZE;                       // get x on layer
+    int8_t z = index / (CUBE_SIZE * CUBE_SIZE);              // get layer
+    int8_t layerIndex = index - (z * CUBE_SIZE * CUBE_SIZE); // get 2D index of layer
+    int8_t x = layerIndex / CUBE_SIZE;                       // get y on layer
+    int8_t y = layerIndex % CUBE_SIZE;                       // get x on layer
 
     return Point(x, y, z);
 }

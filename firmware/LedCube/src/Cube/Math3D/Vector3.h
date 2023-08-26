@@ -22,7 +22,6 @@ public:
     float x, y, z;
 
 public:
-    // constructors
     Vector3();
     Vector3(float x, float y, float z);
     Vector3(const Vector3 &v);
@@ -36,6 +35,9 @@ public:
     Vector3 &operator*=(float s);
     Vector3 &operator/=(float s);
     Vector3 operator-() const;
+    Vector3 operator*(const Vector3 &v) const;
+    Vector3 &operator*=(const Vector3 &v);
+    float operator%(const Vector3 &v) const;
 
     Vector3 cross(const Vector3 &v) const;
     float dot(const Vector3 &v) const;
@@ -44,9 +46,9 @@ public:
 
     bool inside(const Vector3 &v, float radius) const;
     bool inside(const Vector3 &l, const Vector3 &h) const;
-    bool isValid() const;
+    bool inbounds() const;
 
-    Vector3 rotate(float angle, const Vector3 &v, const Vector3 &c = Vector3(CUBE_LENGTH, CUBE_LENGTH, CUBE_LENGTH));
+    Vector3 rotate(float angle, const Vector3 &v, const Vector3 &c = Vector3(CUBE_CENTER, CUBE_CENTER, CUBE_CENTER));
 };
 
 // Axis of rotation constants

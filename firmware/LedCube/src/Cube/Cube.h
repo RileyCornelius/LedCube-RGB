@@ -22,22 +22,21 @@
 class LedCube
 {
 public:
-    LedCube();
     CRGB leds[LED_COUNT];
-    void setVoxel(uint8_t x, uint8_t y, uint8_t z, const CRGB &col);
+
+public:
+    LedCube();
+
+    void setVoxel(int8_t x, int8_t y, int8_t z, const CRGB &col);
     void setVoxel(uint16_t index, const CRGB &col);
     void setVoxel(const Point &p, const CRGB &col);
-    void setVoxel(const Vector3 &v, const CRGB &col);
-    CRGB getVoxel(uint8_t x, uint8_t y, uint8_t z);
+    CRGB getVoxel(int8_t x, int8_t y, int8_t z);
     CRGB getVoxel(uint16_t index);
     CRGB getVoxel(const Point &p);
-    void fadeVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t scale);
-    void fadeVoxel(const Point &p, uint8_t scale);
-    void fadeVoxel(uint16_t index, uint8_t scale);
-    void fadeXLayer(uint8_t x, uint8_t scale);
-    void fadeYLayer(uint8_t y, uint8_t scale);
-    void fadeZLayer(uint8_t z, uint8_t scale);
-    void fadeAll(uint8_t scale);
+    void fadeVoxel(int8_t x, int8_t y, int8_t z, int8_t scale);
+    void fadeVoxel(const Point &p, int8_t scale);
+    void fadeVoxel(uint16_t index, int8_t scale);
+    void fadeAll(int8_t scale);
     void fill(const CRGB &col);
     void clear();
     void line(int x1, int y1, int z1, int x2, int y2, int z2, const CRGB &col);
@@ -48,12 +47,12 @@ public:
     void sphere(const Point &p, int radius, const CRGB &col);
     void shell(float x, float y, float z, float r, const CRGB &col, float thickness = 0.1);
     void shell(const Point &p, float r, const CRGB &col, float thickness = 0.1);
-    void ascii(char ascii, uint8_t y, const CRGB &color);
-    void asciiThin(char ascii, uint8_t y, const CRGB &color);
+    void ascii(char ascii, int8_t y, const CRGB &color);
+    void asciiThin(char ascii, int8_t y, const CRGB &color);
 
 private:
     uint16_t getIndex(uint16_t index);
-    uint16_t getIndex(uint8_t x, uint8_t y, uint8_t z);
+    uint16_t getIndex(int8_t x, int8_t y, int8_t z);
     uint16_t getIndex(const Point &p);
     Point getPoint(uint16_t index);
 };

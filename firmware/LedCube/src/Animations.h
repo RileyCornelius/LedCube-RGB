@@ -206,31 +206,31 @@
 //         switch (side)
 //         {
 //         case FRONT:
-//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH, CUBE_LENGTH - x, MIDDLE), color);
-//             // Cube.line(Point(4, 4, 4), Point(CUBE_LENGTH - x, CUBE_LENGTH, CUBE_LENGTH), color);
-//             // Cube.line(Point(CUBE_LENGTH - x, CUBE_LENGTH, 0), Point(x, 0, CUBE_LENGTH), CRGB::Black);
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_SIZE_M1, CUBE_SIZE_M1 - x, MIDDLE), color);
+//             // Cube.line(Point(4, 4, 4), Point(CUBE_SIZE_M1 - x, CUBE_SIZE_M1, CUBE_SIZE_M1), color);
+//             // Cube.line(Point(CUBE_SIZE_M1 - x, CUBE_SIZE_M1, 0), Point(x, 0, CUBE_SIZE_M1), CRGB::Black);
 //             x++;
 
-//             if (x == CUBE_LENGTH)
+//             if (x == CUBE_SIZE_M1)
 //                 side = LEFT;
 
 //             break;
 //         case LEFT:
-//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH - y, CUBE_LENGTH, MIDDLE), color);
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_SIZE_M1 - y, CUBE_SIZE_M1, MIDDLE), color);
 
-//             // Cube.line(Point(CUBE_LENGTH, y, 0), Point(0, CUBE_LENGTH - y, CUBE_LENGTH), color);
-//             // Cube.line(Point(0, CUBE_LENGTH - y, 0), Point(CUBE_LENGTH, y, CUBE_LENGTH), CRGB::Black);
+//             // Cube.line(Point(CUBE_SIZE_M1, y, 0), Point(0, CUBE_SIZE_M1 - y, CUBE_SIZE_M1), color);
+//             // Cube.line(Point(0, CUBE_SIZE_M1 - y, 0), Point(CUBE_SIZE_M1, y, CUBE_SIZE_M1), CRGB::Black);
 //             y++;
 
-//             if (y == CUBE_LENGTH)
+//             if (y == CUBE_SIZE_M1)
 //                 side = BACK;
 
 //             break;
 //         case BACK:
-//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH - x, CUBE_LENGTH, MIDDLE), color);
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_SIZE_M1 - x, CUBE_SIZE_M1, MIDDLE), color);
 
-//             // Cube.line(Point(x, CUBE_LENGTH, 0), Point(8 - x, 0, CUBE_LENGTH), color);
-//             // Cube.line(Point(CUBE_LENGTH - x, 0, 0), Point(x, CUBE_LENGTH, CUBE_LENGTH), CRGB::Black);
+//             // Cube.line(Point(x, CUBE_SIZE_M1, 0), Point(8 - x, 0, CUBE_SIZE_M1), color);
+//             // Cube.line(Point(CUBE_SIZE_M1 - x, 0, 0), Point(x, CUBE_SIZE_M1, CUBE_SIZE_M1), CRGB::Black);
 //             x--;
 
 //             if (x == 0)
@@ -238,10 +238,10 @@
 //             break;
 
 //         case RIGHT:
-//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_LENGTH, CUBE_LENGTH - y, MIDDLE), color);
+//             Cube.line(Point(MIDDLE, MIDDLE, 0), Point(CUBE_SIZE_M1, CUBE_SIZE_M1 - y, MIDDLE), color);
 
-//             // Cube.line(Point(0, y, 0), Point(CUBE_LENGTH, CUBE_LENGTH - y, CUBE_LENGTH), color);
-//             // Cube.line(Point(CUBE_LENGTH, CUBE_LENGTH - y, 0), Point(0, y, CUBE_LENGTH), CRGB::Black);
+//             // Cube.line(Point(0, y, 0), Point(CUBE_SIZE_M1, CUBE_SIZE_M1 - y, CUBE_SIZE_M1), color);
+//             // Cube.line(Point(CUBE_SIZE_M1, CUBE_SIZE_M1 - y, 0), Point(0, y, CUBE_SIZE_M1), CRGB::Black);
 //             y--;
 
 //             if (y == 0)
@@ -335,6 +335,8 @@ public:
         Vector3 v = Vector3(6, 6, 5);
         v = v.rotate(angle, Axis::Z);
         v = v.rotate(90.0f, Axis::Y);
+
+        // Cube.shell(v, 1, color);
 
         //         Vector3 v = Vector3(0, 0, 1);
         // v = v.rotate(angle, Vector3(5, 5, 5) - Vector3(4, 4, 4)) + Vector3(4, 4, 4);
@@ -697,26 +699,26 @@ public:
         switch (side)
         {
         case FRONT:
-            Cube.line(Point(x, 0, 0), Point(CUBE_LENGTH - x, CUBE_LENGTH, CUBE_LENGTH), color);
-            Cube.line(Point(CUBE_LENGTH - x, CUBE_LENGTH, 0), Point(x, 0, CUBE_LENGTH), CRGB::Black);
+            Cube.line(Point(x, 0, 0), Point(CUBE_SIZE_M1 - x, CUBE_SIZE_M1, CUBE_SIZE_M1), color);
+            Cube.line(Point(CUBE_SIZE_M1 - x, CUBE_SIZE_M1, 0), Point(x, 0, CUBE_SIZE_M1), CRGB::Black);
             x++;
 
-            if (x == CUBE_LENGTH)
+            if (x == CUBE_SIZE_M1)
                 side = LEFT;
 
             break;
         case LEFT:
-            Cube.line(Point(CUBE_LENGTH, y, 0), Point(0, CUBE_LENGTH - y, CUBE_LENGTH), color);
-            Cube.line(Point(0, CUBE_LENGTH - y, 0), Point(CUBE_LENGTH, y, CUBE_LENGTH), CRGB::Black);
+            Cube.line(Point(CUBE_SIZE_M1, y, 0), Point(0, CUBE_SIZE_M1 - y, CUBE_SIZE_M1), color);
+            Cube.line(Point(0, CUBE_SIZE_M1 - y, 0), Point(CUBE_SIZE_M1, y, CUBE_SIZE_M1), CRGB::Black);
             y++;
 
-            if (y == CUBE_LENGTH)
+            if (y == CUBE_SIZE_M1)
                 side = BACK;
 
             break;
         case BACK:
-            Cube.line(Point(x, CUBE_LENGTH, 0), Point(8 - x, 0, CUBE_LENGTH), color);
-            Cube.line(Point(CUBE_LENGTH - x, 0, 0), Point(x, CUBE_LENGTH, CUBE_LENGTH), CRGB::Black);
+            Cube.line(Point(x, CUBE_SIZE_M1, 0), Point(8 - x, 0, CUBE_SIZE_M1), color);
+            Cube.line(Point(CUBE_SIZE_M1 - x, 0, 0), Point(x, CUBE_SIZE_M1, CUBE_SIZE_M1), CRGB::Black);
             x--;
 
             if (x == 0)
@@ -724,8 +726,8 @@ public:
             break;
 
         case RIGHT:
-            Cube.line(Point(0, y, 0), Point(CUBE_LENGTH, CUBE_LENGTH - y, CUBE_LENGTH), color);
-            Cube.line(Point(CUBE_LENGTH, CUBE_LENGTH - y, 0), Point(0, y, CUBE_LENGTH), CRGB::Black);
+            Cube.line(Point(0, y, 0), Point(CUBE_SIZE_M1, CUBE_SIZE_M1 - y, CUBE_SIZE_M1), color);
+            Cube.line(Point(CUBE_SIZE_M1, CUBE_SIZE_M1 - y, 0), Point(0, y, CUBE_SIZE_M1), CRGB::Black);
             y--;
 
             if (y == 0)
@@ -967,7 +969,7 @@ public:
 
         for (size_t i = 0; i < ballSize; i++)
         {
-            if (ball[i].x == CUBE_LENGTH || ball[i].x == 0)
+            if (ball[i].x == CUBE_SIZE_M1 || ball[i].x == 0)
             {
                 v[0] = -v[0];
                 break;
@@ -975,7 +977,7 @@ public:
         }
         for (size_t i = 0; i < ballSize; i++)
         {
-            if (ball[i].y == CUBE_LENGTH || ball[i].y == 0)
+            if (ball[i].y == CUBE_SIZE_M1 || ball[i].y == 0)
             {
                 v[1] = -v[1];
                 break;
@@ -983,7 +985,7 @@ public:
         }
         for (size_t i = 0; i < ballSize; i++)
         {
-            if (ball[i].z == CUBE_LENGTH || ball[i].z == 0)
+            if (ball[i].z == CUBE_SIZE_M1 || ball[i].z == 0)
             {
                 v[2] = -v[2];
                 break;
@@ -997,13 +999,13 @@ public:
     //     ball.y += v[1];
     //     ball.z += v[2];
 
-    //     if (ball.x == CUBE_LENGTH || ball.x == 0)
+    //     if (ball.x == CUBE_SIZE_M1 || ball.x == 0)
     //         v[0] = -v[0];
 
-    //     if (ball.y == CUBE_LENGTH || ball.y == 0)
+    //     if (ball.y == CUBE_SIZE_M1 || ball.y == 0)
     //         v[1] = -v[1];
 
-    //     if (ball.z == CUBE_LENGTH || ball.z == 0)
+    //     if (ball.z == CUBE_SIZE_M1 || ball.z == 0)
     //         v[2] = -v[2];
     // }
 
@@ -1034,7 +1036,7 @@ public:
 
     const char *ascii;
     CRGB color = CRGB::Blue;
-    int8_t y = CUBE_LENGTH;
+    int8_t y = CUBE_SIZE_M1;
     uint8_t index = 0;
     bool thin = false;
 
@@ -1043,8 +1045,7 @@ public:
         if (y < 0)
         {
             color = CHSV(random8(), 255, 255);
-            Cube.fadeYLayer(0, 255);
-            y = CUBE_LENGTH;
+            y = CUBE_SIZE_M1;
             index++;
             if (ascii[index] == '\0')
             {
@@ -1141,7 +1142,7 @@ public:
     uint8_t offset = 1;
     bool dir = 1;
     // uint8_t low = offset;
-    // uint8_t high = CUBE_LENGTH - offset;
+    // uint8_t high = CUBE_SIZE_M1 - offset;
 
     void drawFrame() override
     {
@@ -1166,7 +1167,7 @@ public:
 
         // Draw text on temp cube
         uint8_t low = offset;
-        uint8_t high = CUBE_LENGTH - offset;
+        uint8_t high = CUBE_SIZE_M1 - offset;
         tempCube.clear();
         tempCube.square(Point(low, low, low), Point(low, high, low),
                         Point(high, high, low), Point(high, low, low),

@@ -29,7 +29,7 @@ Vector3 randomVector(const Vector3 &center, float radius)
     do
     {
         sphere = randomVector(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
-    } while (sphere.inside(center, radius));
+    } while (!sphere.inside(center, radius));
 
     return sphere;
 }
