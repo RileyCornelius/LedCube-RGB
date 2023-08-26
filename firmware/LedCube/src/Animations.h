@@ -191,7 +191,7 @@
 //         LEFT,
 //         BACK,
 //         RIGHT,
-//         RESET,
+//         RESETTING,
 //     };
 //     Side side = FRONT;
 
@@ -254,57 +254,154 @@
 //     }
 // };
 
-// class Explosion : public Animation
-// {
-// public:
-//     Explosion()
-//     {
-//         name = __FUNCTION__;
-//         setDelay(300);
-//     };
+class FireWorks : public Animation
+{
+public:
+    FireWorks()
+    {
+        name = __FUNCTION__;
+        setDelay(80);
+    };
 
-//     uint8_t hue = 0;
-//     uint8_t radius = 0;
-//     CRGB color = CRGB::White;
-//     uint8_t i;
+    uint8_t hue = 0;
+    CRGB color = CRGB::White;
+    uint8_t i;
 
-//     Particle debris[100];
+    float radius;
+    uint16_t numDebris;
+    Vector3 source;
+    Vector3 target;
+    Vector3 velocity;
+    Vector3 gravity;
+    Particle missile;
+    float explosionRadius = 0;
+    float explosionMaxRadius;
+    Vector3 temp;
+    uint8_t typeOfExplosion;
+    uint8_t explosionHue;
 
-//     float noisef;
+    Particle debris[100];
 
-//     float normalized(int16_t inputValue, float minValue, float maxValue,
-//                      float desiredMin, float desiredMax)
-//     {
-//         return -desiredMin + ((inputValue - minValue) / (maxValue - minValue)) * (desiredMax - desiredMin);
-//     }
+    Timer timer;
 
-//     void explosion()
-//     {
-//         uint8_t hue = 0;
-//         float pwr = 3.00f;
-//         ARRAY_SIZE(debris);
-//         for (uint16_t i = 0; i < sizeof(debris) / sizeof(Particle); i++)
-//         {
-//             Vector3 explode =
-//                 Vector3(normalized(inoise8(i), 0, 255, -pwr, pwr), normalized(inoise8(i), 0, 255, -pwr, pwr),
-//                         normalized(inoise8(i), 0, 255, 0, pwr));
-//             float x = normalized(inoise8(i), 0, 255, 3, 5);
-//             float y = normalized(inoise8(i), 0, 255, 3, 5);
-//             float z = normalized(inoise8(i), 2, 255, 3, 5);
+    float noisef;
 
-//             debris[i] = Particle(Vector3(x, y, z), explode, uint8_t(hue + random8(0, 24)),
-//                                  1.0f, normalized(inoise8(i), 0, 255, 1.0f, 2.0f));
-//         }
-//     }
+    enum State
+    {
+        RESETTING,
+        LAUNCHING,
+        PREPARE_EXPLOSION,
+        EXPLODING,
+    };
+    enum Explosion
+    {
+        SHELLS,
+        // SPHERES,
+        // PARTICLES,
 
-//     void drawFrame() override
-//     {
-//         explosion();
-//         Cube.setVoxel(debris[i].position, color);
-//         Cube.setVoxel(debris[i].position, CRGB::Blue);
-//         i++;
-//     }
-// };
+        EXPLOSIONS_MAX_INDEX,
+    };
+
+    State state = RESETTING;
+
+    // float normalized(int16_t inputValue, float minValue, float maxValue,
+    //                  float desiredMin, float desiredMax)
+    // {
+    //     return -desiredMin + ((inputValue - minValue) / (maxValue - minValue)) * (desiredMax - desiredMin);
+    // }
+
+    // void explosion()
+    // {
+    //     uint8_t hue = 0;
+    //     float pwr = 3.00f;
+    //     ARRAY_SIZE(debris);
+    //     for (uint16_t i = 0; i < sizeof(debris) / sizeof(Particle); i++)
+    //     {
+    //         Vector3 explode =
+    //             Vector3(normalized(inoise8(i), 0, 255, -pwr, pwr), normalized(inoise8(i), 0, 255, -pwr, pwr),
+    //                     normalized(inoise8(i), 0, 255, 0, pwr));
+    //         float x = normalized(inoise8(i), 0, 255, 3, 5);
+    //         float y = normalized(inoise8(i), 0, 255, 3, 5);
+    //         float z = normalized(inoise8(i), 2, 255, 3, 5);
+
+    //         debris[i] = Particle(Vector3(x, y, z), explode, uint8_t(hue + random8(0, 24)),
+    //                              1.0f, normalized(inoise8(i), 0, 255, 1.0f, 2.0f));
+    //     }
+    // }
+
+    void createMissile()
+    {
+        source = Vector3(randomFloat(3, 5), randomFloat(3, 5), 0);
+        target = Vector3(randomFloat(2.5, 6.5), randomFloat(2.5, 6.5), randomFloat(4.5, 6.5));
+        float timeToTarget = randomFloat(1.5, 2.5);
+        velocity = (target - source) / timeToTarget;
+        hue = random8(0, 255);
+        gravity = Vector3(0, 0, -1.0);
+
+        missile = Particle(source, velocity, hue, 255, timeToTarget);
+    }
+
+    void createExplosion()
+    {
+        typeOfExplosion = random8(0, EXPLOSIONS_MAX_INDEX);
+        explosionMaxRadius = randomFloat(2.5, 4.5);
+    }
+
+    void drawFrame() override
+    {
+        Cube.fadeAll(130);
+
+        switch (state)
+        {
+        case RESETTING:
+
+            if (timer.ready())
+            {
+                createMissile();
+                Cube.setVoxel(missile.position, CHSV(missile.hue, 255, 255));
+                state = LAUNCHING;
+            }
+            break;
+        case LAUNCHING:
+            temp = missile.position;
+            missile.move(timer.getElapsed() / 1000.0f, gravity);
+            timer.reset();
+            Cube.setVoxel(missile.position, CHSV(missile.hue, 255, 255));
+
+            if ((temp.z > missile.position.z) || (missile.position.z > target.z))
+            {
+                createExplosion();
+                state = EXPLODING;
+            }
+            break;
+        case EXPLODING:
+            switch (typeOfExplosion)
+            {
+            case SHELLS:
+                explosionHue += random8(5, 10);
+                CRGB explosionColor = CHSV(missile.hue + explosionHue, 255, 255);
+                Cube.shell(missile.position, explosionRadius, explosionColor, randomFloat(0.1, 0.5));
+                break;
+
+                // case SPHERES:
+                //     Cube.sphere(missile.position, explosionRadius, CHSV(missile.hue + 30, 255, 255));
+                //     break;
+            }
+
+            explosionRadius += 0.5f;
+            if (explosionRadius > explosionMaxRadius)
+            {
+                explosionHue = 0;
+                explosionRadius = 0;
+                timer.reset();
+                timer.setPeriod(random16(300, 800));
+                state = RESETTING;
+            }
+
+            break;
+        }
+    }
+};
 
 class Draw : public Animation
 {
@@ -686,7 +783,7 @@ public:
         LEFT,
         BACK,
         RIGHT,
-        RESET,
+        RESETTING,
     };
     Side side = FRONT;
 
@@ -748,23 +845,54 @@ public:
         name = __FUNCTION__;
         setDelay(60);
     };
-    bool expanding = true;
 
-    uint8_t index = 0;
+    const uint8_t radius = 4;
+    const uint8_t beatsPerMinute = 5;
+    // bool expanding = true;
+    // uint8_t index = 0;
+    // uint8_t x = 0, y = 0, z = 0;
+    // CRGB color = CHSV(hue, 255, 255);
     uint8_t hue = 0;
-    CRGB color = CHSV(hue, 255, 255);
-    uint8_t x = 0, y = 0, z = 0;
+    uint8_t deltaHue = 1;
+
+    CRGB white = CRGB(255, 255, 255);
+    LedCube tempCube = LedCube();
+
+    void fillCubeRainbow()
+    {
+        fill_rainbow(Cube.leds, LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 2], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 3], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 4], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 5], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 6], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 7], LED_BRANCH_COUNT, hue, deltaHue);
+        fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 8], LED_BRANCH_COUNT, hue, deltaHue);
+
+        Cube.fadeAll(beatsin8(beatsPerMinute, 0, 130));
+        hue++;
+    }
 
     void drawFrame() override
     {
-        Cube.clear();
-        Cube.sphere(Point(4, 4, 4), index, color);
-        index = expanding ? index + 1 : index - 1;
+        fillCubeRainbow();
+        tempCube.sphere(Point(CUBE_CENTER, CUBE_CENTER, CUBE_CENTER), radius, white);
 
-        if (index == 6 || index == 0)
-            expanding = !expanding;
+        for (int x = 0; x < CUBE_SIZE; x++)
+            for (int y = 0; y < CUBE_SIZE; y++)
+                for (int z = 0; z < CUBE_SIZE; z++)
+                    if (tempCube.getVoxel(x, y, z) != white)
+                    {
+                        Cube.setVoxel(x, y, z, CRGB::Black);
+                    }
 
-        color = CHSV(hue += 2, 255, 255);
+        // index = expanding ? index + 1 : index - 1;
+
+        // if (index == 6 || index == 0)
+        //     expanding = !expanding;
+
+        // color = CHSV(hue += 2, 255, 255);
     }
 };
 

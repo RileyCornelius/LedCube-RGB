@@ -11,18 +11,17 @@ LedCube Cube = LedCube();
 
 #if SAFE_VOXEL_ON
 // Checks if invalid index is trying to be accessed and stops the program if so
-#define SAFE_VOXEL_GUARD(index)                   \
-    if (index >= LED_COUNT)                       \
-    {                                             \
-        Cube.clear();                             \
-        Cube.setVoxel(Point(4, 4, 4), CRGB::Red); \
-        FastLED.show();                           \
-        while (1)                                 \
-        {                                         \
-            handleOta();                          \
-        }                                         \
+#define SAFE_VOXEL_GUARD(index)                    \
+    if (index >= LED_COUNT)                        \
+    {                                              \
+        Cube.clear();                              \
+        Cube.sphere(Point(4, 4, 4), 3, CRGB::Red); \
+        FastLED.show();                            \
+        while (1)                                  \
+        {                                          \
+            handleOta();                           \
+        }                                          \
     }
-
 #else
 #define SAFE_VOXEL_GUARD(index)
 #endif
@@ -71,7 +70,9 @@ void LedCube::setVoxel(int8_t x, int8_t y, int8_t z, const CRGB &col)
 
 void LedCube::setVoxel(uint16_t index, const CRGB &col)
 {
-    SAFE_VOXEL_GUARD(index)
+    // SAFE_VOXEL_GUARD(index)
+    if (index >= LED_COUNT)
+        return;
     leds[index] = col;
 }
 
