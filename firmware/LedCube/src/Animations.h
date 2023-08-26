@@ -860,7 +860,9 @@ public:
     };
 
     const uint8_t rainAmount = 150;
-    const uint8_t fadeScale = 40;
+    const uint8_t fadeTailScale = 170;
+    const uint8_t fadeBottomScale = 30;
+
     const CRGBPalette16 rainColor_p =
         {
             CRGB(0, 0, 255),
@@ -886,21 +888,25 @@ public:
         // Move raindrops down
         EVERY_N_MILLISECONDS(60)
         {
-            for (int i = 0; i < CUBE_SIZE; i++)
-                for (int j = 0; j < CUBE_SIZE; j++)
-                    for (int k = 0; k < CUBE_SIZE; k++)
-                        if (Cube.getVoxel(i, j, k) != CRGB(0, 0, 0))
+            for (int x = 0; x < CUBE_SIZE; x++)
+                for (int y = 0; y < CUBE_SIZE; y++)
+                    for (int z = 0; z < CUBE_SIZE; z++)
+                    {
+                        CRGB rainColor = Cube.getVoxel(x, y, z);
+                        if (rainColor != CRGB(0, 0, 0))
                         {
-                            if (k >= 1) // bottom layers are not affected
+                            if (z >= 1) // move rain down
                             {
-                                Cube.setVoxel(i, j, k - 1, Cube.getVoxel(i, j, k));
-                                Cube.setVoxel(i, j, k, CRGB(0, 0, 0));
+                                if (rainColor.getAverageLight() > 80)
+                                    Cube.setVoxel(x, y, z - 1, rainColor);
+                                Cube.fadeVoxel(x, y, z, fadeTailScale);
                             }
-                            else
+                            else // fade rain on the ground
                             {
-                                Cube.fadeVoxel(i, j, k, fadeScale);
+                                Cube.fadeVoxel(x, y, z, fadeBottomScale);
                             }
                         }
+                    }
         }
 
         // Create new raindrops

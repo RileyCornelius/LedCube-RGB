@@ -59,11 +59,6 @@ LedCube::LedCube()
 {
 }
 
-// void LedCube::setVoxel(const Vector3 &v, const CRGB &col)
-// {
-//     setVoxel(Point(v), col);
-// }
-
 void LedCube::setVoxel(const Point &p, const CRGB &col)
 {
     setVoxel(p.x, p.y, p.z, col);

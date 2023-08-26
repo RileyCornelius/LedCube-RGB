@@ -17,10 +17,7 @@ Vector3 randomVector(const Vector3 &max /*= Vector3(CUBE_LENGTH, CUBE_LENGTH, CU
 
 Vector3 randomVector(const Vector3 &min, const Vector3 &max)
 {
-    float x = random(min.x * 1000, max.x * 1000) / 1000.0;
-    float y = random(min.y * 1000, max.y * 1000) / 1000.0;
-    float z = random(min.z * 1000, max.z * 1000) / 1000.0;
-    return Vector3(x, y, z);
+    return Vector3(randomFloat(min.x, max.x), randomFloat(min.y, max.y), randomFloat(min.z, max.z));
 }
 
 Vector3 randomVector(const Vector3 &center, float radius)

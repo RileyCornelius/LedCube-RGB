@@ -10,13 +10,13 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    new Rain(),
     new TextRotate("RC"),
     new CubeGrow(),
     // new Explosion(),
     new Draw(),
     new Sparkles(),
     new Ripple(),
-    new Rain(),
     new Sinelon(),
     new Spiral(),
     new Text("TACAM"),
