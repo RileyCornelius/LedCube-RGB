@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include "Vector3.h"
+#include "config.h"
 
 /*---------------------------------------------------------------------------------------
  * Angles STRUCT - Rotate in 3D
@@ -52,6 +53,5 @@ public:
     Point operator-() const;
 
     bool isValid();
-    Point rand(const Point &min = Point(0, 0, 0), const Point &max = Point(8, 8, 8));
-    Point rotate(Angles a, const Point &c = Point(4.5, 4.5, 4.5));
+    Point rotate(Angles a, const Point &c = Point(CUBE_LENGTH, CUBE_LENGTH, CUBE_LENGTH));
 };

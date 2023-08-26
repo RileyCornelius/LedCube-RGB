@@ -1,5 +1,7 @@
 #pragma once
 
+#include "config.h"
+
 /*------------------------------------------------------------------------------
  * Vector3 CLASS
  *------------------------------------------------------------------------------
@@ -25,47 +27,26 @@ public:
     Vector3(float x, float y, float z);
     Vector3(const Vector3 &v);
 
-    // moving
     Vector3 operator+(const Vector3 &v) const;
     Vector3 operator-(const Vector3 &v) const;
     Vector3 &operator+=(const Vector3 &v);
     Vector3 &operator-=(const Vector3 &v);
-
-    // scaling
     Vector3 operator*(float s) const;
     Vector3 operator/(float s) const;
     Vector3 &operator*=(float s);
     Vector3 &operator/=(float s);
-
-    // cross product
-    Vector3 cross(const Vector3 &v) const;
-    Vector3 operator*(const Vector3 &v) const;
-    Vector3 &operator*=(const Vector3 &v);
-
-    // dot product
-    float dot(const Vector3 &v) const;
-    float operator%(const Vector3 &v) const;
-
-    // negate
     Vector3 operator-() const;
 
-    // unit vector
-    Vector3 &normalize();
-    Vector3 normalized() const;
-
-    // magnitude or length of the vector
+    Vector3 cross(const Vector3 &v) const;
+    float dot(const Vector3 &v) const;
+    Vector3 normalize() const;
     float magnitude() const;
-    float norm() const;
 
-    // rotate v by angle and this axis vector
-    Vector3 rotate(float angle, const Vector3 &v, const Vector3 &c = Vector3(4, 4, 4));
-
-    // test circle boundary of this vector
     bool inside(const Vector3 &v, float radius) const;
-    // test square boundary of this vector
     bool inside(const Vector3 &l, const Vector3 &h) const;
+    bool isValid() const;
 
-    Vector3 rand(const Vector3 &min = Vector3(0, 0, 0), const Vector3 &max = Vector3(8, 8, 8)) const;
+    Vector3 rotate(float angle, const Vector3 &v, const Vector3 &c = Vector3(CUBE_LENGTH, CUBE_LENGTH, CUBE_LENGTH));
 };
 
 // Axis of rotation constants

@@ -12,7 +12,7 @@ Quaternion::Quaternion(const Quaternion &q) : w(q.w), v(q.v) {}
 Quaternion::Quaternion(float a, const Vector3 &v_)
 {
     // normalize v to get n hat (unit vector with length = 1)
-    Vector3 n = v_.normalized();
+    Vector3 n = v_.normalize();
     // Angle is in degree and is converted to radian by 2PI/360 * angle
     // Angles are divided by 2 when using quaternions so back to PI/360
     a = radians(a) / 2.0f;

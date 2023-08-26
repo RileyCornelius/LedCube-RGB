@@ -3,7 +3,7 @@
 #include "Math3D.h"
 
 /*---------------------------------------------------------------------------------------
- * POINT STRUCT - 3D Point in Cube
+ * Point STRUCT - 3D Point in Cube
  *-------------------------------------------------------------------------------------*/
 
 // Constructors
@@ -91,16 +91,6 @@ Point &Point::operator/=(const float &s)
 Point Point::operator-() const
 {
     return Point(-x, -y, -z);
-}
-
-// Return a random point between min and max points
-Point Point::rand(const Point &min /*= Point(0, 0, 0)*/, const Point &max /*= Point(8, 8, 8)*/)
-{
-    int8_t x = random(min.x, max.x);
-    int8_t y = random(min.y, max.y);
-    int8_t z = random(min.z, max.z);
-
-    return Point(x, y, z);
 }
 
 // Check if point is inside the cube
