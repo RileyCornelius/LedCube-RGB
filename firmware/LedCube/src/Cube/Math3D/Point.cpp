@@ -10,13 +10,7 @@
 Point::Point() : x(0), y(0), z(0) {}
 Point::Point(int8_t X, int8_t Y, int8_t Z) : x(X), y(Y), z(Z) {}
 Point::Point(const Point &p) : x(p.x), y(p.y), z(p.z) {}
-// Point::Point(const Vector3 &v) : x(round(v.x)), y(round(v.y)), z(round(v.z)) {}
-Point::Point(const Vector3 &v)
-{
-    x = (int8_t)round(v.x);
-    y = (int8_t)round(v.y);
-    z = (int8_t)round(v.z);
-}
+Point::Point(const Vector3 &v) : x(round(v.x)), y(round(v.y)), z(round(v.z)) {}
 
 // set this point equal to another
 Point Point::operator=(const Point &p)
@@ -28,7 +22,7 @@ Point Point::operator=(const Point &p)
 }
 
 // compare two points
-bool Point::operator==(const Point &p)
+bool Point::operator==(const Point &p) const
 {
     return (x == p.x && y == p.y && z == p.z);
 }
@@ -99,6 +93,17 @@ Point Point::operator-() const
     return Point(-x, -y, -z);
 }
 
+// Return a random point between min and max points
+Point Point::rand(const Point &min /*= Point(0, 0, 0)*/, const Point &max /*= Point(8, 8, 8)*/)
+{
+    int8_t x = random(min.x, max.x);
+    int8_t y = random(min.y, max.y);
+    int8_t z = random(min.z, max.z);
+
+    return Point(x, y, z);
+}
+
+// Check if point is inside the cube
 bool Point::isValid()
 {
     return (x >= 0 && x < CUBE_LENGTH && y >= 0 && y < CUBE_LENGTH && z >= 0 && z < CUBE_LENGTH);
@@ -138,7 +143,7 @@ Point Point::rotate(Angles a, const Point &c /*= Point(4, 4, 4)*/)
 
 Angles::Angles(float degreeX, float degreeY, float degreeZ)
 {
-    x = deg2rad(degreeX);
-    y = deg2rad(degreeY);
-    z = deg2rad(degreeZ);
+    x = radians(degreeX);
+    y = radians(degreeY);
+    z = radians(degreeZ);
 }

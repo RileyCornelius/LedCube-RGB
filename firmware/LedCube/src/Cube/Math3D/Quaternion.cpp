@@ -15,7 +15,7 @@ Quaternion::Quaternion(float a, const Vector3 &v_)
     Vector3 n = v_.normalized();
     // Angle is in degree and is converted to radian by 2PI/360 * angle
     // Angles are divided by 2 when using quaternions so back to PI/360
-    a = deg2rad(a) / 2.0f;
+    a = radians(a) / 2.0f;
     // Multiply n hat by sin(0) (scale n, but no directional change)
     // So v still represents the axis of rotation, but changed magnitude
     v = n * sinf(a);

@@ -64,6 +64,8 @@ public:
     bool inside(const Vector3 &v, float radius) const;
     // test square boundary of this vector
     bool inside(const Vector3 &l, const Vector3 &h) const;
+
+    Vector3 rand(const Vector3 &min = Vector3(0, 0, 0), const Vector3 &max = Vector3(8, 8, 8)) const;
 };
 
 // Axis of rotation constants

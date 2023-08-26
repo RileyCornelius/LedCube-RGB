@@ -39,8 +39,8 @@ public:
     Point(const Point &p);
     Point(const Vector3 &v);
 
+    bool operator==(const Point &p) const;
     Point operator=(const Point &p);
-    bool operator==(const Point &p);
     Point operator+(const Point &p) const;
     Point operator-(const Point &p) const;
     Point &operator+=(const Point &p);
@@ -52,5 +52,6 @@ public:
     Point operator-() const;
 
     bool isValid();
+    Point rand(const Point &min = Point(0, 0, 0), const Point &max = Point(8, 8, 8));
     Point rotate(Angles a, const Point &c = Point(4.5, 4.5, 4.5));
 };

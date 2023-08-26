@@ -96,24 +96,31 @@ bool Vector3::inside(const Vector3 &l, const Vector3 &h) const
            (z < h.z && z >= l.z);
 }
 
+// Return a random point between min and max points
+Vector3 Vector3::rand(const Vector3 &min /*= Vector3(0, 0, 0)*/, const Vector3 &max /*= Vector3(8, 8, 8)*/) const
+{
+    float x = random(min.x * 1000, max.x * 1000) / 1000.0;
+    float y = random(min.y * 1000, max.y * 1000) / 1000.0;
+    float z = random(min.z * 1000, max.z * 1000) / 1000.0;
+    return Vector3(x, y, z);
+}
+
 /**
  * Rotate this vector by an angle, with axis around the centroid using Rodrigues formula
  *
  * @param angle: angle in degrees
- * @param axis: axis of rotation
+ * @param axis: axis of rotation (Axis::X, Axis::Y, Axis::Z)
  * @param center: point to rotate around (default: center of cube)
  * @return: this vector rotated
  */
 Vector3 Vector3::rotate(float angle, const Vector3 &axis, const Vector3 &center /*= Vector3(4, 4, 4)*/)
 {
-    // Angle is in degree and is converted to radian by multiplying by PI/180
-    float rad = deg2rad(angle);
-    // shift the vector to rotate around the center instead of the origin
-    Vector3 shifted = *this - center;
-    // normalize this axis to get n hat
-    Vector3 n = axis.normalized();
-    // (1-cos(0))(v.n)n + cos(0)v + sin(0)(n x v) + c
-    return (n * shifted.dot(n) * (1 - cosf(rad)) + shifted * cosf(rad) + n.cross(shifted) * sinf(rad)) + center;
+    float rad = radians(angle); // Convert angle to radians
+    Vector3 v = *this - center; // Translate point to be relative to the origin in order to rotate
+
+    // Rodrigues formula:  v * cos(0) + (a x v)sin(0) + a(a.v)(1 - cos(0))
+    Vector3 rotated = v * cos(rad) + axis.cross(v) * sin(rad) + axis * axis.dot(v) * (1 - cos(rad));
+    return rotated + center; // Translate back
 }
 
 // Constants to used for rotations

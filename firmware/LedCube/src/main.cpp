@@ -11,6 +11,7 @@
 
 Animation *animations[] = {
     new TextRotate("RC"),
+    new Cube(),
     // new Explosion(),
     new Draw(),
     new Sparkles(),

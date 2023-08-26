@@ -1094,13 +1094,13 @@ public:
                     {
                         // Quaternion q = Quaternion(angle, Axis::Z);
                         // Vector3 v = q.rotate(Vector3(x, y, z));
+                        // Cube.setVoxel(v, color);
 
-                        // Vector3 v = Vector3(x, y, z).rotate(angle, Axis::Z);
-                        // Point p = Point(v.x, v.y, v.z);
+                        Vector3 v = Vector3(x, y, z).rotate(angle, Axis::Z);
+                        Cube.setVoxel(v, color);
+
+                        // Point p = Point(x, y, z).rotate(Angles(0, 0, angle));
                         // Cube.setVoxel(p, color);
-
-                        Point p = Point(x, y, z).rotate(Angles(0, 0, angle));
-                        Cube.setVoxel(p, color);
                     }
 
         // fade in and out
@@ -1119,6 +1119,97 @@ public:
             {
                 index = 0;
             }
+        }
+    }
+};
+
+class CubeGrow : public Animation
+{
+public:
+    CubeGrow()
+    {
+        name = __FUNCTION__;
+        setDelay(300);
+    };
+
+    CRGB color = CRGB::Blue;
+    uint8_t hue = 0;
+    uint8_t index = 0;
+    float angle = 0.0f;
+    LedCube tempCube = LedCube();
+
+    uint8_t offset = 1;
+    bool dir = 1;
+    // uint8_t low = offset;
+    // uint8_t high = CUBE_LENGTH - offset;
+
+    void drawFrame() override
+    {
+        // Cube.fadeAll(220);
+
+        offset += dir ? 1 : -1;
+        if (offset > 3 || offset < 1)
+        {
+            Cube.clear();
+            dir = !dir;
+        }
+        color = CHSV(hue += 10, 255, 255);
+
+        // Cube.clear();
+        // Cube.shell(Point(4, 4, 4), index, 0.2, color);
+        // index = expanding ? index + 1 : index - 1;
+
+        // if (index == 6 || index == 0)
+        //     expanding = !expanding;
+
+        // color = CHSV(hue += 2, 255, 255);
+
+        // Draw text on temp cube
+        uint8_t low = offset;
+        uint8_t high = CUBE_LENGTH - offset;
+        tempCube.clear();
+        tempCube.square(Point(low, low, low), Point(low, high, low),
+                        Point(high, high, low), Point(high, low, low),
+                        color);
+        tempCube.square(Point(low, low, high), Point(low, high, high),
+                        Point(high, high, high), Point(high, low, high),
+                        color);
+        tempCube.line(Point(low, low, low), Point(low, low, high), color);
+        tempCube.line(Point(low, high, low), Point(low, high, high), color);
+        tempCube.line(Point(high, high, low), Point(high, high, high), color);
+        tempCube.line(Point(high, low, low), Point(high, low, high), color);
+
+        // Rotate text
+        for (int x = 0; x < CUBE_SIZE; x++)
+            for (int y = 0; y < CUBE_SIZE; y++)
+                for (int z = 0; z < CUBE_SIZE; z++)
+                    if (tempCube.getVoxel(x, y, z) != CRGB(CRGB::Black))
+                    {
+                        // Quaternion q = Quaternion(angle, Axis::Z);
+                        // Vector3 v = q.rotate(Vector3(x, y, z));
+
+                        // Vector3 v = Vector3(x, y, z).rotate(angle, Axis::Z);
+                        // Point p = Point(v.x, v.y, v.z);
+                        // Cube.setVoxel(p, color);
+
+                        // 40 degrees only draws 4 voxels diagonally instead of 5
+                        // Point p = Point(x, y, z).rotate(Angles(0, 0, angle - 5));
+                        Point p = Point(x, y, z);
+                        Cube.setVoxel(p, color);
+                    }
+
+        // fade in and out
+        // if (angle > 300)
+        //     Cube.fadeAll(map(angle, 300, 360, 0, 255));
+        // else if (angle < 60)
+        //     Cube.fadeAll(map(angle, 60, 0, 0, 255));
+
+        // Increase angle and go to next letter after full rotation
+        angle += 45;
+        if (angle >= 360)
+        {
+            angle = 0;
+            index++;
         }
     }
 };
