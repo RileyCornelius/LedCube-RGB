@@ -43,6 +43,8 @@ public:
     void line(const Point &p1, const Point &p2, const CRGB &col);
     void triangle(const Point &p1, const Point &p2, const Point &p3, const CRGB &col);
     void square(const Point &p1, const Point &p2, const Point &p3, const Point &p4, const CRGB &col);
+    void cube(const Point &p1, const Point &p2, const CRGB &col);
+    void box(const Point &p1, const Point &p2, const CRGB &col);
     void sphere(int x, int y, int z, int radius, const CRGB &col);
     void sphere(const Point &p, int radius, const CRGB &col);
     void shell(float x, float y, float z, float r, const CRGB &col, float thickness = 0.1);

@@ -244,12 +244,32 @@ void LedCube::square(const Point &p1, const Point &p2, const Point &p3, const Po
     line(p4, p1, col);
 }
 
+void LedCube::cube(const Point &p1, const Point &p2, const CRGB &col)
+{
+    for (int8_t x = p1.x; x <= p2.x; x++)
+        for (int8_t y = p1.y; y <= p2.y; y++)
+            for (int8_t z = p1.z; z <= p2.z; z++)
+            {
+                setLed(x, y, z, col);
+            }
+}
+
 void LedCube::box(const Point &p1, const Point &p2, const CRGB &col)
 {
-    line(p1, p2, col);
-    line(p2, p3, col);
-    line(p3, p4, col);
-    line(p4, p1, col);
+    line(p1.x, p1.y, p1.z, p2.x, p1.y, p1.z, col);
+    line(p1.x, p1.y, p1.z, p1.x, p2.y, p1.z, col);
+    line(p2.x, p1.y, p1.z, p2.x, p2.y, p1.z, col);
+    line(p1.x, p2.y, p1.z, p2.x, p2.y, p1.z, col);
+
+    line(p1.x, p1.y, p2.z, p2.x, p1.y, p2.z, col);
+    line(p1.x, p1.y, p2.z, p1.x, p2.y, p2.z, col);
+    line(p2.x, p1.y, p2.z, p2.x, p2.y, p2.z, col);
+    line(p1.x, p2.y, p2.z, p2.x, p2.y, p2.z, col);
+
+    line(p1.x, p1.y, p1.z, p1.x, p1.y, p2.z, col);
+    line(p1.x, p2.y, p1.z, p1.x, p2.y, p2.z, col);
+    line(p2.x, p1.y, p1.z, p2.x, p1.y, p2.z, col);
+    line(p2.x, p2.y, p1.z, p2.x, p2.y, p2.z, col);
 }
 
 void LedCube::sphere(int x, int y, int z, int r, const CRGB &col)
@@ -274,7 +294,9 @@ void LedCube::shell(float x, float y, float z, float r, const CRGB &col, float t
         for (int j = 0; j < CUBE_SIZE; j++)
             for (int k = 0; k < CUBE_SIZE; k++)
                 if (abs(sqrt(pow(i - x, 2) + pow(j - y, 2) + pow(k - z, 2)) - r) < thickness)
+                {
                     setLed(i, j, k, col);
+                }
 }
 
 void LedCube::shell(const Point &p, float r, const CRGB &col, float thickness /* = 0.1 */)
@@ -291,13 +313,11 @@ void LedCube::ascii(char ascii, int8_t y, const CRGB &color)
     bool set;
 
     for (int8_t z = 0; z < 8; z++)
-    {
         for (int8_t x = 0; x < 8; x++)
         {
             set = bitmap[z] & 1 << x;
             setLed(8 - x - offset, y, 8 - z - offset, set ? color : CRGB::Black);
         }
-    }
 }
 
 void LedCube::asciiThin(char ascii, int8_t y, const CRGB &color)
@@ -308,13 +328,11 @@ void LedCube::asciiThin(char ascii, int8_t y, const CRGB &color)
     bool set;
 
     for (int8_t z = 1; z < 9; z++)
-    {
         for (int8_t x = 1; x < 9; x++)
         {
             set = bitmap[z - 1] & 1 << 8 - x - 1;
             setLed(8 - x, y, 8 - z, set ? color : CRGB::Black);
         }
-    }
 }
 
 /*--------------------------- PRIVATE FUNCTIONS --------------------------*/
