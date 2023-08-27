@@ -58,17 +58,17 @@ LedCube::LedCube()
 {
 }
 
-void LedCube::setVoxel(const Point &p, const CRGB &col)
+void LedCube::setLed(const Point &p, const CRGB &col)
 {
-    setVoxel(p.x, p.y, p.z, col);
+    setLed(p.x, p.y, p.z, col);
 }
 
-void LedCube::setVoxel(int8_t x, int8_t y, int8_t z, const CRGB &col)
+void LedCube::setLed(int8_t x, int8_t y, int8_t z, const CRGB &col)
 {
-    setVoxel(getIndex(x, y, z), col);
+    setLed(getIndex(x, y, z), col);
 }
 
-void LedCube::setVoxel(uint16_t index, const CRGB &col)
+void LedCube::setLed(uint16_t index, const CRGB &col)
 {
     // SAFE_VOXEL_GUARD(index)
     if (index >= LED_COUNT)
@@ -76,33 +76,33 @@ void LedCube::setVoxel(uint16_t index, const CRGB &col)
     leds[index] = col;
 }
 
-CRGB LedCube::getVoxel(const Point &p)
+CRGB LedCube::getLed(const Point &p)
 {
-    return getVoxel(p.x, p.y, p.z);
+    return getLed(p.x, p.y, p.z);
 }
 
-CRGB LedCube::getVoxel(int8_t x, int8_t y, int8_t z)
+CRGB LedCube::getLed(int8_t x, int8_t y, int8_t z)
 {
-    return getVoxel(getIndex(x, y, z));
+    return getLed(getIndex(x, y, z));
 }
 
-CRGB LedCube::getVoxel(uint16_t index)
+CRGB LedCube::getLed(uint16_t index)
 {
     SAFE_VOXEL_GUARD(index)
     return CRGB(leds[index].r, leds[index].g, leds[index].b);
 }
 
-void LedCube::fadeVoxel(const Point &p, int8_t scale)
+void LedCube::fadeLed(const Point &p, int8_t scale)
 {
-    fadeVoxel(p.x, p.y, p.z, scale);
+    fadeLed(p.x, p.y, p.z, scale);
 }
 
-void LedCube::fadeVoxel(int8_t x, int8_t y, int8_t z, int8_t scale)
+void LedCube::fadeLed(int8_t x, int8_t y, int8_t z, int8_t scale)
 {
-    fadeVoxel(getIndex(x, y, z), scale);
+    fadeLed(getIndex(x, y, z), scale);
 }
 
-void LedCube::fadeVoxel(uint16_t index, int8_t scale)
+void LedCube::fadeLed(uint16_t index, int8_t scale)
 {
     SAFE_VOXEL_GUARD(index)
     leds[index].nscale8(255 - scale);
@@ -111,13 +111,13 @@ void LedCube::fadeVoxel(uint16_t index, int8_t scale)
 void LedCube::fadeAll(int8_t scale) // scale / 256 * color
 {
     for (uint16_t i = 0; i < LED_COUNT; i++)
-        fadeVoxel(i, scale);
+        fadeLed(i, scale);
 }
 
 void LedCube::fill(const CRGB &col)
 {
     for (uint16_t i = 0; i < LED_COUNT; i++)
-        setVoxel(i, col);
+        setLed(i, col);
 }
 
 void LedCube::clear()
@@ -149,7 +149,7 @@ void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, const CRGB &c
 
         for (int i = 0; i < l; i++)
         {
-            setVoxel(currentPoint, col);
+            setLed(currentPoint, col);
 
             if (err_1 > 0)
             {
@@ -175,7 +175,7 @@ void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, const CRGB &c
 
         for (int i = 0; i < m; i++)
         {
-            setVoxel(currentPoint, col);
+            setLed(currentPoint, col);
 
             if (err_1 > 0)
             {
@@ -201,7 +201,7 @@ void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, const CRGB &c
 
         for (int i = 0; i < n; i++)
         {
-            setVoxel(currentPoint, col);
+            setLed(currentPoint, col);
 
             if (err_1 > 0)
             {
@@ -221,7 +221,7 @@ void LedCube::line(int x1, int y1, int z1, int x2, int y2, int z2, const CRGB &c
         }
     }
 
-    setVoxel(currentPoint, col);
+    setLed(currentPoint, col);
 }
 
 void LedCube::line(const Point &p1, const Point &p2, const CRGB &col)
@@ -244,24 +244,23 @@ void LedCube::square(const Point &p1, const Point &p2, const Point &p3, const Po
     line(p4, p1, col);
 }
 
+void LedCube::box(const Point &p1, const Point &p2, const CRGB &col)
+{
+    line(p1, p2, col);
+    line(p2, p3, col);
+    line(p3, p4, col);
+    line(p4, p1, col);
+}
+
 void LedCube::sphere(int x, int y, int z, int r, const CRGB &col)
 {
     for (int dx = -r; dx <= r; dx++)
-    {
         for (int dy = -r; dy <= r; dy++)
-        {
             for (int dz = -r; dz <= r; dz++)
-            {
                 if (sqrt(dx * dx + dy * dy + dz * dz) <= r)
                 {
-                    // if x, y, or z is out of bounds then skip
-                    if (x + dx < 0 || x + dx >= CUBE_SIZE || y + dy < 0 || y + dy >= CUBE_SIZE || z + dz < 0 || z + dz >= CUBE_SIZE)
-                        continue;
-                    setVoxel(x + dx, y + dy, z + dz, col);
+                    setLed(x + dx, y + dy, z + dz, col);
                 }
-            }
-        }
-    }
 }
 
 void LedCube::sphere(const Point &p, int r, const CRGB &col)
@@ -275,7 +274,7 @@ void LedCube::shell(float x, float y, float z, float r, const CRGB &col, float t
         for (int j = 0; j < CUBE_SIZE; j++)
             for (int k = 0; k < CUBE_SIZE; k++)
                 if (abs(sqrt(pow(i - x, 2) + pow(j - y, 2) + pow(k - z, 2)) - r) < thickness)
-                    setVoxel(i, j, k, col);
+                    setLed(i, j, k, col);
 }
 
 void LedCube::shell(const Point &p, float r, const CRGB &col, float thickness /* = 0.1 */)
@@ -296,7 +295,7 @@ void LedCube::ascii(char ascii, int8_t y, const CRGB &color)
         for (int8_t x = 0; x < 8; x++)
         {
             set = bitmap[z] & 1 << x;
-            setVoxel(8 - x - offset, y, 8 - z - offset, set ? color : CRGB::Black);
+            setLed(8 - x - offset, y, 8 - z - offset, set ? color : CRGB::Black);
         }
     }
 }
@@ -313,7 +312,7 @@ void LedCube::asciiThin(char ascii, int8_t y, const CRGB &color)
         for (int8_t x = 1; x < 9; x++)
         {
             set = bitmap[z - 1] & 1 << 8 - x - 1;
-            setVoxel(8 - x, y, 8 - z, set ? color : CRGB::Black);
+            setLed(8 - x, y, 8 - z, set ? color : CRGB::Black);
         }
     }
 }

@@ -109,7 +109,7 @@
 //         //                 // for best results with color palettes.
 //         //                 uint8_t colorindex = scale8(heat[x][y][z], 240);
 //         //                 CRGB color = ColorFromPalette(firePalette, colorindex);
-//         //                 Cube.setVoxel(x, y, z, color);
+//         //                 Cube.setLed(x, y, z, color);
 //         //             }
 //         //         }
 //         //     }
@@ -164,8 +164,8 @@
 //             {
 //                 for (int z = 0; z < CUBE_SIZE; z++)
 //                 {
-//                     // Cube.setVoxel(x, y, z, CHSV(noise[x][y][z], 255, noise[x][y][z]));
-//                     Cube.setVoxel(x, y, z, CHSV(ihue + noise[x][y][z] >> 2, 255, noise[x][y][z]));
+//                     // Cube.setLed(x, y, z, CHSV(noise[x][y][z], 255, noise[x][y][z]));
+//                     Cube.setLed(x, y, z, CHSV(ihue + noise[x][y][z] >> 2, 255, noise[x][y][z]));
 //                 }
 //             }
 //         }
@@ -250,7 +250,7 @@
 //         }
 //         color = CHSV(hue++, 255, 255);
 //         // Cube.fadeAll(35);
-//         Cube.setVoxel(MIDDLE, MIDDLE, MIDDLE, color); // write to center as it keeps getting blanked out
+//         Cube.setLed(MIDDLE, MIDDLE, MIDDLE, color); // write to center as it keeps getting blanked out
 //     }
 // };
 
@@ -358,15 +358,14 @@ public:
             if (timer.ready())
             {
                 createMissile();
-                Cube.setVoxel(missile.position, CHSV(missile.hue, 255, 255));
+                Cube.setLed(missile.position, CHSV(missile.hue, 255, 255));
                 state = LAUNCHING;
             }
             break;
         case LAUNCHING:
             temp = missile.position;
-            missile.move(timer.getElapsed() / 1000.0f, gravity);
-            timer.reset();
-            Cube.setVoxel(missile.position, CHSV(missile.hue, 255, 255));
+            missile.move(getDeltaTime(), gravity);
+            Cube.setLed(missile.position, CHSV(missile.hue, 255, 255));
 
             if ((temp.z > missile.position.z) || (missile.position.z > target.z))
             {
@@ -438,17 +437,17 @@ public:
         //         Vector3 v = Vector3(0, 0, 1);
         // v = v.rotate(angle, Vector3(5, 5, 5) - Vector3(4, 4, 4)) + Vector3(4, 4, 4);
 
-        // Cube.setVoxel(Point(5, 5, 4), color);
-        // Cube.setVoxel(Point(6, 6, 4), color);
+        // Cube.setLed(Point(5, 5, 4), color);
+        // Cube.setLed(Point(6, 6, 4), color);
 
         // clear colors
         Cube.fadeAll(200);
-        Cube.setVoxel(v, color);
+        Cube.setLed(v, color);
 
         // Point p = Point(4, 7, 4);
         // p = p.rotate(Point(4, 4, 4), Angles(angle, 0, 90));
         // Cube.fadeAll(200);
-        // Cube.setVoxel(p, color);
+        // Cube.setLed(p, color);
 
         angle += 90;
         if (angle >= 360)
@@ -481,7 +480,7 @@ public:
         if (index % CUBE_SIZE < CUBE_SIZE)
             color = CHSV(hue++, 255, 255);
 
-        Cube.setVoxel(index++, color);
+        Cube.setLed(index++, color);
     }
 };
 
@@ -521,20 +520,20 @@ public:
                             time[x][y][z] += timer.getElapsed();
                             float scale = (float)time[x][y][z] / (float)fadeInTime;
                             scale = min(scale, 1.0f);
-                            Cube.setVoxel(x, y, z, colors[x][y][z].scale8(scale * 255));
+                            Cube.setLed(x, y, z, colors[x][y][z].scale8(scale * 255));
                         }
                         else if (time[x][y][z] < fadeInTime + fadeOutTime)
                         {
                             time[x][y][z] += timer.getElapsed();
                             float scale = ((float)time[x][y][z] - (float)fadeInTime) / (float)fadeOutTime;
                             scale = min(scale, 1.0f);
-                            Cube.setVoxel(x, y, z, colors[x][y][z].scale8(255 - (scale * 255)));
+                            Cube.setLed(x, y, z, colors[x][y][z].scale8(255 - (scale * 255)));
                         }
                         else
                         {
                             time[x][y][z] = 0;
                             colors[x][y][z] = CRGB(CRGB::Black);
-                            Cube.setVoxel(x, y, z, CRGB::Black);
+                            Cube.setLed(x, y, z, CRGB::Black);
                             // sparklesCount--;
                         }
                     }
@@ -554,7 +553,7 @@ public:
                 y = random8(0, CUBE_SIZE);
                 z = random8(0, CUBE_SIZE);
                 p = Point(x, y, z);
-            } while (Cube.getVoxel(p) != CRGB(CRGB::Black));
+            } while (Cube.getLed(p) != CRGB(CRGB::Black));
 
             colors[x][y][z] = color.setHue(hue++);
         }
@@ -635,7 +634,7 @@ public:
                 for (byte x = 0; x < CUBE_SIZE; x++)
                 {
                     pixelHue += xHueDelta8;
-                    Cube.setVoxel(x, y, z, CHSV(pixelHue, 255, 255));
+                    Cube.setLed(x, y, z, CHSV(pixelHue, 255, 255));
                 }
             }
         }
@@ -660,7 +659,7 @@ public:
     void drawFrame() override
     {
         int pos = beatsin16(beatsPerMinute, 0, LED_COUNT - 1);
-        Cube.setVoxel(pos, ColorFromPalette(palette, hue));
+        Cube.setLed(pos, ColorFromPalette(palette, hue));
 
         if (timer2.ready())
             Cube.fadeAll(2);
@@ -762,7 +761,7 @@ public:
         uint8_t hue = 0;
         for (int i = 0; i < LED_COUNT; i++)
         {
-            Cube.setVoxel(i, ColorFromPalette(palette, hue + (i * 2), beat + (i * 10)));
+            Cube.setLed(i, ColorFromPalette(palette, hue + (i * 2), beat + (i * 10)));
             hue += 2;
         }
     }
@@ -833,7 +832,7 @@ public:
         }
         color = CHSV(hue++, 255, 255);
         // Cube.fadeAll(35);
-        Cube.setVoxel(4, 4, 4, color); // write to center as it keeps getting blanked out
+        Cube.setLed(4, 4, 4, color); // write to center as it keeps getting blanked out
     }
 };
 
@@ -882,9 +881,9 @@ public:
         for (int x = 0; x < CUBE_SIZE; x++)
             for (int y = 0; y < CUBE_SIZE; y++)
                 for (int z = 0; z < CUBE_SIZE; z++)
-                    if (tempCube.getVoxel(x, y, z) != white)
+                    if (tempCube.getLed(x, y, z) != white)
                     {
-                        Cube.setVoxel(x, y, z, CRGB::Black);
+                        Cube.setLed(x, y, z, CRGB::Black);
                     }
 
         // index = expanding ? index + 1 : index - 1;
@@ -964,10 +963,10 @@ public:
 
                 uint16_t index = (y * CUBE_SIZE * CUBE_SIZE) + (x * CUBE_SIZE) + z;
                 CRGB color = gradientCube[index];
-                Cube.setVoxel(x, y, z, color);
-                Cube.setVoxel(x, CUBE_SIZE - y - 1, z, color);
-                Cube.setVoxel(CUBE_SIZE - x - 1, y, z, color);
-                Cube.setVoxel(CUBE_SIZE - x - 1, CUBE_SIZE - y - 1, z, color);
+                Cube.setLed(x, y, z, color);
+                Cube.setLed(x, CUBE_SIZE - y - 1, z, color);
+                Cube.setLed(CUBE_SIZE - x - 1, y, z, color);
+                Cube.setLed(CUBE_SIZE - x - 1, CUBE_SIZE - y - 1, z, color);
             }
             counter++;
             if (counter > maxCounter)
@@ -1020,18 +1019,18 @@ public:
                 for (int y = 0; y < CUBE_SIZE; y++)
                     for (int z = 0; z < CUBE_SIZE; z++)
                     {
-                        CRGB rainColor = Cube.getVoxel(x, y, z);
+                        CRGB rainColor = Cube.getLed(x, y, z);
                         if (rainColor != CRGB(0, 0, 0))
                         {
                             if (z >= 1) // move rain down
                             {
                                 if (rainColor.getAverageLight() > 80)
-                                    Cube.setVoxel(x, y, z - 1, rainColor);
-                                Cube.fadeVoxel(x, y, z, fadeTailScale);
+                                    Cube.setLed(x, y, z - 1, rainColor);
+                                Cube.fadeLed(x, y, z, fadeTailScale);
                             }
                             else // fade rain on the ground
                             {
-                                Cube.fadeVoxel(x, y, z, fadeBottomScale);
+                                Cube.fadeLed(x, y, z, fadeBottomScale);
                             }
                         }
                     }
@@ -1048,7 +1047,7 @@ public:
             } while (point == prevPoint);
             prevPoint = point;
 
-            Cube.setVoxel(point, ColorFromPalette(rainColor_p, random8(0, 255)));
+            Cube.setLed(point, ColorFromPalette(rainColor_p, random8(0, 255)));
         }
     }
 };
@@ -1088,7 +1087,7 @@ public:
     {
         for (size_t i = 0; i < ballSize; i++)
         {
-            Cube.setVoxel(ball[i], color);
+            Cube.setLed(ball[i], color);
         }
     }
 
@@ -1225,17 +1224,17 @@ public:
         for (int x = 0; x < CUBE_SIZE; x++)
             for (int y = 0; y < CUBE_SIZE; y++)
                 for (int z = 0; z < CUBE_SIZE; z++)
-                    if (tempCube.getVoxel(x, y, z) != CRGB(CRGB::Black))
+                    if (tempCube.getLed(x, y, z) != CRGB(CRGB::Black))
                     {
                         // Quaternion q = Quaternion(angle, Axis::Z);
                         // Vector3 v = q.rotate(Vector3(x, y, z));
-                        // Cube.setVoxel(v, color);
+                        // Cube.setLed(v, color);
 
                         Vector3 v = Vector3(x, y, z).rotate(angle, Axis::Z);
-                        Cube.setVoxel(v, color);
+                        Cube.setLed(v, color);
 
                         // Point p = Point(x, y, z).rotate(Angles(0, 0, angle));
-                        // Cube.setVoxel(p, color);
+                        // Cube.setLed(p, color);
                     }
 
         // fade in and out
@@ -1318,19 +1317,19 @@ public:
         for (int x = 0; x < CUBE_SIZE; x++)
             for (int y = 0; y < CUBE_SIZE; y++)
                 for (int z = 0; z < CUBE_SIZE; z++)
-                    if (tempCube.getVoxel(x, y, z) != CRGB(CRGB::Black))
+                    if (tempCube.getLed(x, y, z) != CRGB(CRGB::Black))
                     {
                         // Quaternion q = Quaternion(angle, Axis::Z);
                         // Vector3 v = q.rotate(Vector3(x, y, z));
 
                         // Vector3 v = Vector3(x, y, z).rotate(angle, Axis::Z);
                         // Point p = Point(v.x, v.y, v.z);
-                        // Cube.setVoxel(p, color);
+                        // Cube.setLed(p, color);
 
                         // 40 degrees only draws 4 voxels diagonally instead of 5
                         // Point p = Point(x, y, z).rotate(Angles(0, 0, angle - 5));
                         Point p = Point(x, y, z);
-                        Cube.setVoxel(p, color);
+                        Cube.setLed(p, color);
                     }
 
         // fade in and out

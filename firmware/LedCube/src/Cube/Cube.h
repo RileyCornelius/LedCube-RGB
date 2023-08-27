@@ -27,15 +27,15 @@ public:
 public:
     LedCube();
 
-    void setVoxel(int8_t x, int8_t y, int8_t z, const CRGB &col);
-    void setVoxel(uint16_t index, const CRGB &col);
-    void setVoxel(const Point &p, const CRGB &col);
-    CRGB getVoxel(int8_t x, int8_t y, int8_t z);
-    CRGB getVoxel(uint16_t index);
-    CRGB getVoxel(const Point &p);
-    void fadeVoxel(int8_t x, int8_t y, int8_t z, int8_t scale);
-    void fadeVoxel(const Point &p, int8_t scale);
-    void fadeVoxel(uint16_t index, int8_t scale);
+    void setLed(int8_t x, int8_t y, int8_t z, const CRGB &col);
+    void setLed(uint16_t index, const CRGB &col);
+    void setLed(const Point &p, const CRGB &col);
+    CRGB getLed(int8_t x, int8_t y, int8_t z);
+    CRGB getLed(uint16_t index);
+    CRGB getLed(const Point &p);
+    void fadeLed(int8_t x, int8_t y, int8_t z, int8_t scale);
+    void fadeLed(const Point &p, int8_t scale);
+    void fadeLed(uint16_t index, int8_t scale);
     void fadeAll(int8_t scale);
     void fill(const CRGB &col);
     void clear();

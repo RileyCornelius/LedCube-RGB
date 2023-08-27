@@ -6,9 +6,12 @@ Animation::Animation()
     setDelay(5);
 }
 
-uint16_t Animation::getFps()
+uint16_t Animation::getFps(bool actual)
 {
-    return 1000 / timer.getPeriod();
+    if (actual)
+        return FastLED.getFPS(); // hardware update rate
+    else
+        return 1000 / updateTimer.getPeriod(); // software update rate
 }
 
 /**
@@ -26,7 +29,7 @@ void Animation::setFps(uint16_t fps)
  */
 void Animation::setDelay(uint32_t delay)
 {
-    timer.setPeriod(delay);
+    updateTimer.setPeriod(delay);
 }
 
 /**
@@ -88,7 +91,8 @@ bool Animation::ending()
  */
 void Animation::animate()
 {
-    if (timer.ready())
+    deltaTime = updateTimer.getElapsed() / 1000.0f;
+    if (updateTimer.ready())
     {
         drawFrame();
         FastLED.show();
