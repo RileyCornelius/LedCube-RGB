@@ -272,7 +272,6 @@ public:
     Vector3 source;
     Vector3 target;
     Vector3 velocity;
-    Vector3 gravity;
     Particle missile;
     float explosionRadius = 0;
     float explosionMaxRadius;
@@ -280,72 +279,31 @@ public:
     uint8_t typeOfExplosion;
     uint8_t explosionHue;
 
-    Particle debris[100];
+    Particle debris[50];
 
-    Timer timer;
+    Timer preMissileTimer;
 
     float noisef;
+    Vector3 gravity = Vector3(0, 0, -1.0);
 
     enum State
     {
-        RESETTING,
+        PREPARE_MISSILE,
         LAUNCHING,
         PREPARE_EXPLOSION,
         EXPLODING,
+        RESET,
     };
     enum Explosion
     {
         SHELLS,
+        PARTICLES,
         // SPHERES,
-        // PARTICLES,
 
         EXPLOSIONS_MAX_INDEX,
     };
 
-    State state = RESETTING;
-
-    // float normalized(int16_t inputValue, float minValue, float maxValue,
-    //                  float desiredMin, float desiredMax)
-    // {
-    //     return -desiredMin + ((inputValue - minValue) / (maxValue - minValue)) * (desiredMax - desiredMin);
-    // }
-
-    // void explosion()
-    // {
-    //     uint8_t hue = 0;
-    //     float pwr = 3.00f;
-    //     ARRAY_SIZE(debris);
-    //     for (uint16_t i = 0; i < sizeof(debris) / sizeof(Particle); i++)
-    //     {
-    //         Vector3 explode =
-    //             Vector3(normalized(inoise8(i), 0, 255, -pwr, pwr), normalized(inoise8(i), 0, 255, -pwr, pwr),
-    //                     normalized(inoise8(i), 0, 255, 0, pwr));
-    //         float x = normalized(inoise8(i), 0, 255, 3, 5);
-    //         float y = normalized(inoise8(i), 0, 255, 3, 5);
-    //         float z = normalized(inoise8(i), 2, 255, 3, 5);
-
-    //         debris[i] = Particle(Vector3(x, y, z), explode, uint8_t(hue + random8(0, 24)),
-    //                              1.0f, normalized(inoise8(i), 0, 255, 1.0f, 2.0f));
-    //     }
-    // }
-
-    void createMissile()
-    {
-        source = Vector3(randomFloat(3, 5), randomFloat(3, 5), 0);
-        target = Vector3(randomFloat(2.5, 6.5), randomFloat(2.5, 6.5), randomFloat(4.5, 6.5));
-        float timeToTarget = randomFloat(1.5, 2.5);
-        velocity = (target - source) / timeToTarget;
-        hue = random8(0, 255);
-        gravity = Vector3(0, 0, -1.0);
-
-        missile = Particle(source, velocity, hue, 255, timeToTarget);
-    }
-
-    void createExplosion()
-    {
-        typeOfExplosion = random8(0, EXPLOSIONS_MAX_INDEX);
-        explosionMaxRadius = randomFloat(2.5, 4.5);
-    }
+    State state = PREPARE_MISSILE;
 
     void drawFrame() override
     {
@@ -353,11 +311,17 @@ public:
 
         switch (state)
         {
-        case RESETTING:
+        case PREPARE_MISSILE:
 
-            if (timer.ready())
+            if (preMissileTimer.ready())
             {
-                createMissile();
+                source = Vector3(randomFloat(3, 5), randomFloat(3, 5), 0);
+                target = Vector3(randomFloat(2.5, 6.5), randomFloat(2.5, 6.5), randomFloat(4.5, 6.5));
+                float timeToTarget = randomFloat(1.5, 2.5);
+                velocity = (target - source) / timeToTarget;
+                hue = random8(0, 255);
+
+                missile = Particle(source, velocity, hue, 1.0, timeToTarget);
                 Cube.setLed(missile.position, CHSV(missile.hue, 255, 255));
                 state = LAUNCHING;
             }
@@ -369,34 +333,87 @@ public:
 
             if ((temp.z > missile.position.z) || (missile.position.z > target.z))
             {
-                createExplosion();
-                state = EXPLODING;
+                typeOfExplosion = random8(0, EXPLOSIONS_MAX_INDEX);
+                // typeOfExplosion = PARTICLES;
+
+                state = PREPARE_EXPLOSION;
             }
             break;
-        case EXPLODING:
-            switch (typeOfExplosion)
+
+        case PREPARE_EXPLOSION:
+            if (typeOfExplosion == SHELLS)
             {
-            case SHELLS:
+                explosionMaxRadius = randomFloat(2.5, 4.5);
+            }
+            else if (typeOfExplosion == PARTICLES)
+            {
+                numDebris = random((sizeof(debris) / sizeof(Particle)) / 2,
+                                   sizeof(debris) / sizeof(Particle));
+                float pwr = randomFloat(1.0, 2.5);
+                for (uint16_t i = 0; i < numDebris; i++)
+                {
+                    Vector3 velocity = Vector3(randomFloat(-pwr, pwr), randomFloat(-pwr, pwr), randomFloat(0, 4));
+                    debris[i] = Particle(temp, velocity, uint8_t(hue + random(0, 32)), 1.0f,
+                                         randomFloat(1.0f, 3.0f));
+                }
+            }
+            state = EXPLODING;
+            break;
+
+        case EXPLODING:
+            if (typeOfExplosion == SHELLS)
+            {
+                explosionRadius += 0.5f;
                 explosionHue += random8(5, 10);
                 CRGB explosionColor = CHSV(missile.hue + explosionHue, 255, 255);
                 Cube.shell(missile.position, explosionRadius, explosionColor, randomFloat(0.1, 0.5));
+
+                if (explosionRadius > explosionMaxRadius)
+                {
+                    state = RESET;
+                }
                 break;
-
-                // case SPHERES:
-                //     Cube.sphere(missile.position, explosionRadius, CHSV(missile.hue + 30, 255, 255));
-                //     break;
             }
-
-            explosionRadius += 0.5f;
-            if (explosionRadius > explosionMaxRadius)
+            else if (typeOfExplosion == PARTICLES)
             {
-                explosionHue = 0;
-                explosionRadius = 0;
-                timer.reset();
-                timer.setPeriod(random16(300, 800));
-                state = RESETTING;
-            }
+                uint16_t visibleDebris = 0;
+                for (uint16_t i = 0; i < numDebris; i++)
+                {
+                    if (debris[i].position.z > 0)
+                        debris[i].move(getDeltaTime(), Vector3(0, 0, -2.0));
+                    else
+                    {
+                        debris[i].position.z = 0;
+                    }
 
+                    if (debris[i].brightness > 0)
+                    {
+                        visibleDebris++;
+                        debris[i].brightness -= getDeltaTime() / debris[i].seconds;
+                    }
+                    else
+                    {
+                        debris[i].brightness = 0;
+                    }
+
+                    CRGB particleColor = random(0, 40) == 0 ? CRGB::White : CRGB(CHSV(debris[i].hue, 255, 255));
+                    particleColor.nscale8(debris[i].brightness * 255);
+                    Cube.setLed(debris[i].position, particleColor);
+                }
+
+                if (visibleDebris == 0)
+                {
+                    state = RESET;
+                }
+            }
+            break;
+
+        case RESET:
+            explosionHue = 0;
+            explosionRadius = 0;
+            preMissileTimer.reset();
+            preMissileTimer.setPeriod(random16(300, 800));
+            state = PREPARE_MISSILE;
             break;
         }
     }
@@ -602,44 +619,44 @@ public:
     }
 };
 
-class Wave : public Animation
-{
-public:
-    Wave()
-    {
-        name = __FUNCTION__;
-        setDelay(100);
-    };
+// class Wave : public Animation
+// {
+// public:
+//     Wave()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(100);
+//     };
 
-    int32_t yHueDelta32;
-    int32_t xHueDelta32;
-    int8_t yHueDelta8;
-    int8_t xHueDelta8;
+//     int32_t yHueDelta32;
+//     int32_t xHueDelta32;
+//     int8_t yHueDelta8;
+//     int8_t xHueDelta8;
 
-    void drawFrame() override
-    {
-        uint32_t ms = millis();
-        yHueDelta32 = ((int32_t)cos16(ms * 27) * (350 / CUBE_SIZE));
-        xHueDelta32 = ((int32_t)cos16(ms * 39) * (310 / CUBE_SIZE));
-        yHueDelta8 = yHueDelta32 / 32768;
-        xHueDelta8 = xHueDelta32 / 32768;
+//     void drawFrame() override
+//     {
+//         uint32_t ms = millis();
+//         yHueDelta32 = ((int32_t)cos16(ms * 27) * (350 / CUBE_SIZE));
+//         xHueDelta32 = ((int32_t)cos16(ms * 39) * (310 / CUBE_SIZE));
+//         yHueDelta8 = yHueDelta32 / 32768;
+//         xHueDelta8 = xHueDelta32 / 32768;
 
-        byte lineStartHue = ms / 65536;
-        for (byte z = 0; z < CUBE_SIZE; z++)
-        {
-            for (byte y = 0; y < CUBE_SIZE; y++)
-            {
-                lineStartHue += yHueDelta8;
-                byte pixelHue = lineStartHue;
-                for (byte x = 0; x < CUBE_SIZE; x++)
-                {
-                    pixelHue += xHueDelta8;
-                    Cube.setLed(x, y, z, CHSV(pixelHue, 255, 255));
-                }
-            }
-        }
-    }
-};
+//         byte lineStartHue = ms / 65536;
+//         for (byte z = 0; z < CUBE_SIZE; z++)
+//         {
+//             for (byte y = 0; y < CUBE_SIZE; y++)
+//             {
+//                 lineStartHue += yHueDelta8;
+//                 byte pixelHue = lineStartHue;
+//                 for (byte x = 0; x < CUBE_SIZE; x++)
+//                 {
+//                     pixelHue += xHueDelta8;
+//                     Cube.setLed(x, y, z, CHSV(pixelHue, 255, 255));
+//                 }
+//             }
+//         }
+//     }
+// };
 
 class Sinelon : public Animation
 {
@@ -704,44 +721,38 @@ public:
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT], LED_BRANCH_COUNT, hue, deltaHue);
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 2], LED_BRANCH_COUNT, hue, deltaHue);
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 3], LED_BRANCH_COUNT, hue, deltaHue);
-
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 4], LED_BRANCH_COUNT, hue, deltaHue);
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 5], LED_BRANCH_COUNT, hue, deltaHue);
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 6], LED_BRANCH_COUNT, hue, deltaHue);
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 7], LED_BRANCH_COUNT, hue, deltaHue);
         fill_rainbow(&Cube.leds[LED_BRANCH_COUNT * 8], LED_BRANCH_COUNT, hue, deltaHue);
 
-        // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
-        // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
-        // fill_rainbow(Cube.leds, LED_COUNT, hue, 1);
-
-        // fill_noise8(Cube.leds, LED_COUNT, 20, 10, 10, 255, 20, hue, 50);
         hue++;
     }
 };
 
-class Confetti : public Animation
-{
-public:
-    Confetti()
-    {
-        name = __FUNCTION__;
-        setDelay(10);
-    };
+// class Confetti : public Animation
+// {
+// public:
+//     Confetti()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(10);
+//     };
 
-    uint8_t hue = 0;
+//     uint8_t hue = 0;
 
-    void drawFrame() override
-    {
-        Cube.fadeAll(1);
-        EVERY_N_MILLIS(100)
-        {
-            int pos = random16(LED_COUNT);
-            Cube.leds[pos] += CHSV(hue + random8(64), 200, 255);
-            hue++;
-        }
-    }
-};
+//     void drawFrame() override
+//     {
+//         Cube.fadeAll(1);
+//         EVERY_N_MILLIS(100)
+//         {
+//             int pos = random16(LED_COUNT);
+//             Cube.leds[pos] += CHSV(hue + random8(64), 200, 255);
+//             hue++;
+//         }
+//     }
+// };
 
 class BPM : public Animation
 {

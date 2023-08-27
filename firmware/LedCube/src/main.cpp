@@ -10,8 +10,8 @@
 #include "secret.h"
 
 Animation *animations[] = {
-    new CubeGrow(),
     new FireWorks(),
+    new CubeGrow(),
     new Rain(),
     new TextRotate("RC"),
     // new Draw(),
