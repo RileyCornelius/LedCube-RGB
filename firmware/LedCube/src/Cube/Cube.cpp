@@ -89,7 +89,7 @@ CRGB LedCube::getLed(int8_t x, int8_t y, int8_t z)
 CRGB LedCube::getLed(uint16_t index)
 {
     SAFE_VOXEL_GUARD(index)
-    return CRGB(leds[index].r, leds[index].g, leds[index].b);
+    return leds[index];
 }
 
 void LedCube::fadeLed(const Point &p, int8_t scale)
@@ -104,8 +104,10 @@ void LedCube::fadeLed(int8_t x, int8_t y, int8_t z, int8_t scale)
 
 void LedCube::fadeLed(uint16_t index, int8_t scale)
 {
-    SAFE_VOXEL_GUARD(index)
-    leds[index].nscale8(255 - scale);
+    // SAFE_VOXEL_GUARD(index)
+    if (index >= LED_COUNT)
+        return;
+    leds[index].fadeToBlackBy(scale);
 }
 
 void LedCube::fadeAll(int8_t scale) // scale / 256 * color
@@ -272,20 +274,46 @@ void LedCube::box(const Point &p1, const Point &p2, const CRGB &col)
     line(p2.x, p2.y, p1.z, p2.x, p2.y, p2.z, col);
 }
 
-void LedCube::sphere(int x, int y, int z, int r, const CRGB &col)
+void LedCube::radiate(int x, int y, int z, float r, const CRGB &col, uint8_t power /* = 3 */)
 {
     for (int dx = -r; dx <= r; dx++)
         for (int dy = -r; dy <= r; dy++)
             for (int dz = -r; dz <= r; dz++)
-                if (sqrt(dx * dx + dy * dy + dz * dz) <= r)
+            {
+                float mag = sqrtf(dx * dx + dy * dy + dz * dz);
+                if (mag <= r)
                 {
-                    setLed(x + dx, y + dy, z + dz, col);
+                    CRGB fadedColor = col.scale8(255 / (1 + pow(mag, power)));
+                    setLed(x + dx, y + dy, z + dz, fadedColor);
                 }
+            }
 }
 
-void LedCube::sphere(const Point &p, int r, const CRGB &col)
+void LedCube::radiate(const Point &p, float r, const CRGB &col, uint8_t power /* = 3 */)
 {
-    sphere(p.x, p.y, p.z, r, col);
+    radiate(p.x, p.y, p.z, r, col, power);
+}
+
+void LedCube::sphere(int x, int y, int z, int r, const CRGB &col, bool radiate /* = false */)
+{
+    for (int dx = -r; dx <= r; dx++)
+        for (int dy = -r; dy <= r; dy++)
+            for (int dz = -r; dz <= r; dz++)
+            {
+                float mag = sqrtf(dx * dx + dy * dy + dz * dz);
+                if (mag <= r)
+                {
+                    if (radiate)
+                        setLed(x + dx, y + dy, z + dz, col.scale8(255 - (mag / r * 255)));
+                    else
+                        setLed(x + dx, y + dy, z + dz, col);
+                }
+            }
+}
+
+void LedCube::sphere(const Point &p, int r, const CRGB &col, bool radiate /* = false */)
+{
+    sphere(p.x, p.y, p.z, r, col, radiate);
 }
 
 void LedCube::shell(float x, float y, float z, float r, const CRGB &col, float thickness /* = 0.1 */)

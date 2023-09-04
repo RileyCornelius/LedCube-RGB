@@ -7,9 +7,6 @@
 
 #include <FastLED.h>
 #include "Cube/Math3D/Math3D.h"
-#include "Cube/Math3D/Point.h"
-#include "Cube/Math3D/Vector3.h"
-#include "Cube/Math3D/Quaternion.h"
 #include "config.h"
 
 /*---------------------------------------------------------------------------------------
@@ -22,7 +19,7 @@
 class LedCube
 {
 public:
-    CRGB leds[LED_COUNT];
+    CRGBArray<LED_COUNT> leds;
 
 public:
     LedCube();
@@ -45,8 +42,10 @@ public:
     void square(const Point &p1, const Point &p2, const Point &p3, const Point &p4, const CRGB &col);
     void cube(const Point &p1, const Point &p2, const CRGB &col);
     void box(const Point &p1, const Point &p2, const CRGB &col);
-    void sphere(int x, int y, int z, int radius, const CRGB &col);
-    void sphere(const Point &p, int radius, const CRGB &col);
+    void radiate(int x, int y, int z, float radius, const CRGB &col, uint8_t power = 3);
+    void radiate(const Point &p, float radius, const CRGB &col, uint8_t power = 3);
+    void sphere(int x, int y, int z, int radius, const CRGB &col, bool radiate = false);
+    void sphere(const Point &p, int radius, const CRGB &col, bool radiate = false);
     void shell(float x, float y, float z, float r, const CRGB &col, float thickness = 0.1);
     void shell(const Point &p, float r, const CRGB &col, float thickness = 0.1);
     void ascii(char ascii, int8_t y, const CRGB &color);
