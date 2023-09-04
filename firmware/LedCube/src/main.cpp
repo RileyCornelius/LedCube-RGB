@@ -21,6 +21,7 @@ Animation *animations[] = {
     new Sinelon(),
     new Spiral(),
     new Text("123456789 "),
+    new Smile(),
     new Bounce(),
     new Box(),
     new Sphere(),

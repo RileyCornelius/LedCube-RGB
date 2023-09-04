@@ -1,5 +1,10 @@
 #include "Math3D.h"
 
+float mapf(float in, float inMin, float inMax, float outMin, float outMax)
+{
+    return (outMax - outMin) * (in - inMin) / (inMax - inMin) + outMin;
+}
+
 float randomFloat(float max)
 {
     return randomFloat(0, max);
