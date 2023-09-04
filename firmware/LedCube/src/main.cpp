@@ -13,6 +13,7 @@ Animation *animations[] = {
     // new Draw(),
     // new Fire(),
     // new MatrixRain(),
+    new Arrow(),
     new FireWorks(),
     new Rain(),
     new TextRotate("RC"),
