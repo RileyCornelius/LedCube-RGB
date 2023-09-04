@@ -10,18 +10,19 @@
 #include "secret.h"
 
 Animation *animations[] = {
+    // new Draw(),
+    // new Fire(),
+    // new MatrixRain(),
     new FireWorks(),
-    new CubeGrow(),
     new Rain(),
     new TextRotate("RC"),
-    // new Draw(),
     new Sparkles(),
     new Ripple(),
     new Sinelon(),
     new Spiral(),
-    new Text("TACAM"),
     new Text("123456789 "),
     new Bounce(),
+    new Box(),
     new Sphere(),
     new Gradient(),
     new Rainbow(),

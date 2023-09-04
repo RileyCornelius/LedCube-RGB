@@ -13,8 +13,6 @@
  *
  * A point or the position of an object can also be represented by a vector by
  * moving from the origin to the coordinates (x,y,z)
- *
- * The length = sqrt(x*x + y*y + z*z)
  *----------------------------------------------------------------------------*/
 class Vector3
 {

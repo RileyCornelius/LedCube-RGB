@@ -254,60 +254,73 @@
 //     }
 // };
 
+class Fire : public Animation
+{
+public:
+    Fire()
+    {
+        name = __FUNCTION__;
+        setDelay(40);
+    };
+
+    CRGBPalette16 firePalette = CRGBPalette16(
+        CRGB::Black, CRGB::Black, CRGB::Black, CHSV(0, 255, 4),
+        CHSV(0, 255, 8), CRGB::Red, CRGB::Red, CRGB::Red,
+        CRGB::DarkOrange, CRGB::Orange, CRGB::Orange, CRGB::Orange,
+        CRGB::Yellow, CRGB::Yellow, CRGB::Gray, CRGB::Gray);
+
+    uint32_t xscale = 100; // How far apart they are
+    uint32_t yscale = 50;  // How fast they move
+    uint32_t zscale = 50;  // How fast they move
+
+    void drawFrame() override
+    {
+        for (int i = 0; i < LED_COUNT; i++)
+        {
+            // 16 bit resoloution
+            uint8_t index = inoise16(i * xscale, i * zscale, millis() * yscale * LED_COUNT / 65535);                  // X location is constant, but we move along the Y at the rate of millis()
+            CRGB color = ColorFromPalette(firePalette, min(i * (index) >> 6, 255), i * 255 / LED_COUNT, LINEARBLEND); // With that value, look up the 8 bit colour palette value and assign it to the current LED.
+            Cube.setLed(i, color);                                                                                    // Set the i'th led's color
+        }
+    }
+};
+
 class FireWorks : public Animation
 {
 public:
     FireWorks()
     {
-        name = __FUNCTION__;
-        setDelay(80);
+        name = "Fire Works";
+        setDelay(40);
     };
 
-    uint8_t hue = 0;
-    CRGB color = CRGB::White;
-    uint8_t i;
+    Timer preMissileTimer;
+    const Vector3 gravity = Vector3(0, 0, -1.0);
 
+    uint8_t missileHue = 0;
+    uint8_t explosionHue;
     float radius;
-    uint16_t numDebris;
+    Vector3 temp;
     Vector3 source;
     Vector3 target;
     Vector3 velocity;
     Particle missile;
     float explosionRadius = 0;
     float explosionMaxRadius;
-    Vector3 temp;
-    uint8_t typeOfExplosion;
-    uint8_t explosionHue;
-
-    Particle debris[50];
-
-    Timer preMissileTimer;
-
-    float noisef;
-    Vector3 gravity = Vector3(0, 0, -1.0);
 
     enum State
     {
         PREPARE_MISSILE,
         LAUNCHING,
-        PREPARE_EXPLOSION,
         EXPLODING,
         RESET,
-    };
-    enum Explosion
-    {
-        SHELLS,
-        PARTICLES,
-        // SPHERES,
-
-        EXPLOSIONS_MAX_INDEX,
     };
 
     State state = PREPARE_MISSILE;
 
     void drawFrame() override
     {
-        Cube.fadeAll(130);
+        Cube.fadeAll(65);
 
         switch (state)
         {
@@ -316,100 +329,39 @@ public:
             if (preMissileTimer.ready())
             {
                 source = Vector3(randomFloat(3, 5), randomFloat(3, 5), 0);
-                target = Vector3(randomFloat(2.5, 6.5), randomFloat(2.5, 6.5), randomFloat(4.5, 6.5));
-                float timeToTarget = randomFloat(1.5, 2.5);
+                target = Vector3(randomFloat(3, 6), randomFloat(3, 6), randomFloat(4.5, 6.5));
+                float timeToTarget = randomFloat(1.2, 2.0);
                 velocity = (target - source) / timeToTarget;
-                hue = random8(0, 255);
-
-                missile = Particle(source, velocity, hue, 1.0, timeToTarget);
-                Cube.setLed(missile.position, CHSV(missile.hue, 255, 255));
+                missileHue = random8(0, 255);
+                missile = Particle(source, velocity, missileHue, timeToTarget);
+                Cube.setLed(missile.position, CHSV(missileHue, 255, 255));
                 state = LAUNCHING;
             }
             break;
         case LAUNCHING:
             temp = missile.position;
             missile.move(getDeltaTime(), gravity);
-            Cube.setLed(missile.position, CHSV(missile.hue, 255, 255));
+            Cube.setLed(missile.position, CHSV(missileHue, 255, 255));
 
-            if ((temp.z > missile.position.z) || (missile.position.z > target.z))
-            {
-                typeOfExplosion = random8(0, EXPLOSIONS_MAX_INDEX);
-                // typeOfExplosion = PARTICLES;
-
-                state = PREPARE_EXPLOSION;
-            }
-            break;
-
-        case PREPARE_EXPLOSION:
-            if (typeOfExplosion == SHELLS)
+            if (temp.z > missile.position.z || missile.position.z > target.z)
             {
                 explosionMaxRadius = randomFloat(2.5, 4.5);
+                explosionHue = missileHue + random8(5, 15);
+                state = EXPLODING;
             }
-            else if (typeOfExplosion == PARTICLES)
-            {
-                numDebris = random((sizeof(debris) / sizeof(Particle)) / 2,
-                                   sizeof(debris) / sizeof(Particle));
-                float pwr = randomFloat(1.0, 2.5);
-                for (uint16_t i = 0; i < numDebris; i++)
-                {
-                    Vector3 velocity = Vector3(randomFloat(-pwr, pwr), randomFloat(-pwr, pwr), randomFloat(0, 4));
-                    debris[i] = Particle(temp, velocity, uint8_t(hue + random(0, 32)), 1.0f,
-                                         randomFloat(1.0f, 3.0f));
-                }
-            }
-            state = EXPLODING;
             break;
 
         case EXPLODING:
-            if (typeOfExplosion == SHELLS)
+            explosionRadius += 0.5f;
+            Cube.shell(missile.position, explosionRadius, CHSV(explosionHue++, 255, 255), randomFloat(0.1, 0.5));
+
+            if (explosionRadius > explosionMaxRadius)
             {
-                explosionRadius += 0.5f;
-                explosionHue += random8(5, 10);
-                CRGB explosionColor = CHSV(missile.hue + explosionHue, 255, 255);
-                Cube.shell(missile.position, explosionRadius, explosionColor, randomFloat(0.1, 0.5));
-
-                if (explosionRadius > explosionMaxRadius)
-                {
-                    state = RESET;
-                }
-                break;
-            }
-            else if (typeOfExplosion == PARTICLES)
-            {
-                uint16_t visibleDebris = 0;
-                for (uint16_t i = 0; i < numDebris; i++)
-                {
-                    if (debris[i].position.z > 0)
-                        debris[i].move(getDeltaTime(), Vector3(0, 0, -2.0));
-                    else
-                    {
-                        debris[i].position.z = 0;
-                    }
-
-                    if (debris[i].brightness > 0)
-                    {
-                        visibleDebris++;
-                        debris[i].brightness -= getDeltaTime() / debris[i].seconds;
-                    }
-                    else
-                    {
-                        debris[i].brightness = 0;
-                    }
-
-                    CRGB particleColor = random(0, 40) == 0 ? CRGB::White : CRGB(CHSV(debris[i].hue, 255, 255));
-                    particleColor.nscale8(debris[i].brightness * 255);
-                    Cube.setLed(debris[i].position, particleColor);
-                }
-
-                if (visibleDebris == 0)
-                {
-                    state = RESET;
-                }
+                state = RESET;
             }
             break;
 
         case RESET:
-            explosionHue = 0;
             explosionRadius = 0;
             preMissileTimer.reset();
             preMissileTimer.setPeriod(random16(300, 800));
@@ -429,9 +381,13 @@ public:
     };
 
     uint8_t hue = 0;
-    CRGB color = CRGB::White;
+    CRGB color = CRGB(0, 255, 0);
 
     float angle = 45.0f;
+
+    float radius = 0.0f;
+
+    uint8_t power = 1;
 
     void drawFrame() override
     {
@@ -445,9 +401,23 @@ public:
         // Vector3 v = Vector3(7, 7, 4);
         // v = q.rotate(v);
 
-        Vector3 v = Vector3(6, 6, 5);
-        v = v.rotate(angle, Axis::Z);
-        v = v.rotate(90.0f, Axis::Y);
+        // Vector3 v = Vector3(6, 6, 5);
+        // v = v.rotate(angle, Axis::Z);
+        // v = v.rotate(90.0f, Axis::Y);
+
+        Cube.clear();
+        Cube.radiate(Vector3(4, 4, 4), 4.1, color, 3);
+        // Cube.s(Vector3(4, 4, 4), radius, color);
+
+        if (power < 5)
+            power++;
+        else
+            power = 2;
+
+        if (radius < 4.0f)
+            radius += 0.1f;
+        else
+            radius = 1.0f;
 
         // Cube.shell(v, 1, color);
 
@@ -458,8 +428,8 @@ public:
         // Cube.setLed(Point(6, 6, 4), color);
 
         // clear colors
-        Cube.fadeAll(200);
-        Cube.setLed(v, color);
+        // Cube.fadeAll(200);
+        // Cube.setLed(v, color);
 
         // Point p = Point(4, 7, 4);
         // p = p.rotate(Point(4, 4, 4), Angles(angle, 0, 90));
@@ -698,7 +668,7 @@ public:
 
     void drawFrame() override
     {
-        fill_gradient(Cube.leds, LED_COUNT, CHSV(hue, 200, 255), CHSV(hue + 50, 255, 200));
+        Cube.leds.fill_gradient(CHSV(hue, 200, 255), CHSV(hue + 50, 255, 200));
         hue++;
     }
 };
@@ -1063,6 +1033,101 @@ public:
     }
 };
 
+// class MatrixRain : public Animation
+// {
+// public:
+//     MatrixRain()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(30);
+//     };
+
+//     const uint8_t rainAmount = 200;
+//     const uint8_t fadeTailScale = 55;
+//     const uint8_t fadeBottomScale = 30;
+
+//     const CRGBPalette16 rainColor_p =
+//         {
+//             CRGB(0, 255, 0),
+//             CRGB(0, 245, 10),
+//             CRGB(30, 255, 10),
+//             CRGB(20, 230, 20),
+//             CRGB(0, 220, 0),
+//             CRGB(0, 200, 30),
+//             CRGB(20, 230, 10),
+//             CRGB(0, 240, 0),
+//             CRGB(20, 225, 10),
+//             CRGB(30, 180, 20),
+//             CRGB(10, 245, 10),
+//             CRGB(30, 235, 5),
+//             CRGB(20, 225, 20),
+//             CRGB(10, 180, 20),
+//             CRGB(10, 205, 40),
+//             CRGB(20, 160, 20),
+//         };
+
+//     Particle lines[CUBE_SIZE][CUBE_SIZE];
+
+//     void drawFrame() override
+//     {
+
+//         // Create new raindrops
+//         if (random8() < rainAmount)
+//         {
+//             static Point prevPoint;
+//             Point point;
+//             do // Ensure the same point doesnt get set twice in a row
+//             {
+//                 point = Point(random8(0, CUBE_SIZE), random8(0, CUBE_SIZE), CUBE_SIZE - 1);
+//             } while (point == prevPoint);
+//             prevPoint = point;
+
+//             lines[point.x][point.y].position = Vector3(point.x, point.y, point.z);
+//             lines[point.x][point.y].velocity = Vector3(0, 0, randomFloat(0.7f, 1.3f));
+
+//             Cube.setLed(point, ColorFromPalette(rainColor_p, random8(0, 255)));
+//         }
+//     }
+
+//     // void drawFrame() override
+//     // {
+//     //     // Move raindrops down
+//     //     EVERY_N_MILLISECONDS(70)
+//     //     {
+//     //         // Cube.fadeAll(fadeTailScale);
+//     //         for (int x = 0; x < CUBE_SIZE; x++)
+//     //             for (int y = 0; y < CUBE_SIZE; y++)
+//     //                 for (int z = 0; z < CUBE_SIZE; z++)
+//     //                 {
+//     //                     CRGB rainColor = Cube.getLed(x, y, z);
+//     //                     if (rainColor != CRGB(0, 0, 0))
+//     //                     {
+//     //                         if (z >= 1) // move rain down
+//     //                         {
+//     //                             if (rainColor.getAverageLight() > 80)
+//     //                                 Cube.setLed(x, y, z - 1, rainColor);
+//     //                         }
+//     //                         Cube.fadeLed(x, y, z, fadeTailScale);
+//     //                     }
+//     //                 }
+//     //     }
+
+//     //     // Create new raindrops
+//     //     if (random8() < rainAmount)
+//     //     {
+//     //         static Point prevPoint;
+//     //         Point point;
+//     //         do // Ensure the same point doesnt get set twice in a row
+//     //         {
+//     //             point = Point(random8(0, CUBE_SIZE), random8(0, CUBE_SIZE), CUBE_SIZE - 1);
+//     //         } while (point == prevPoint);
+//     //         prevPoint = point;
+
+//     //         Cube.setLed(point, ColorFromPalette(rainColor_p, random8(0, 255)));
+//     //     }
+//     // }
+// };
+
 class Bounce : public Animation
 {
 public:
@@ -1268,35 +1333,27 @@ public:
     }
 };
 
-class CubeGrow : public Animation
+class Box : public Animation
 {
 public:
-    CubeGrow()
+    Box()
     {
         name = __FUNCTION__;
-        setDelay(200);
+        setDelay(80);
     };
 
+    const uint8_t low = 0;
+    const uint8_t high = CUBE_SIZE_M1;
     uint8_t hue = 0;
-    uint8_t offset = 1;
-    bool dir = 1;
 
     void drawFrame() override
     {
+        Cube.box(Point(low, low, low), Point(high, high, high), CHSV(hue + 10, 255, 255));
+        Cube.box(Point(low + 1, low + 1, low + 1), Point(high - 1, high - 1, high - 1), CHSV(hue + 30, 255, 255));
+        Cube.box(Point(low + 2, low + 2, low + 2), Point(high - 2, high - 2, high - 2), CHSV(hue + 50, 255, 255));
+        // Cube.box(Point(low + 3, low + 3, low + 3), Point(high - 3, high - 3, high - 3), CHSV(hue + 70, 255, 255));
+        Cube.sphere(CUBE_CENTER, CUBE_CENTER, CUBE_CENTER, 1.0, CHSV(hue + 70, 255, 255));
 
-        offset += dir ? 1 : -1;
-        if (offset > 2 || offset == 0)
-        {
-            Cube.clear();
-            dir = !dir;
-        }
-
-        CRGB color = CHSV(hue += 10, 255, 255);
-        uint8_t low = offset;
-        uint8_t high = CUBE_SIZE_M1 - offset;
-
-        Cube.clear();
-        Cube.box(Point(low, low, low), Point(high, high, high), color);
-        Cube.shell(Point(CUBE_CENTER, CUBE_CENTER, CUBE_CENTER), 3 - offset, color, 0.3);
+        hue += 1;
     }
 };
