@@ -346,7 +346,7 @@ public:
     }
 };
 
-#include "Cube/Font8x8/smile.h"
+#include "Cube/Bitmaps/smile.h"
 
 class Smile : public Animation
 {
@@ -366,10 +366,9 @@ public:
                 CRGB c;
                 if (data >> 24 & 0xFF) // if not transparent
                 {
-                    c = CRGB(0xff - (data & 0xff), 0xff - (data >> 8) & 0xff, 0xff - (data >> 16 & 0xff)); // convert to rgb
                     set = true;
                 }
-                tempCube.setLed(8 - x, y, 8 - z, set ? c : CRGB::Black);
+                tempCube.setLed(CUBE_SIZE_M1 - x, y, CUBE_SIZE_M1 - z, set ? CRGB::White : CRGB::Black);
             }
     };
 
@@ -401,6 +400,155 @@ public:
         {
             angle = 0;
         }
+    }
+};
+
+#include "Cube/Bitmaps/pacman.h"
+#include "Cube/Bitmaps/pacman_ghost.h"
+
+class Pacman : public Animation
+{
+public:
+    Pacman()
+    {
+        name = __FUNCTION__;
+        setDelay(150);
+
+        uint8_t y = 1;
+
+        updateBitmap();
+    };
+
+    float angle = 0;
+    CRGB tempCube[CUBE_SIZE][CUBE_SIZE][CUBE_SIZE] = {0};
+    uint8_t hue = 0;
+    const uint16_t pacmanRereshRate = 200;
+    const uint16_t ghostRereshRate = 500;
+    uint8_t pacmanFrame = 0;
+    uint8_t ghostFrame = 0;
+
+    int8_t moveX = 0;
+
+    void clearTempCube()
+    {
+        for (int8_t x = 0; x < CUBE_SIZE; x++)
+            for (int8_t y = 0; y < CUBE_SIZE; y++)
+                for (int8_t z = 0; z < CUBE_SIZE; z++)
+                {
+                    tempCube[x][y][z] = CRGB::Black;
+                }
+    }
+
+    void updateBitmap()
+    {
+        clearTempCube();
+        for (int8_t z = 0; z < CUBE_SIZE; z++)
+            for (int8_t x = 0; x < CUBE_SIZE; x++)
+            {
+                // pacman on the front
+                uint32_t frame = pacman_data[pacmanFrame][z * CUBE_SIZE + x];
+                CRGB col = CRGB::Black;
+                if (frame >> 24 & 0xFF) // if not transparent
+                {
+                    col = CRGB((frame & 0xff), (frame >> 8) & 0xff, (frame >> 16 & 0xff)); // get rgb from data
+                }
+                tempCube[CUBE_SIZE_M1 - x][1][CUBE_SIZE_M1 - z] = col;
+
+                // ghost on the back
+                frame = ghost_data[ghostFrame][z * CUBE_SIZE + x];
+                col = CRGB::Black;
+                if (frame >> 24 & 0xFF) // if not transparent
+                {
+                    col = CRGB((frame & 0xff), (frame >> 8) & 0xff, (frame >> 16 & 0xff)); // get rgb from data
+                }
+                tempCube[CUBE_SIZE_M1 - x][CUBE_SIZE_M1 - 1][CUBE_SIZE_M1 - z] = col;
+            }
+    }
+
+    bool changeFrame()
+    {
+        bool changed = false;
+        EVERY_N_MILLIS(70)
+        {
+            pacmanFrame++;
+            if (pacmanFrame >= PACMAN_FRAME_COUNT)
+                pacmanFrame = 0;
+
+            changed = true;
+        }
+        EVERY_N_MILLIS(500)
+        {
+            ghostFrame++;
+            if (ghostFrame >= GHOST_FRAME_COUNT)
+                ghostFrame = 0;
+
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    void rotatePacman()
+    {
+        Cube.clear();
+        for (int x = 0; x < CUBE_SIZE; x++)
+            for (int y = 0; y < CUBE_SIZE; y++)
+                for (int z = 0; z < CUBE_SIZE; z++)
+                {
+                    CRGB color = tempCube[x][y][z];
+                    if (color != CRGB(0, 0, 0))
+                    {
+                        Vector3 v = Vector3(x, y, z).rotate(angle, Axis::Z);
+                        Cube.setLed(v, color);
+                    }
+                }
+
+        // Increase angle
+        angle += 10;
+        if (angle >= 360)
+        {
+            angle = 0;
+        }
+    }
+
+    void movePacman()
+    {
+        Cube.clear();
+        for (int x = 0; x < CUBE_SIZE; x++)
+            for (int y = 0; y < CUBE_SIZE; y++)
+                for (int z = 0; z < CUBE_SIZE; z++)
+                {
+                    CRGB color = tempCube[x][y][z];
+                    if (color != CRGB(0, 0, 0))
+                    {
+                        Vector3 v = Vector3(x, y, z);
+                        // v = v.rotate(180.0, Axis::X);
+                        v += Vector3(moveX, 0, 0);
+                        Cube.setLed(v, color);
+                    }
+                }
+
+        // // Move through the cube forward
+        // moveX++;
+        // if (moveX > CUBE_SIZE)
+        //     moveX = -CUBE_SIZE;
+
+        // Move through the cube backwards
+        moveX--;
+        if (moveX < -CUBE_SIZE)
+            moveX = CUBE_SIZE;
+    }
+
+    void drawFrame() override
+    {
+        // Update bitmap
+        if (changeFrame())
+        {
+            updateBitmap();
+        }
+
+        // rotatePacman();
+        movePacman();
     }
 };
 
