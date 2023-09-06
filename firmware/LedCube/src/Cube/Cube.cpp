@@ -1,7 +1,7 @@
 #include "Cube.h"
 #include "ota.h"
-#include "Font8x8/ibm_vga.h"
-#include "Font8x8/ibm_cga_light.h"
+#include "Bitmaps/ibm_vga.h"
+#include "Bitmaps/ibm_cga_light.h"
 
 // Global cube helper object for Animation sub classes
 LedCube Cube = LedCube();
@@ -372,6 +372,9 @@ uint16_t LedCube::getIndex(const Point &p)
 
 uint16_t LedCube::getIndex(int8_t x, int8_t y, int8_t z)
 {
+    if (x < 0 || x >= CUBE_SIZE || y < 0 || y >= CUBE_SIZE || z < 0 || z >= CUBE_SIZE)
+        return LED_COUNT + 1; // invalid index
+
 #if SERPENTINE_LAYOUT
     if (x & 0x01) // if x is odd then run z backwards
     {
