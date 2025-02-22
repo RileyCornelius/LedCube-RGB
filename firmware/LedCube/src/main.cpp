@@ -4,8 +4,6 @@
 #include "Animator/Animator.h"
 #include "Animation/Animations/Animations.h"
 #include "Communication/Display.h"
-#include "Config/Config.h"
-#include "Config/Pins.h"
 
 Animation *animations[] = {
     // new Draw(),
