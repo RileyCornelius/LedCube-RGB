@@ -1291,33 +1291,33 @@ public:
     }
 };
 
-class Shell : public Animation
-{
-public:
-    Shell()
-    {
-        name = __FUNCTION__;
-        setDelay(75);
-    };
-    bool expanding = true;
+// class Shell : public Animation
+// {
+// public:
+//     Shell()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(75);
+//     };
+//     bool expanding = true;
 
-    uint8_t index = 0;
-    uint8_t hue = 0;
-    CRGB color = CHSV(hue, 255, 255);
-    uint8_t x = 0, y = 0, z = 0;
+//     uint8_t index = 0;
+//     uint8_t hue = 0;
+//     CRGB color = CHSV(hue, 255, 255);
+//     uint8_t x = 0, y = 0, z = 0;
 
-    void drawFrame() override
-    {
-        Cube.clear();
-        Cube.shell(Point(4, 4, 4), index, 0.2, color);
-        index = expanding ? index + 1 : index - 1;
+//     void drawFrame() override
+//     {
+//         Cube.clear();
+//         Cube.shell(Point(4, 4, 4), index, 0.2, color);
+//         index = expanding ? index + 1 : index - 1;
 
-        if (index == 6 || index == 0)
-            expanding = !expanding;
+//         if (index == 6 || index == 0)
+//             expanding = !expanding;
 
-        color = CHSV(hue += 2, 255, 255);
-    }
-};
+//         color = CHSV(hue += 2, 255, 255);
+//     }
+// };
 
 class Ripple : public Animation
 {

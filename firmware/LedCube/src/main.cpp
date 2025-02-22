@@ -1,53 +1,34 @@
 #include <Arduino.h>
 #include <Logger.h>
-#include <BlynkSimpleEsp32.h>
 #include "Cube.h"
 #include "Animator.h"
 #include "Animations.h"
 #include "display.h"
-#include "ota.h"
 #include "config.h"
-#include "secret.h"
 
 Animation *animations[] = {
     // new Draw(),
     // new Fire(),
     // new MatrixRain(),
     new Pacman(),
-    new Smile(),
+    // new Smile(),
     new Arrow(),
     new FireWorks(),
     new Rain(),
-    new TextRotate("RC"),
+    new TextRotate("RRC"),
     new Sparkles(),
     new Ripple(),
     new Sinelon(),
     new Spiral(),
-    new Text("123456789 "),
+    // new Text("123456789 "),
     new Bounce(),
-    new Box(),
+    // new Box(),
     new Sphere(),
-    new Gradient(),
+    // new Gradient(),
     new Rainbow(),
 };
 
 Animator animator(animations, ARRAY_SIZE(animations));
-
-BLYNK_WRITE(V1)
-{
-    String action = param.asStr();
-
-    if (action == "play")
-        animator.play();
-    if (action == "stop")
-        animator.stop();
-    if (action == "next")
-        animator.next();
-    if (action == "prev")
-        animator.previous();
-
-    Blynk.virtualWrite(V0, animator.getNextAnimationName());
-}
 
 void setup()
 {
@@ -66,14 +47,11 @@ void setup()
     FastLED.addLeds<LED_TYPE, PIN_LED_8, LED_COLOR_ORDER>(Cube.leds, LED_BRANCH_COUNT * 8, LED_BRANCH_COUNT);
     FastLED.clear(true); // Turn off all LEDs
 
-    Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS); // Blynk App
-    initOta();                                           // Over the Air Update
+    animator.rotate();
 }
 
 void loop()
 {
     handleDisplay();
-    handleOta();
-    Blynk.run();
     animator.run();
 }

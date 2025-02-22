@@ -11,7 +11,7 @@ Animator::Animator(Animation *animations[], uint16_t length)
     this->animations = animations;
     animationCount = length - 1;
     isRotating = false;
-    rotationTimer.setPeriod(15000);
+    rotationTimer.setPeriod(30000);
 }
 
 void Animator::togglePlay()
