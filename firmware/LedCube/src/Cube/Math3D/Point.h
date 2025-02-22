@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include "Vector3.h"
-#include "config.h"
+#include "Config/Config.h"
 
 /*---------------------------------------------------------------------------------------
  * Angles STRUCT - Rotate in 3D

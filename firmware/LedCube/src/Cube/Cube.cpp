@@ -12,7 +12,7 @@
 
 #include <FastLED.h>
 
-#include "Cube.h"
+#include "Cube/Cube.h"
 #include "Bitmaps/ibm_vga.h"
 #include "Bitmaps/ibm_cga_light.h"
 

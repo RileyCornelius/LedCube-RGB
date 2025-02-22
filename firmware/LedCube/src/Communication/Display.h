@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "config.h"
+#include "Config/Config.h"
 
 enum DisplayType
 {

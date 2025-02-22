@@ -3,7 +3,7 @@
 #include <pixelset.h>
 
 #include "Cube/Math3D/Math3D.h"
-#include "config.h"
+#include "Config/Config.h"
 
 /*---------------------------------------------------------------------------------------
  * CUBE CLASS - 3D RGB LED Cube

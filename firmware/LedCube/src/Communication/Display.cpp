@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <Logger.h>
-#include "Animator.h"
-#include "Display.h"
-#include "config.h"
+#include "Animator/Animator.h"
+#include "Communication/Display.h"
+#include "Config/Config.h"
 
 extern Animator animator;
 
@@ -10,7 +10,7 @@ static const char *TAG = "[Display]";
 
 void writeDisplayCommand(DisplayType command)
 {
-    String messageToSend(static_cast<char>(command));
+    String messageToSend((char)command);
 
     LOG_DEBUG(TAG, "Command: %s", messageToSend);
     SerialDisplay.println(messageToSend);
@@ -18,14 +18,14 @@ void writeDisplayCommand(DisplayType command)
 
 void writeDisplayMessage(DisplayType type, String message)
 {
-    String messageToSend(static_cast<char>(type));
+    String messageToSend((char)type);
 
     messageToSend += message;
     LOG_DEBUG(TAG, "MessageToSend: %s", messageToSend);
     SerialDisplay.println(messageToSend);
 }
 
-void writeDisplayMessage(DisplayType type, char *message)
+void writeDisplayMessage(DisplayType type, const char *message)
 {
     writeDisplayMessage(type, String(message));
 }

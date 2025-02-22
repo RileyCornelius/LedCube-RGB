@@ -1,5 +1,5 @@
-#include "Animation.h"
-#include "Cube.h"
+#include "Animation/Animation.h"
+#include "Cube/Cube.h"
 
 Animation::Animation()
 {

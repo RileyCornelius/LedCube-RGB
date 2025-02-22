@@ -1,5 +1,5 @@
 #include "Point.h"
-#include "config.h"
+#include "Config/Config.h"
 #include "Math3D.h"
 
 /*---------------------------------------------------------------------------------------

@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include <Logger.h>
-#include "Cube.h"
-#include "Animator.h"
-#include "Animations.h"
-#include "display.h"
-#include "config.h"
+#include "Cube/Cube.h"
+#include "Animator/Animator.h"
+#include "Animation/Animations/Animations.h"
+#include "Communication/Display.h"
+#include "Config/Config.h"
+#include "Config/Pins.h"
 
 Animation *animations[] = {
     // new Draw(),

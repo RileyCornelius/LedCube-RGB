@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SimpleTimer.h>
-#include "Animation.h"
+#include "Animation/Animation.h"
 
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0])) // return length of an array
 

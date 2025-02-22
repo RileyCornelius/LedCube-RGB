@@ -1,7 +1,7 @@
-#include "Animator.h"
+#include "Animator/Animator.h"
 #include "AnimatorState.h"
-#include "Cube.h"
-#include "Display.h"
+#include "Cube/Cube.h"
+#include "Communication/Display.h"
 
 static const char *TAG = "[Animator]";
 

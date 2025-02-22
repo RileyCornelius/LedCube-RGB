@@ -4,6 +4,8 @@
 
 /**--------------------------------------------------------------------------------------
  * Animation class (Abstract) - Base class for all animations
+ *
+ * Ensure name and setDelay() are called in the constructor
  *-------------------------------------------------------------------------------------*/
 
 class Animation

@@ -1,8 +1,11 @@
 #pragma once
 
 #include <Logger.h>
-#include "Animation.h"
-#include "Cube.h"
+#include "Animation/Animation.h"
+#include "Cube/Cube.h"
+#include "Config/Config.h"
+
+#include "Animation/Animations/Arrow.h"
 
 // class Fire : public Animation
 // {
@@ -10,7 +13,7 @@
 //     Fire()
 //     {
 //         name = __FUNCTION__;
-//         setDelay(40);
+//         setDelay(40);s
 //     };
 
 //     CRGBPalette16 firePalette = HeatColors_p;
@@ -253,98 +256,6 @@
 //         Cube.setLed(MIDDLE, MIDDLE, MIDDLE, color); // write to center as it keeps getting blanked out
 //     }
 // };
-
-class Arrow : public Animation
-{
-public:
-    Arrow()
-    {
-        name = __FUNCTION__;
-        setDelay(70);
-
-        tempCube.clear();
-        int8_t y = 1;
-        for (int8_t z = 0; z < 9; z++)
-            for (int8_t x = 0; x < 9; x++)
-            {
-                if (upArrow[z] & 1 << x)
-                {
-                    Vector3 v = Vector3(CUBE_SIZE_M1 - x, 1, CUBE_SIZE_M1 - z);
-                    tempCube.setLed(v, CRGB::Blue);
-                }
-
-                if (downArrow[z] & 1 << x)
-                {
-                    Vector3 v = Vector3(CUBE_SIZE_M1 - x, CUBE_SIZE_M1 - 1, CUBE_SIZE_M1 - z);
-                    tempCube.setLed(v, CRGB::Red);
-                }
-            }
-    };
-
-    const uint8_t upArrow[CUBE_SIZE] = {
-        0b00000000, // 0
-        0b00010000, // 1
-        0b00111000, // 2
-        0b01111100, // 3
-        0b11111110, // 4
-        0b00111000, // 5
-        0b00111000, // 6
-        0b00111000, // 7
-        0b00000000, // 8
-    };
-
-    const uint8_t downArrow[CUBE_SIZE] = {
-        0b00000000, // 8
-        0b00111000, // 7
-        0b00111000, // 6
-        0b00111000, // 5
-        0b11111110, // 4
-        0b01111100, // 3
-        0b00111000, // 2
-        0b00010000, // 1
-        0b00000000, // 0
-    };
-
-    float angleX = 360;
-    float angleY = 0;
-
-    LedCube tempCube;
-    uint8_t hue = 0;
-
-    void drawFrame() override
-    {
-        // Rotate and draw
-        Cube.clear();
-        for (int x = 0; x < CUBE_SIZE; x++)
-            for (int y = 0; y < CUBE_SIZE; y++)
-                for (int z = 0; z < CUBE_SIZE; z++)
-                {
-                    Vector3 v = Vector3(x, y, z);
-                    CRGB color = tempCube.getLed(v);
-                    if (color != CRGB(0, 0, 0))
-                    {
-                        v = v.rotate(angleX, Axis::X);
-                        v = v.rotate(angleY, Axis::Y);
-                        Cube.setLed(v, color + CHSV(hue, 255, 255));
-                    }
-                }
-
-        // line in the middle
-        // Cube.radiate(Point(4, 4, 4), 1.5, CRGB::Green + CHSV(hue, 255, 255), 3);
-        // Cube.line(Point(1, 4, 4), Point(7, 4, 4), CRGB::Green + CHSV(hue, 255, 255));
-
-        // Increase angle and hue
-        hue++;
-        angleX -= 15;
-        if (angleX <= 0)
-        {
-            angleX = 360;
-            angleY += 15;
-            if (angleY >= 360)
-                angleY = 0;
-        }
-    }
-};
 
 #include "Cube/Bitmaps/smile.h"
 
@@ -605,69 +516,69 @@ public:
     }
 };
 
-class Sinus : public Animation
-{
-public:
-    Sinus()
-    {
-        name = __FUNCTION__;
-        setDelay(40);
-    };
+// class Sinus : public Animation
+// {
+// public:
+//     Sinus()
+//     {
+//         name = __FUNCTION__;
+//         setDelay(40);
+//     };
 
-    CRGBPalette16 firePalette = CRGBPalette16(
-        CRGB::Black, CRGB::Black, CRGB::Black, CHSV(0, 255, 4),
-        CHSV(0, 255, 8), CRGB::Red, CRGB::Red, CRGB::Red,
-        CRGB::DarkOrange, CRGB::Orange, CRGB::Orange, CRGB::Orange,
-        CRGB::Yellow, CRGB::Yellow, CRGB::Gray, CRGB::Gray);
+//     CRGBPalette16 firePalette = CRGBPalette16(
+//         CRGB::Black, CRGB::Black, CRGB::Black, CHSV(0, 255, 4),
+//         CHSV(0, 255, 8), CRGB::Red, CRGB::Red, CRGB::Red,
+//         CRGB::DarkOrange, CRGB::Orange, CRGB::Orange, CRGB::Orange,
+//         CRGB::Yellow, CRGB::Yellow, CRGB::Gray, CRGB::Gray);
 
-    uint32_t xscale = 100; // How far apart they are
-    uint32_t yscale = 50;  // How fast they move
-    uint32_t zscale = 50;  // How fast they move
+//     uint32_t xscale = 100; // How far apart they are
+//     uint32_t yscale = 50;  // How fast they move
+//     uint32_t zscale = 50;  // How fast they move
 
-    float x_min = -2;
-    float x_max = 2;
-    float z_min = -2;
-    float z_max = 2;
+//     float x_min = -2;
+//     float x_max = 2;
+//     float z_min = -2;
+//     float z_max = 2;
 
-    int16_t hue16;
-    int16_t hue16_speed;
-    float phase_speed = PI;
-    float resolution = 30;
-    float radius = 7.5f;
-    int8_t hue_speed = -50 * 255;
-    uint8_t brightness = 200;
+//     int16_t hue16;
+//     int16_t hue16_speed;
+//     float phase_speed = PI;
+//     float resolution = 30;
+//     float radius = 7.5f;
+//     int8_t hue_speed = -50 * 255;
+//     uint8_t brightness = 200;
 
-    float phase = 0;
+//     float phase = 0;
 
-    void drawFrame() override
-    {
-        uint8_t brightness = 255;
-        phase += getDeltaTime() * phase_speed;
-        hue16 += getDeltaTime() * hue16_speed;
+//     void drawFrame() override
+//     {
+//         uint8_t brightness = 255;
+//         phase += getDeltaTime() * phase_speed;
+//         hue16 += getDeltaTime() * hue16_speed;
 
-        for (uint16_t x = 0; x <= resolution; x++)
-        {
-            // convert cube x to floating point coordinate between x_min and x_max
-            float xprime = mapf(x, 0, resolution, x_min, x_max);
-            for (uint16_t z = 0; z <= resolution; z++)
-            {
-                // convert cube z to floating point coordinate between z_min and z_max
-                float zprime = mapf(z, 0, resolution, z_min, z_max);
-                // determine y floating point coordinate
-                float y = sinf(phase + sqrtf(xprime * xprime + zprime * zprime));
-                // display voxel on the cube scaled back to radius fitting the cube
-                Vector3 point =
-                    Vector3(2 * (x / resolution) - 1, 2 * (z / resolution) - 1, y);
-                point = point.rotate(phase * 10.0f, Axis::Z);
-                // point = q.rotate(point) * radius;
-                // Color c =
-                //     Color((hue16 >> 8) + (int8_t)(y * 64), RainbowGradientPalette);
-                // radiate(point, c.scale(brightness), 1.0f);
-                Cube.setLed(point, CHSV(hue16 >> 8, 255, 255));
-            }
-        }
-    }
-};
+//         for (uint16_t x = 0; x <= resolution; x++)
+//         {
+//             // convert cube x to floating point coordinate between x_min and x_max
+//             float xprime = mapf(x, 0, resolution, x_min, x_max);
+//             for (uint16_t z = 0; z <= resolution; z++)
+//             {
+//                 // convert cube z to floating point coordinate between z_min and z_max
+//                 float zprime = mapf(z, 0, resolution, z_min, z_max);
+//                 // determine y floating point coordinate
+//                 float y = sinf(phase + sqrtf(xprime * xprime + zprime * zprime));
+//                 // display voxel on the cube scaled back to radius fitting the cube
+//                 Vector3 point =
+//                     Vector3(2 * (x / resolution) - 1, 2 * (z / resolution) - 1, y);
+//                 point = point.rotate(phase * 10.0f, Axis::Z);
+//                 // point = q.rotate(point) * radius;
+//                 // Color c =
+//                 //     Color((hue16 >> 8) + (int8_t)(y * 64), RainbowGradientPalette);
+//                 // radiate(point, c.scale(brightness), 1.0f);
+//                 Cube.setLed(point, CHSV(hue16 >> 8, 255, 255));
+//             }
+//         }
+//     }
+// };
 
 class Fire : public Animation
 {
