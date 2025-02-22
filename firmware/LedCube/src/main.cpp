@@ -37,6 +37,7 @@ void setup()
     DISPLAY_BEGIN(115200); // Display communication
 
     Cube.init();
+    animator.init();
     animator.setRotationTime(30000);
     animator.setRotating(true);
 }

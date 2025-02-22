@@ -7,9 +7,15 @@ static const char *TAG = "[Animator]";
 
 Animator::Animator(Animation *animations[], uint16_t length)
 {
-    AnimatorState::set(Idle);
     this->animations = animations;
     animationCount = length - 1;
+}
+
+void Animator::init()
+{
+    AnimatorState::set(Beginning);
+    WRITE_DISPLAY_MESSAGE(MessageAnimation, animations[currentIndex]->name);
+    WRITE_DISPLAY_MESSAGE(MessageFps, String(animations[currentIndex]->getFps()));
 }
 
 void Animator::first()
@@ -68,7 +74,7 @@ void Animator::togglePlay()
         pause();
 }
 
-void Animator::toggleRotation()
+void Animator::toggleRotating()
 {
     rotating = !rotating;
 }

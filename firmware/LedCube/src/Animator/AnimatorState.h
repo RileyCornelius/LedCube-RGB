@@ -13,7 +13,7 @@ enum State
 };
 
 #if LOG_LEVEL_MIN > 0
-const char *stateNames[MAX_VALUE] = {
+static const char *stateNames[MAX_VALUE] = {
     "Idle",
     "Beginning",
     "Running",
@@ -22,7 +22,7 @@ const char *stateNames[MAX_VALUE] = {
 
 namespace AnimatorState
 {
-    State state;
+    State state = Idle;
 
     State get() { return state; }
     bool is(State isState) { return (state == isState); }

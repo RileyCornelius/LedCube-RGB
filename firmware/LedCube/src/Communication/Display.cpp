@@ -68,7 +68,7 @@ void handleDisplay()
             break;
 
         case CommandRotation:
-            animator.toggleRotation();
+            animator.toggleRotating();
             break;
 
         case MessageRotationTime:

@@ -16,7 +16,9 @@ private:
 
 public:
     Animator(Animation *animations[], uint16_t length);
+    void init();
     void loop();
+
     void first();
     void last();
     void next();
@@ -25,7 +27,7 @@ public:
     void pause();
     void stop();
     void togglePlay();
-    void toggleRotation();
+    void toggleRotating();
     void setRotationTime(uint32_t time);
     void setRotating(bool set);
     bool isRotating();
