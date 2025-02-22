@@ -13,6 +13,7 @@
 #include <FastLED.h>
 
 #include "Cube/Cube.h"
+#include "Config/Pins.h"
 #include "Bitmaps/ibm_vga.h"
 #include "Bitmaps/ibm_cga_light.h"
 
@@ -64,6 +65,22 @@ LedCube Cube = LedCube();
 
 LedCube::LedCube()
 {
+}
+
+void LedCube::init()
+{
+    // Initialize 9 branches of 81 LEDs each, total of 729 LEDs
+    // Each branch is sent data at the same time with DMA using the I2S driver
+    FastLED.addLeds<LED_TYPE, PIN_LED_0, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 0, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_1, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 1, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_2, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 2, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_3, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 3, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_4, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 4, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_5, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 5, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_6, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 6, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_7, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 7, LED_BRANCH_COUNT);
+    FastLED.addLeds<LED_TYPE, PIN_LED_8, LED_COLOR_ORDER>(leds, LED_BRANCH_COUNT * 8, LED_BRANCH_COUNT);
+    FastLED.clear(true); // Turn off all LEDs
 }
 
 void LedCube::setLed(const Point &p, const CRGB &col)

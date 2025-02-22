@@ -20,6 +20,7 @@ public:
 public:
     LedCube();
 
+    void init();
     void setLed(int8_t x, int8_t y, int8_t z, const CRGB &col);
     void setLed(uint16_t index, const CRGB &col);
     void setLed(const Point &p, const CRGB &col);
