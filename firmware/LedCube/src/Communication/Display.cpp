@@ -68,11 +68,11 @@ void handleDisplay()
             break;
 
         case CommandRotation:
-            animator.rotate();
+            animator.toggleRotation();
             break;
 
         case MessageRotationTime:
-            animator.setRotation(data.toInt());
+            animator.setRotationTime(data.toInt());
             break;
         }
     }

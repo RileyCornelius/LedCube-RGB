@@ -4,24 +4,22 @@
 
 /**--------------------------------------------------------------------------------------
  * Animation class (Abstract) - Base class for all animations
- *
- * Ensure name and setDelay() are called in the constructor
  *-------------------------------------------------------------------------------------*/
 
 class Animation
 {
 protected:
-    Timer updateTimer;
+    Timer updateTimer; // * Ensure updateTimer is set in the constructor
     Timer transitionTimer = Timer(3);
     float deltaTime = 0;
 
     void setFps(uint16_t fps);
     void setDelay(uint32_t millis);
-    float getDeltaTime() { return deltaTime; } // time since last update in seconds
-    virtual void drawFrame() = 0;              // pure virtual, needs to be overridden
+    float getDeltaTime() { return deltaTime; }
+    virtual void drawFrame() = 0; // * pure virtual, needs to be overridden
 
 public:
-    String name;
+    String name; // * Ensure name is set in the constructor
 
     Animation();
     uint16_t getFps(bool actual = true);

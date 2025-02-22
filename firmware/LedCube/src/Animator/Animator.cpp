@@ -7,25 +7,21 @@ static const char *TAG = "[Animator]";
 
 Animator::Animator(Animation *animations[], uint16_t length)
 {
-    AnimatorState::set(Ending);
+    AnimatorState::set(Idle);
     this->animations = animations;
     animationCount = length - 1;
-    isRotating = false;
-    rotationTimer.setPeriod(30000);
 }
 
-void Animator::togglePlay()
+void Animator::first()
 {
-    if (AnimatorState::is(Idle))
-        play();
-    else
-        pause();
+    AnimatorState::set(Ending);
+    nextIndex = 0;
 }
 
-void Animator::pause()
+void Animator::last()
 {
-    AnimatorState::set(Idle);
-    WRITE_DISPLAY_COMMAND(CommandPause);
+    AnimatorState::set(Ending);
+    nextIndex = animationCount;
 }
 
 void Animator::play()
@@ -34,16 +30,16 @@ void Animator::play()
     WRITE_DISPLAY_COMMAND(CommandPlay);
 }
 
+void Animator::pause()
+{
+    AnimatorState::set(Idle);
+    WRITE_DISPLAY_COMMAND(CommandPause);
+}
+
 void Animator::stop()
 {
     AnimatorState::set(Idle);
     animations[currentIndex]->clear();
-}
-
-void Animator::first()
-{
-    AnimatorState::set(Ending);
-    nextIndex = 0;
 }
 
 void Animator::next()
@@ -64,22 +60,40 @@ void Animator::previous()
         nextIndex = animationCount;
 }
 
-void Animator::setRotation(uint32_t time)
+void Animator::togglePlay()
+{
+    if (AnimatorState::is(Idle))
+        play();
+    else
+        pause();
+}
+
+void Animator::toggleRotation()
+{
+    rotating = !rotating;
+}
+
+void Animator::setRotationTime(uint32_t time)
 {
     rotationTimer.setPeriod(time);
 }
 
-void Animator::rotate()
+void Animator::setRotating(bool set)
 {
-    isRotating = !isRotating;
+    rotating = set;
 }
 
-String Animator::getNextAnimationName()
+bool Animator::isRotating()
 {
-    return animations[nextIndex]->name;
+    return rotating;
 }
 
-void Animator::run()
+String Animator::getCurrentAnimationName()
+{
+    return animations[currentIndex]->name;
+}
+
+void Animator::loop()
 {
     switch (AnimatorState::get())
     {
@@ -106,7 +120,7 @@ void Animator::run()
         break;
 
     case Running:
-        if (isRotating && rotationTimer.ready())
+        if (rotating && rotationTimer.ready())
             next();
 
         animations[currentIndex]->animate();
