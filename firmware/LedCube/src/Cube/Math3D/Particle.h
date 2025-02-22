@@ -1,7 +1,7 @@
 #pragma once
 
+#include <crgb.h>
 #include "Math3D.h"
-#include <FastLED.h>
 
 class Particle
 {

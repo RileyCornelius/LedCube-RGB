@@ -1,9 +1,21 @@
+
+#if defined(ESP32)
+#if ESP_ARDUINO_VERSION_MAJOR <= 2
+// * IMPORTANT: This built on esp-idf 4.x. This existed prior to Arduino Core 3.0.0. you MUST downgrade to Arduino Core < 3.0.0
+// Changes data transfer from RMT to I2S which can handle up to 24 parallel branches
+#define FASTLED_ESP32_I2S true                      // This must be defined before including FastLED.h
+#define FASTLED_ESP32_I2S_NUM_DMA_BUFFERS CUBE_SIZE // Number of DMA buffers equal to cube size
+#else
+#pragma message "ESP32 Arduino Core version >= 3.0.0 detected. Please use Arduino Core < 3.0.0 for FastLED I2S support."
+#endif // ESP_ARDUINO_VERSION_MAJOR <= 2
+#endif // defined(ESP32)
+
+#include <FastLED.h>
+
 #include "Cube.h"
-#include "ota.h"
 #include "Bitmaps/ibm_vga.h"
 #include "Bitmaps/ibm_cga_light.h"
 
-// Global cube helper object for Animation sub classes
 LedCube Cube = LedCube();
 
 // Enables safe voxel guard
@@ -17,10 +29,6 @@ LedCube Cube = LedCube();
         Cube.clear();                              \
         Cube.sphere(Point(4, 4, 4), 3, CRGB::Red); \
         FastLED.show();                            \
-        while (1)                                  \
-        {                                          \
-            handleOta();                           \
-        }                                          \
     }
 #else
 #define SAFE_VOXEL_GUARD(index)
