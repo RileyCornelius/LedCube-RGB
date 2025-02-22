@@ -3,9 +3,10 @@
 #include <Logger.h>
 #include "Animation/Animation.h"
 #include "Cube/Cube.h"
-#include "Config/Config.h"
 
 #include "Animation/Animations/Arrow.h"
+#include "Animation/Animations/FireWorks.h"
+#include "Animation/Animations/Smile.h"
 
 // class Fire : public Animation
 // {
@@ -256,63 +257,6 @@
 //         Cube.setLed(MIDDLE, MIDDLE, MIDDLE, color); // write to center as it keeps getting blanked out
 //     }
 // };
-
-#include "Cube/Bitmaps/smile.h"
-
-class Smile : public Animation
-{
-public:
-    Smile()
-    {
-        name = __FUNCTION__;
-        setDelay(60);
-
-        uint8_t y = 1;
-        tempCube.clear();
-        for (int8_t z = 0; z < 9; z++)
-            for (int8_t x = 0; x < 9; x++)
-            {
-                bool set = false;
-                uint32_t data = smile_data[z * 9 + x];
-                CRGB c;
-                if (data >> 24 & 0xFF) // if not transparent
-                {
-                    set = true;
-                }
-                tempCube.setLed(CUBE_SIZE_M1 - x, y, CUBE_SIZE_M1 - z, set ? CRGB::White : CRGB::Black);
-            }
-    };
-
-    float angle = 0;
-    LedCube tempCube;
-    uint8_t hue = 0;
-
-    void drawFrame() override
-    {
-        CRGB color = CHSV(hue++, 255, 255);
-
-        // Rotate and draw
-        Cube.clear();
-        for (int x = 0; x < CUBE_SIZE; x++)
-            for (int y = 0; y < CUBE_SIZE; y++)
-                for (int z = 0; z < CUBE_SIZE; z++)
-                {
-                    Vector3 v = Vector3(x, y, z);
-                    if (tempCube.getLed(v) != CRGB(0, 0, 0))
-                    {
-                        v = v.rotate(angle, Axis::Z);
-                        Cube.setLed(v, color);
-                    }
-                }
-
-        // Increase angle and go to next letter after full rotation
-        angle += 10;
-        if (angle >= 360)
-        {
-            angle = 0;
-        }
-    }
-};
 
 #include "Cube/Bitmaps/pacman.h"
 #include "Cube/Bitmaps/pacman_ghost.h"
@@ -607,92 +551,6 @@ public:
             uint8_t index = inoise16(i * xscale, i * zscale, millis() * yscale * LED_COUNT / 65535);                  // X location is constant, but we move along the Y at the rate of millis()
             CRGB color = ColorFromPalette(firePalette, min(i * (index) >> 6, 255), i * 255 / LED_COUNT, LINEARBLEND); // With that value, look up the 8 bit colour palette value and assign it to the current LED.
             Cube.setLed(i, color);                                                                                    // Set the i'th led's color
-        }
-    }
-};
-
-class FireWorks : public Animation
-{
-public:
-    FireWorks()
-    {
-        name = "Fire Works";
-        setDelay(40);
-    };
-
-    Timer preMissileTimer;
-    const Vector3 gravity = Vector3(0, 0, -1.0);
-
-    uint8_t missileHue = 0;
-    uint8_t explosionHue;
-    float radius;
-    Vector3 temp;
-    Vector3 source;
-    Vector3 target;
-    Vector3 velocity;
-    Particle missile;
-    float explosionRadius = 0;
-    float explosionMaxRadius;
-
-    enum State
-    {
-        PREPARE_MISSILE,
-        LAUNCHING,
-        EXPLODING,
-        RESET,
-    };
-
-    State state = PREPARE_MISSILE;
-
-    void drawFrame() override
-    {
-        Cube.fadeAll(65);
-
-        switch (state)
-        {
-        case PREPARE_MISSILE:
-
-            if (preMissileTimer.ready())
-            {
-                source = Vector3(randomFloat(3, 5), randomFloat(3, 5), 0);
-                target = Vector3(randomFloat(3, 6), randomFloat(3, 6), randomFloat(4.5, 6.5));
-                float timeToTarget = randomFloat(1.2, 2.0);
-                velocity = (target - source) / timeToTarget;
-                missileHue = random8(0, 255);
-                missile = Particle(source, velocity, missileHue, timeToTarget);
-                Cube.setLed(missile.position, CHSV(missileHue, 255, 255));
-                state = LAUNCHING;
-            }
-            break;
-        case LAUNCHING:
-            temp = missile.position;
-            missile.move(getDeltaTime(), gravity);
-            Cube.setLed(missile.position, CHSV(missileHue, 255, 255));
-
-            if (temp.z > missile.position.z || missile.position.z > target.z)
-            {
-                explosionMaxRadius = randomFloat(2.5, 4.5);
-                explosionHue = missileHue + random8(5, 15);
-                state = EXPLODING;
-            }
-            break;
-
-        case EXPLODING:
-            explosionRadius += 0.5f;
-            Cube.shell(missile.position, explosionRadius, CHSV(explosionHue++, 255, 255), randomFloat(0.1, 0.5));
-
-            if (explosionRadius > explosionMaxRadius)
-            {
-                state = RESET;
-            }
-            break;
-
-        case RESET:
-            explosionRadius = 0;
-            preMissileTimer.reset();
-            preMissileTimer.setPeriod(random16(300, 800));
-            state = PREPARE_MISSILE;
-            break;
         }
     }
 };
